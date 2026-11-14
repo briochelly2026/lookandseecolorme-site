@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--PAGE-START-->
+<title>Look & See, Color Me!</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Free printable stickers, a gallery of little artists and new Look & Find coloring books for ages 3 to 6.">
+<meta property="og:title" content="Look & See, Color Me!">
+<meta property="og:description" content="Free stickers and coloring pages for little artists ages 3–6.">
+<meta property="og:image" content="assets/img/logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/icon-32.png">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<meta name="theme-color" content="#3AA6B9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* Layout: one scrolling page of "sea bands"; each band is a coloring-book spread (line art meets color). */
+:root{
+  /* Approved brand palette (Brief maestro §3) */
+  --ink:#1F2A55;        /* azul noche: all text and outlines */
+  --sea:#3AA6B9;        /* turquesa */
+  --sun:#F9C93E;        /* amarillo */
+  --coral:#F26B4E;      /* coral: main call to action */
+  --fuchsia:#C4325F;    /* fucsia */
+  --paper:#FFFFFF;
+  --deep:#1C7A8C;       /* turquesa oscurecido para texto pequeño legible */
+  --foam:#E9F6F8;       /* banda turquesa clara */
+  --sand:#FFF7DE;       /* banda amarilla clara */
+  --muted:#4F5878;
+  --line:#CFE6EA;
+  --rainbow:linear-gradient(90deg,#F26B4E 0 20%,#F9C93E 20% 40%,#6DB56D 40% 60%,#3AA6B9 60% 80%,#8E5BB5 80%);
+  --display:"Fredoka", "Baloo 2", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Nunito", "Verdana", system-ui, sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--paper);color:var(--ink);font:600 17px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+a{color:var(--deep)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.1;margin:0;text-wrap:balance;letter-spacing:-.01em}
+h2{font-size:clamp(30px,6vw,46px)}
+h3{font-size:22px;font-weight:600}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.band{padding-block:72px}
+.band.foam{background:var(--foam)}
+.band.sand{background:var(--sand)}
+.eyebrow{font:600 14px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--deep)}
+.lede{font-size:19px;color:var(--muted);max-width:58ch}
+.head{display:grid;gap:12px;margin-bottom:36px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:10px;font:600 18px/1 var(--display);padding:16px 24px;border-radius:999px;text-decoration:none;border:3px solid var(--ink);background:var(--paper);color:var(--ink);box-shadow:0 4px 0 var(--ink);transition:transform .12s, box-shadow .12s;cursor:pointer}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--coral);color:#fff}
+.btn.sun{background:var(--sun)}
+.btn svg{width:20px;height:20px;flex:none}
+.btns{display:flex;flex-wrap:wrap;gap:14px}
+
+/* nav */
+.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(8px)}
+.nav::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:var(--rainbow)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--paper)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:10px}
+.logo{display:flex;align-items:center;gap:10px;font:700 20px/1 var(--display);color:var(--ink);text-decoration:none;white-space:nowrap}
+.logo img{height:44px;width:auto}
+.logo .word{height:38px}
+@media (max-width:420px){.logo .word{height:32px}}
+.nav ul{display:flex;gap:4px;list-style:none;margin:0;padding:0}
+.nav ul a{font:600 15px/1 var(--display);text-decoration:none;color:var(--ink);padding:10px 12px;border-radius:999px}
+.nav ul a:hover{background:var(--foam)}
+@media (max-width:760px){.nav ul{display:none}}
+
+/* hero */
+.hero{background:linear-gradient(180deg,var(--foam),var(--paper));padding-block:48px 72px;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero h1{margin:0}
+.hero h1 img{width:100%;max-width:520px;height:auto}
+.motto{font:700 clamp(24px,4.6vw,34px)/1.15 var(--display);display:flex;flex-wrap:wrap;gap:.1em .35em}
+.motto .a{color:var(--sea)}.motto .b{color:var(--coral)}.motto .c{color:var(--fuchsia)}
+.hello{font:600 22px/1.3 var(--display);color:var(--ink)}
+.hero .copy{display:grid;gap:22px;min-width:0}
+.badge{justify-self:start;display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--display);background:var(--sun);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:8px 14px}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;gap:36px}}
+
+/* before/after slider: the one bold moment */
+.magic{position:relative;max-width:440px;width:100%;justify-self:center;aspect-ratio:1696/2528;border:4px solid var(--ink);border-radius:22px;overflow:hidden;background:#fff;box-shadow:10px 10px 0 var(--sea);transform:rotate(1.5deg);touch-action:pan-y}
+.magic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.magic .color{clip-path:inset(0 0 0 var(--cut,50%))}
+.magic .handle{position:absolute;top:0;bottom:0;left:var(--cut,50%);width:4px;margin-left:-2px;background:var(--ink);pointer-events:none}
+.magic .handle::after{content:"";position:absolute;top:50%;left:50%;width:46px;height:46px;transform:translate(-50%,-50%);border-radius:50%;background:var(--sun) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2316324f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l-6 6 6 6M15 6l6 6-6 6'/%3E%3C/svg%3E") center/24px no-repeat;border:3px solid var(--ink)}
+.magic input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:ew-resize;margin:0}
+.magic .tag{position:absolute;bottom:12px;font:600 13px/1 var(--display);background:#fff;border:2px solid var(--ink);border-radius:999px;padding:6px 10px;pointer-events:none}
+.magic .tag.l{left:12px}.magic .tag.r{right:12px;background:var(--sun)}
+.hint{font-size:14px;color:var(--muted);text-align:center;margin-top:14px}
+
+/* three doors */
+.doors{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.door{display:grid;grid-template-rows:auto auto 1fr;gap:10px;padding:26px;border-radius:24px;border:3px solid var(--ink);background:var(--paper);text-decoration:none;color:var(--ink);transition:transform .15s}
+.door:hover{transform:translateY(-4px) rotate(-.5deg)}
+.door img{height:96px;width:auto;object-fit:contain;justify-self:start}
+.door p{color:var(--muted);font-size:16px}
+@media (max-width:760px){.doors{grid-template-columns:1fr}.door{grid-template-columns:84px 1fr;grid-template-rows:auto auto;column-gap:16px}.door img{grid-row:span 2;height:76px;justify-self:center}}
+
+/* stickers */
+.book-block{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;background:var(--paper);border:3px solid var(--ink);border-radius:28px;padding:36px;position:relative}
+.book-block .info{display:grid;gap:18px;min-width:0}
+.pill{justify-self:start;font:600 13px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;background:var(--foam);color:var(--deep);padding:8px 12px;border-radius:999px}
+.sticker-cloud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;align-items:center;justify-items:center}
+.sticker-cloud img{width:100%;max-width:150px;height:120px;object-fit:contain;filter:drop-shadow(0 4px 5px rgba(22,50,79,.25));transition:transform .2s}
+.sticker-cloud img:nth-child(odd){transform:rotate(-6deg)}
+.sticker-cloud img:nth-child(even){transform:rotate(5deg)}
+.sticker-cloud img:hover{transform:scale(1.12) rotate(0)}
+.tips{font-size:15px;color:var(--muted);display:grid;gap:6px;padding-left:20px;margin:0}
+@media (max-width:860px){.book-block{grid-template-columns:1fr;padding:24px}.sticker-cloud img{height:92px}}
+.more-soon{margin-top:20px;font-size:15px;color:var(--muted);text-align:center}
+
+/* share */
+.share{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:16px;counter-reset:s}
+.steps li{display:grid;grid-template-columns:48px 1fr;gap:16px;align-items:center;counter-increment:s}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:48px;height:48px;border-radius:50%;border:3px solid var(--ink);background:var(--sun);font:700 22px/1 var(--display)}
+.steps strong{font-family:var(--display);font-weight:600;font-size:19px;display:block}
+.steps span{color:var(--muted);font-size:16px}
+.handle-card{display:grid;gap:16px;background:var(--paper);border:3px solid var(--ink);border-radius:28px;padding:30px;box-shadow:10px 10px 0 var(--coral)}
+.tagline{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.tagline code{max-width:100%;font:700 clamp(19px,4.6vw,24px)/1.2 var(--display);color:var(--deep);background:var(--foam);padding:10px 14px;border-radius:14px;word-break:break-word}
+.copy-btn{font:600 14px/1 var(--display);padding:10px 14px;border-radius:999px;border:2px solid var(--ink);background:var(--paper);cursor:pointer;color:var(--ink)}
+.small{font-size:14px;color:var(--muted)}
+@media (max-width:860px){.share{grid-template-columns:1fr}}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.frame{margin:0;min-width:0;background:var(--paper);border:3px solid var(--ink);border-radius:18px;padding:10px 10px 14px;display:grid;gap:10px;box-shadow:0 6px 0 var(--line)}
+.frame:nth-child(odd){transform:rotate(-1.5deg)}.frame:nth-child(even){transform:rotate(1.2deg)}
+.frame img{aspect-ratio:2/3;width:100%;object-fit:cover;border-radius:10px}
+.frame figcaption{font:600 15px/1.2 var(--display);text-align:center}
+.frame figcaption small{display:block;font:400 13px var(--body);color:var(--muted)}
+.frame.empty .slot{aspect-ratio:2/3;border:3px dashed var(--line);border-radius:10px;display:grid;place-items:center;text-align:center;padding:14px;color:var(--muted);font:600 16px/1.3 var(--display);background:var(--foam)}
+@media (max-width:860px){.gallery{grid-template-columns:repeat(2,1fr);gap:16px}}
+
+/* books */
+.books{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.book{display:grid;grid-template-rows:auto 1fr;border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--paper)}
+.book .cover{aspect-ratio:3/4;display:grid;place-items:center;position:relative;overflow:hidden}
+.book .cover img{width:100%;height:100%;object-fit:cover}
+.book .cover.soon{background:repeating-linear-gradient(-45deg,var(--sand) 0 14px,#fff 14px 28px)}
+.book .cover.soon b{font:700 54px/1 var(--display);color:var(--ink);opacity:.18}
+.book .meta{padding:16px;display:grid;gap:6px;align-content:start}
+.status{justify-self:start;font:600 12px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:2px solid var(--ink)}
+.status.out{background:var(--sun)}
+.book:nth-child(2) .cover.soon{background:repeating-linear-gradient(-45deg,#E9F6F8 0 14px,#fff 14px 28px)}
+.book:nth-child(4) .cover.soon{background:repeating-linear-gradient(-45deg,#FBE7EE 0 14px,#fff 14px 28px)}
+.status.soon{background:#fff}
+.book p{font-size:14px;color:var(--muted)}
+.book .meta{grid-template-rows:auto auto auto 1fr}
+.buy{margin-top:8px;justify-self:stretch;justify-content:center;font-size:15px;padding:12px 8px;gap:6px;white-space:nowrap;background:var(--sun)}
+.buy svg{width:18px;height:18px}
+.buy-soon{margin-top:8px;align-self:end;font:600 14px/1.3 var(--display);color:var(--muted);text-align:center;padding:12px;border:2px dashed var(--line);border-radius:999px}
+.consent{display:grid;gap:8px;background:var(--sand);border-radius:16px;padding:16px;font-size:14px;color:var(--ink)}
+.consent strong{font-family:var(--display);font-weight:600;font-size:16px}
+.consent ul{margin:0;padding-left:18px;display:grid;gap:4px}
+@media (max-width:860px){.books{grid-template-columns:repeat(2,1fr);gap:14px}}
+
+/* story */
+.story{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;align-items:center}
+.story img{border-radius:24px;border:4px solid var(--ink);transform:rotate(-1.5deg)}
+.story .txt{display:grid;gap:16px;min-width:0}
+.story blockquote{margin:0;font:600 clamp(20px,3.6vw,26px)/1.35 var(--display);color:var(--fuchsia)}
+@media (max-width:860px){.story{grid-template-columns:1fr}}
+
+footer{background:var(--ink);color:#DCE3F2;padding-block:40px;font-size:15px;position:relative}
+footer::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--rainbow)}
+footer .ficon{width:72px;height:auto;background:#fff;border-radius:50%;padding:4px}
+footer .wrap{display:grid;gap:12px}
+footer a{color:#fff}
+.waves{display:block;width:100%;height:40px;color:var(--ink)}
+</style>
+<!--HEAD-END-->
+</head>
+<body>
+<!--BODY-START-->
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="Look &amp; See, Color Me! home"><img src="assets/img/icon.webp" alt=""><img class="word" src="assets/img/logo.webp" alt="Look &amp; See, Color Me!"></a>
+    <ul>
+      <li><a href="#stickers">Free Stickers</a></li>
+      <li><a href="#share">Share</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#books">Books</a></li>
+    </ul>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <div class="copy">
+      <span class="badge">You found the secret page!</span>
+      <h1><img src="assets/img/logo.webp" alt="Look &amp; See, Color Me!" width="1200" height="698"></h1>
+      <p class="motto"><span class="a">Find it.</span> <span class="b">Color it.</span> <span class="c">Name it!</span></p>
+      <p class="hello">Hello, little artist!</p>
+      <p class="lede">Thank you for coloring with us. Grab your free sticker sheet, show us your masterpiece, and meet the friends coming in our next books.</p>
+      <div class="btns">
+        <a class="btn primary" href="#stickers"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Get free stickers</a>
+        <a class="btn" href="#share">Share your art</a>
+      </div>
+    </div>
+    <div>
+      <div class="magic" id="magic" style="--cut:50%">
+        <img src="assets/img/p01.jpg" alt="Black and white coloring page of a happy fish under the sea">
+        <img class="color" src="assets/img/p01_color.jpg" alt="The same happy fish page, fully colored">
+        <span class="handle"></span>
+        <span class="tag l">Before</span><span class="tag r">After</span>
+        <input type="range" id="magic-range" min="0" max="100" value="50" aria-label="Slide to color the page">
+      </div>
+      <p class="hint">Slide the yellow button to color the page!</p>
+    </div>
+  </div>
+</header>
+
+<section class="band" aria-label="What you can do here">
+  <div class="wrap">
+    <div class="doors">
+      <a class="door" href="#stickers"><img src="assets/img/stickers/starfish.png" alt=""><h3>Free stickers</h3><p>Print a full sheet of sea friends from your book.</p></a>
+      <a class="door" href="#share"><img src="assets/img/stickers/octopus.png" alt=""><h3>Share your art</h3><p>Post your colored page and tag us on Instagram.</p></a>
+      <a class="door" href="#books"><img src="assets/img/stickers/turtle.png" alt=""><h3>New adventures</h3><p>Dinosaurs, farm animals and jungle friends are on the way.</p></a>
+    </div>
+  </div>
+</section>
+
+<section class="band foam" id="stickers">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Free printables</span>
+      <h2>Your free sticker sheets</h2>
+      <p class="lede">Every book comes with its own set of stickers. Pick your book, print at home, cut and stick!</p>
+    </div>
+
+    <article class="book-block" id="ocean-animals">
+      <div class="info">
+        <span class="pill">Book 1 · Ocean Animals</span>
+        <h3 style="font-size:30px">9 sea friends, ready to stick</h3>
+        <p>Fish, Octopus, Turtle, Shark, Starfish, Jellyfish, Seahorse, Stingray and Shell, in full color, straight from the pages of your book.</p>
+        <div class="btns">
+          <a class="btn primary" href="downloads/ocean-animals-sticker-sheet.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Sticker sheet (PDF)</a>
+          <a class="btn sun" href="downloads/ocean-animals-free-coloring-page.pdf" download>Bonus coloring page</a>
+        </div>
+        <ul class="tips">
+          <li>Prints on regular US Letter paper or full-sheet sticker paper.</li>
+          <li>Grown-ups, please help with the scissors.</li>
+        </ul>
+      </div>
+      <div class="sticker-cloud">
+        <img src="assets/img/stickers/fish.webp" alt="Fish sticker">
+        <img src="assets/img/stickers/octopus.webp" alt="Octopus sticker">
+        <img src="assets/img/stickers/turtle.webp" alt="Turtle sticker">
+        <img src="assets/img/stickers/shark.webp" alt="Shark sticker">
+        <img src="assets/img/stickers/starfish.webp" alt="Starfish sticker">
+        <img src="assets/img/stickers/jellyfish.webp" alt="Jellyfish sticker">
+        <img src="assets/img/stickers/seahorse.webp" alt="Seahorse sticker">
+        <img src="assets/img/stickers/stingray.webp" alt="Stingray sticker">
+        <img src="assets/img/stickers/shell.webp" alt="Shell sticker">
+      </div>
+    </article>
+    <p class="more-soon">Sticker sheets for Dinosaurs, Farm Animals and Jungle Friends will appear here when each book comes out.</p>
+  </div>
+</section>
+
+<section class="band" id="share">
+  <div class="wrap share">
+    <div>
+      <div class="head">
+        <span class="eyebrow">For moms &amp; dads</span>
+        <h2>Show us the magic</h2>
+        <p class="lede">Every colored page tells a story, and we would love to see yours.</p>
+      </div>
+      <ol class="steps">
+        <li><div><strong>Snap a photo</strong><span>Take a picture of the finished page in good light.</span></div></li>
+        <li><div><strong>Post it on Instagram</strong><span>Tag our account and add our hashtag.</span></div></li>
+        <li><div><strong>Join the gallery</strong><span>We pick favorites to feature here and on our page.</span></div></li>
+      </ol>
+    </div>
+    <div class="handle-card">
+      <span class="eyebrow">Tag us</span>
+      <div class="tagline"><code id="ig-handle">@LookAndSeeColorMe</code><button class="copy-btn" type="button" data-copy="@LookAndSeeColorMe">Copy</button></div>
+      <div class="tagline"><code id="ig-tag">#LookAndSeeColorMe</code><button class="copy-btn" type="button" data-copy="#LookAndSeeColorMe">Copy</button></div>
+      <a class="btn primary" href="https://www.instagram.com/lookandseecolorme" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>Open Instagram</a>
+      <div class="consent" id="photo-permission">
+        <strong>Before you tag us, grown-ups</strong>
+        <ul>
+          <li>Only a parent or legal guardian should post. Kids, please ask a grown-up first.</li>
+          <li>By tagging @LookAndSeeColorMe or using #LookAndSeeColorMe, you give us permission to repost the photo and to show it in our gallery, on this website and in our social media.</li>
+          <li>We show the artwork, never a full name. Share only a first name and age.</li>
+          <li>We never feature a child's face unless the parent says yes to us in a private message.</li>
+          <li>Changed your mind? Send us a message and we will remove it.</li>
+        </ul>
+        <a href="privacy.html#photos">Read our Privacy &amp; Photo Policy</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band sand" id="gallery">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Little Artists Gallery</span>
+      <h2>Masterpieces from around the world</h2>
+      <p class="lede">The first pages are drying! Tag us on Instagram and your art could hang on this wall.</p>
+    </div>
+    <div class="gallery">
+      <figure class="frame"><img src="assets/img/p01_color.jpg" alt="Colored page: The Happy Fish" loading="lazy"><figcaption>The Happy Fish<small>Example page</small></figcaption></figure>
+      <figure class="frame"><img src="assets/img/p40_color.jpg" alt="Colored page: Ocean Party" loading="lazy"><figcaption>Ocean Party!<small>Example page</small></figcaption></figure>
+      <figure class="frame empty"><div class="slot">Your masterpiece goes here</div><figcaption>Coming soon<small>Tag #LookAndSeeColorMe</small></figcaption></figure>
+      <figure class="frame empty"><div class="slot">This frame is waiting for you</div><figcaption>Coming soon<small>Tag #LookAndSeeColorMe</small></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="books">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">The collection</span>
+      <h2>Collect them all!</h2>
+      <p class="lede">Each book has 51 Look &amp; Find scenes that grow with your child, from 3 big friends to find at age 3 up to 6 tiny hidden friends at age 6.</p>
+    </div>
+    <div class="books">
+      <article class="book"><div class="cover"><img src="assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy"></div><div class="meta"><span class="status out">Book 1</span><h3>Ocean Animals</h3><p>Fish, whales, octopuses and treasure under the sea.</p><a class="btn buy" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" id="buy-ocean"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy on Amazon</a></div></article>
+      <article class="book"><div class="cover soon"><b>Rrr!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Dinosaurs</h3><p>Giant friends from long, long ago.</p><span class="buy-soon">On Amazon soon</span></div></article>
+      <article class="book"><div class="cover soon"><b>Moo!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Farm Animals</h3><p>Cows, chicks and piglets on a sunny farm.</p><span class="buy-soon">On Amazon soon</span></div></article>
+      <article class="book"><div class="cover soon"><b>Roar!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Jungle Friends</h3><p>Monkeys, parrots and lions in the jungle.</p><span class="buy-soon">On Amazon soon</span></div></article>
+    </div>
+  </div>
+</section>
+
+<section class="band foam" id="story">
+  <div class="wrap story">
+    <img src="assets/img/mia_mommy.jpg" alt="Illustration of Mia and her mommy painting a coloring book together">
+    <div class="txt">
+      <span class="eyebrow">How it all began</span>
+      <h2>A book born at the kitchen table</h2>
+      <p>Look &amp; See, Color Me! started with afternoons of painting with Mia, a little girl who loves every color she can imagine. Each book is made for that same moment: a grown-up and a child, side by side, filling a page with color.</p>
+      <blockquote>“The magic isn't in staying inside the lines. It's in filling life with color.”</blockquote>
+      <p class="small">With love, Mia &amp; Mommy</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <img class="ficon" src="assets/img/icon.webp" alt="Look &amp; See, Color Me! icon">
+    <p>Look &amp; Find coloring books for ages 3–6. Free printables are for personal, non-commercial use.</p>
+    <p>Instagram: <a href="https://www.instagram.com/lookandseecolorme" target="_blank" rel="noopener">@LookAndSeeColorMe</a> · <a href="privacy.html">Privacy &amp; Photo Policy</a></p>
+    <p class="small" style="color:#A9B4D0">© 2026 Look &amp; See Books. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var m=document.getElementById('magic'), r=document.getElementById('magic-range');
+  if(m&&r){r.addEventListener('input',function(){m.style.setProperty('--cut',r.value+'%')});}
+  document.querySelectorAll('[data-copy]').forEach(function(b){
+    b.addEventListener('click',function(){
+      var t=b.getAttribute('data-copy');
+      var done=function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1600)};
+      if(navigator.clipboard){navigator.clipboard.writeText(t).then(done,function(){sel(b)})}else{sel(b)}
+    });
+  });
+  function sel(b){var c=b.previousElementSibling,rg=document.createRange();rg.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(rg);}
+})();
+</script>
+<!--BODY-END-->
+</body>
+</html>
