@@ -194,6 +194,17 @@ footer .ficon{width:72px;height:auto;background:#fff;border-radius:50%;padding:4
 footer .wrap{display:grid;gap:12px}
 footer a{color:#fff}
 .waves{display:block;width:100%;height:40px;color:var(--ink)}
+.pages{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px}
+.cpage{display:grid;grid-template-rows:auto 1fr;border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--paper)}
+.cpage .pic{position:relative;aspect-ratio:1/1;background:#fff}
+.cpage .pic img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .35s}
+.cpage .pic img.col{opacity:0}
+.cpage:hover .pic img.col,.cpage:focus-within .pic img.col{opacity:1}
+.cpage .meta{padding:16px;display:grid;gap:8px;align-content:start}
+.cpage h3{margin:0}
+.cpage .btns{margin-top:4px}
+.vid{position:relative;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:20px;overflow:hidden;background:var(--ink)}
+.vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 </style>
 <!--HEAD-END-->
 </head>
@@ -203,6 +214,8 @@ footer a{color:#fff}
   <div class="wrap">
     <a class="logo" href="#top" aria-label="Look &amp; See, Color Me! home"><img src="assets/img/icon.webp" alt=""><img class="word" src="assets/img/logo.webp" alt="Look &amp; See, Color Me!"></a>
     <ul>
+      <li><a href="#videos">Videos</a></li>
+      <li><a href="#color">Coloring Pages</a></li>
       <li><a href="#stickers">Free Stickers</a></li>
       <li><a href="#share">Share</a></li>
       <li><a href="#gallery">Gallery</a></li>
@@ -244,6 +257,40 @@ footer a{color:#fff}
       <a class="door" href="#share"><img src="assets/img/stickers/octopus.png" alt=""><h3>Share your art</h3><p>Post your colored page and tag us on Instagram.</p></a>
       <a class="door" href="#books"><img src="assets/img/stickers/turtle.png" alt=""><h3>New adventures</h3><p>Dinosaurs, farm animals and jungle friends are on the way.</p></a>
     </div>
+  </div>
+</section>
+
+<section class="band" id="videos">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Watch with Mia</span>
+      <h2>Mia's videos</h2>
+      <p class="lede">Draw, color and sing with Mia and her sea friends. New videos on YouTube every week.</p>
+    </div>
+    <div class="vid"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=UUpAjJBGCqhsbTDvwiAO4wLg" title="Mia's latest videos on YouTube" loading="lazy" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe></div>
+    <div class="btns" style="margin-top:20px;justify-content:center"><a class="btn primary" href="https://www.youtube.com/@LookSeeColorMe" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9l5 3-5 3z" fill="currentColor"/></svg>See all videos on YouTube</a></div>
+  </div>
+</section>
+
+<section class="band sand" id="color">
+  <div class="wrap">
+    <div class="head">
+      <span class="eyebrow">Free for everyone</span>
+      <h2>Free coloring pages</h2>
+      <p class="lede">Color along with Mia! Every character Mia draws in her YouTube videos is here to print at home, free. No sign-up needed.</p>
+    </div>
+    <div class="pages">
+      <article class="cpage" id="twinkle">
+        <div class="pic"><img src="assets/img/color/twinkle.webp" alt="Twinkle the sea star coloring page, black and white line art" loading="lazy"><img class="col" src="assets/img/color/twinkle_color.webp" alt="" loading="lazy"></div>
+        <div class="meta">
+          <span class="pill">Sea friends</span>
+          <h3>Twinkle the Sea Star</h3>
+          <p>Draw and color Twinkle with Mia on YouTube, then print your own!</p>
+          <div class="btns"><a class="btn primary" href="downloads/color/twinkle-sea-star-coloring-page.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Print Twinkle (PDF)</a></div>
+        </div>
+      </article>
+    </div>
+    <p class="more-soon">New friends are added every time Mia colors a new one. <a href="https://www.youtube.com/@LookSeeColorMe" target="_blank" rel="noopener">Watch Mia on YouTube</a></p>
   </div>
 </section>
 
