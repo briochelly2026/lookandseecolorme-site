@@ -261,9 +261,9 @@ footer a{color:#fff}
         <h3 style="font-size:30px">9 sea friends, ready to stick</h3>
         <p>Fish, Octopus, Turtle, Shark, Starfish, Jellyfish, Seahorse, Stingray and Shell, in full color, plus a bonus coloring page. A thank-you gift for families who have the book.</p>
         <form class="unlock" id="unlock-ocean" data-book="ocean" autocomplete="off">
-          <label for="code-ocean"><strong>Enter the secret code from your book</strong><span>Look for it on the “Free stickers” page near the end of Ocean Animals.</span></label>
+          <label for="code-ocean"><strong>Enter the secret word from your book</strong><span>You’ll find it under the QR code on the “FREE stickers!” page near the end of Ocean Animals.</span></label>
           <div class="unlock-row">
-            <input id="code-ocean" name="code" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="SECRET CODE" required>
+            <input id="code-ocean" name="code" type="text" inputmode="text" autocapitalize="characters" spellcheck="false" placeholder="SECRET WORD" required>
             <button class="btn primary" type="submit">Unlock</button>
           </div>
           <p class="unlock-msg" role="status" aria-live="polite"></p>
@@ -410,8 +410,8 @@ footer a{color:#fff}
       var folder=sha256(book+':'+code).slice(0,24);msg.className='unlock-msg';msg.textContent='Checking…';
       fetch('bonus/'+folder+'/ok.txt',{cache:'no-store'}).then(function(res){
         if(res.ok){msg.className='unlock-msg good';msg.textContent='Yay! Your bonus is ready.';try{localStorage.setItem(key,folder)}catch(e){}openBonus(form,folder)}
-        else{msg.className='unlock-msg bad';msg.textContent='Hmm, that code doesn’t match. Check the “Free stickers” page in your book and try again.'}
-      }).catch(function(){msg.className='unlock-msg bad';msg.textContent='We couldn’t check the code. Please try again in a moment.'})});
+        else{msg.className='unlock-msg bad';msg.textContent='Hmm, that word doesn’t match. Check the “FREE stickers!” page in your book and try again.'}
+      }).catch(function(){msg.className='unlock-msg bad';msg.textContent='We couldn’t check the word. Please try again in a moment.'})});
   });
   function sel(b){var c=b.previousElementSibling,rg=document.createRange();rg.selectNodeContents(c);var s=getSelection();s.removeAllRanges();s.addRange(rg);}
 })();
