@@ -156,6 +156,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .book .meta{padding:16px;display:grid;gap:6px;align-content:start}
 .status{justify-self:start;font:600 12px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:999px;border:2px solid var(--ink)}
 .status.out{background:var(--sun)}
+.book .cover.soon{background:#fff}
+.book .cover.soon img{filter:blur(2px) saturate(.55);opacity:.55;transform:scale(1.04)}
+.book .cover .soon-tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-6deg);font:700 clamp(17px,2.4vw,22px)/1 var(--display);color:#fff;background:var(--coral);border:3px solid var(--ink);border-radius:999px;padding:10px 16px;white-space:nowrap;box-shadow:0 4px 0 var(--ink)}
 .book:nth-child(2) .cover.soon{background:repeating-linear-gradient(-45deg,#E9F6F8 0 14px,#fff 14px 28px)}
 .book:nth-child(4) .cover.soon{background:repeating-linear-gradient(-45deg,#FBE7EE 0 14px,#fff 14px 28px)}
 .status.soon{background:#fff}
@@ -332,9 +335,9 @@ footer a{color:#fff}
     </div>
     <div class="books">
       <article class="book"><div class="cover"><img src="assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy"></div><div class="meta"><span class="status out">Book 1</span><h3>Ocean Animals</h3><p>Fish, whales, octopuses and treasure under the sea.</p><a class="btn buy" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" id="buy-ocean"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy on Amazon</a></div></article>
-      <article class="book"><div class="cover soon"><b>Rrr!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Dinosaurs</h3><p>Giant friends from long, long ago.</p><span class="buy-soon">On Amazon soon</span></div></article>
-      <article class="book"><div class="cover soon"><b>Moo!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Farm Animals</h3><p>Cows, chicks and piglets on a sunny farm.</p><span class="buy-soon">On Amazon soon</span></div></article>
-      <article class="book"><div class="cover soon"><b>Roar!</b></div><div class="meta"><span class="status soon">Coming soon</span><h3>Jungle Friends</h3><p>Monkeys, parrots and lions in the jungle.</p><span class="buy-soon">On Amazon soon</span></div></article>
+      <article class="book"><div class="cover soon"><img src="assets/img/cover_dinosaurs.jpg" alt="Cover preview of Dinosaurs, coming soon" loading="lazy"><span class="soon-tag">Coming soon!</span></div><div class="meta"><span class="status soon">Coming soon</span><h3>Dinosaurs</h3><p>Giant friends from long, long ago.</p><span class="buy-soon">On Amazon soon</span></div></article>
+      <article class="book"><div class="cover soon"><img src="assets/img/cover_farm.jpg" alt="Cover preview of Farm Animals, coming soon" loading="lazy"><span class="soon-tag">Coming soon!</span></div><div class="meta"><span class="status soon">Coming soon</span><h3>Farm Animals</h3><p>Cows, chicks and piglets on a sunny farm.</p><span class="buy-soon">On Amazon soon</span></div></article>
+      <article class="book"><div class="cover soon"><img src="assets/img/cover_jungle.jpg" alt="Cover preview of Jungle Friends, coming soon" loading="lazy"><span class="soon-tag">Coming soon!</span></div><div class="meta"><span class="status soon">Coming soon</span><h3>Jungle Friends</h3><p>Monkeys, parrots and lions in the jungle.</p><span class="buy-soon">On Amazon soon</span></div></article>
     </div>
   </div>
 </section>
