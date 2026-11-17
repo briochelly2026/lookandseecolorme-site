@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Color Me! Paint · Look & See, Color Me!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Paint freely with crayons, markers and colored pencils. Free, no ads, no sign-up. Your drawings stay on your device.">
+<meta name="theme-color" content="#1FA6B1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Color Me!">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../assets/img/icon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+@font-face{font-family:Fredoka;src:url(../assets/fonts/fredoka-latin-600-normal.ttf) format("truetype");font-weight:600;font-display:swap}
+@font-face{font-family:Fredoka;src:url(../assets/fonts/fredoka-latin-700-normal.ttf) format("truetype");font-weight:700;font-display:swap}
+:root{
+  --teal:#1FA6B1;--sun:#FEC621;--coral:#FF6245;--berry:#CE2967;--ink:#14263A;
+  --paper:#FFFDF8;--desk:#E9F6F7;--muted:#5B6B7A;
+  --tap:52px;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--desk);color:var(--ink);font:600 16px/1.3 Fredoka,ui-rounded,system-ui,sans-serif;overflow:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+button{font:inherit;color:inherit}
+.app{position:fixed;inset:0;display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto auto auto;
+  grid-template-areas:"top" "board" "tools" "colors" "foot";
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* Top bar */
+.top{grid-area:top;display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--paper);border-bottom:3px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:6px;min-width:0;flex:1;text-decoration:none}
+.brand .ico{width:40px;height:40px;flex:none}
+.brand .word{height:36px;width:auto;min-width:0;object-fit:contain;object-position:left center}
+.actions{display:flex;gap:6px;flex:none}
+.ibtn{width:var(--tap);height:var(--tap);display:grid;place-items:center;border:3px solid var(--ink);border-radius:16px;background:#fff;cursor:pointer;box-shadow:0 3px 0 var(--ink);padding:0;transition:transform .08s,box-shadow .08s}
+.ibtn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+.ibtn svg{width:28px;height:28px}
+.ibtn[disabled]{opacity:.35;pointer-events:none}
+.ibtn.pics{background:var(--sun)}
+.ibtn.save{background:var(--coral);color:#fff}
+
+/* Drawing board */
+.board{grid-area:board;position:relative;overflow:hidden;touch-action:none;display:grid;place-items:center;padding:10px}
+.stage{position:absolute;left:0;top:0;transform-origin:0 0;border-radius:6px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 8px 0 3px rgba(20,38,58,.18);isolation:isolate;touch-action:none}
+.stage canvas,.stage img{position:absolute;inset:0;width:100%;height:100%;display:block}
+#live{pointer-events:none}
+#lines{pointer-events:none;z-index:3}
+.zoomout{position:absolute;right:14px;bottom:14px;z-index:5;display:none}
+.zoomout.on{display:grid}
+
+/* Tools */
+.tools{grid-area:tools;display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 6px 2px;flex-wrap:nowrap}
+.tool{width:min(58px,12.4vw);height:64px;flex:none;border:0;background:none;padding:0;cursor:pointer;position:relative;border-radius:16px;display:grid;place-items:end center}
+.tool svg{width:100%;height:auto;aspect-ratio:1;transition:transform .15s}
+.tool[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}
+.tool[aria-pressed="true"] svg{transform:translateY(-6px)}
+.sep{width:3px;height:40px;background:rgba(20,38,58,.15);border-radius:2px;margin:0 3px;flex:none}
+.sizes{display:flex;gap:2px;align-items:center}
+.size{width:min(44px,9.3vw);height:52px;flex:none;border:0;background:none;border-radius:14px;display:grid;place-items:center;cursor:pointer;padding:0}
+.size i{display:block;border-radius:50%;background:var(--ink)}
+.size[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}
+
+/* Colors */
+.colors{grid-area:colors;display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;padding:4px 10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-snap-type:x proximity}
+.colors::-webkit-scrollbar{display:none}
+.sw{flex:none;width:40px;height:70px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
+.sw svg{width:34px;height:66px;transform:translateY(16px);transition:transform .15s}
+.sw[aria-pressed="true"] svg{transform:translateY(0)}
+.foot{grid-area:foot;text-align:center;font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted);padding:4px 0 6px;letter-spacing:.02em}
+.foot a{color:inherit;text-decoration:none}
+
+/* Wide / landscape screens (tablets) */
+@media (min-aspect-ratio:1/1) and (min-width:700px){
+  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"top top top" "tools board colors" "foot foot foot"}
+  .tools{flex-direction:column;justify-content:center;padding:8px}
+  .tools .sep{width:40px;height:3px;margin:4px 0}
+  .sizes{flex-direction:column}
+  .tool{width:64px}.size{width:52px;height:46px}
+  .colors{display:grid;grid-template-columns:repeat(2,76px);grid-auto-rows:min(50px,calc((100dvh - 150px)/9));gap:2px 6px;align-content:center;overflow:hidden;padding:10px 26px 10px 4px;touch-action:none}
+  .sw{width:76px;height:100%;place-items:center;overflow:visible}
+  .sw svg{width:auto;height:150%;aspect-ratio:34/66;transform:translateX(10px) rotate(-90deg)}
+  .sw[aria-pressed="true"] svg{transform:translateX(-8px) rotate(-90deg)}
+}
+
+/* Sheets */
+.scrim{position:fixed;inset:0;background:rgba(20,38,58,.45);display:none;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
+.scrim.on{display:flex}
+@media (min-width:700px){.scrim{align-items:center}}
+.sheet{background:var(--paper);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));text-align:center}
+.sheet h2{margin:0 0 4px;font:700 24px/1.15 Fredoka,system-ui,sans-serif}
+.sheet p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.picks{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:10px 0 14px}
+@media (min-width:520px){.picks{grid-template-columns:repeat(4,1fr)}}
+.pick{border:3px solid var(--ink);border-radius:18px;background:#fff;padding:8px;cursor:pointer;display:grid;gap:6px;justify-items:center;box-shadow:0 3px 0 var(--ink)}
+.pick img,.pick .blank{width:100%;aspect-ratio:2/3;object-fit:contain;border-radius:8px;background:#fff}
+.pick .blank{display:grid;place-items:center;border:2px dashed #b8c4cc;color:var(--muted);font-size:13px}
+.pick span{font-size:15px}
+.pick[aria-current="true"]{background:var(--sun)}
+.big{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{min-height:56px;padding:0 22px;border:3px solid var(--ink);border-radius:999px;background:#fff;font:700 19px/1 Fredoka,system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:10px}
+.btn svg{width:26px;height:26px}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.teal{background:var(--teal);color:#fff}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.note{margin-top:14px;font-size:13px;color:var(--muted)}
+.note b{color:var(--ink)}
+#printImg{display:none}
+@media print{
+  @page{margin:10mm}
+  body{background:#fff;overflow:visible}
+  .app,.scrim{display:none!important}
+  #printImg{display:block;width:100%;height:auto;max-height:100vh;object-fit:contain}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="../" aria-label="Look &amp; See, Color Me! website">
+      <img class="ico" src="../assets/img/icon.webp" alt="">
+      <img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
+    </a>
+    <div class="actions">
+      <button class="ibtn pics" id="btnPics" aria-label="Pick a picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button>
+      <button class="ibtn" id="btnUndo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="ibtn" id="btnClear" aria-label="Start over"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg></button>
+      <button class="ibtn save" id="btnSave" aria-label="Save or print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+    </div>
+  </header>
+
+  <main class="board" id="board">
+    <div class="stage" id="stage">
+      <canvas id="paint"></canvas>
+      <canvas id="live"></canvas>
+      <img id="lines" alt="" draggable="false">
+    </div>
+    <button class="ibtn zoomout" id="btnFit" aria-label="Show the whole picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
+  </main>
+
+  <nav class="tools" id="tools" aria-label="Tools">
+    <button class="tool" data-tool="crayon" aria-label="Crayon" aria-pressed="true"></button>
+    <button class="tool" data-tool="marker" aria-label="Marker" aria-pressed="false"></button>
+    <button class="tool" data-tool="pencil" aria-label="Colored pencil" aria-pressed="false"></button>
+    <button class="tool" data-tool="eraser" aria-label="Eraser" aria-pressed="false"></button>
+    <span class="sep"></span>
+    <div class="sizes" id="sizes"></div>
+  </nav>
+
+  <div class="colors" id="colors" role="toolbar" aria-label="Colors"></div>
+  <footer class="foot"><a href="https://www.lookandseecolorme.com" target="_blank" rel="noopener">www.lookandseecolorme.com</a></footer>
+</div>
+
+<!-- Pick a picture -->
+<div class="scrim" id="sheetPics" role="dialog" aria-modal="true" aria-labelledby="picsTitle">
+  <div class="sheet">
+    <h2 id="picsTitle">Pick a picture!</h2>
+    <p>Paint anywhere you like, even outside the lines.</p>
+    <div class="picks" id="picks"></div>
+    <p class="note">Free. No ads. No sign-up. <b>Your drawings stay on this device.</b><br>More friends from the Look &amp; See, Color Me! books at www.lookandseecolorme.com</p>
+  </div>
+</div>
+
+<!-- Start over -->
+<div class="scrim" id="sheetClear" role="dialog" aria-modal="true" aria-labelledby="clearTitle">
+  <div class="sheet">
+    <h2 id="clearTitle">Start over?</h2>
+    <p>All the colors on this picture will go away.</p>
+    <div class="big">
+      <button class="btn" data-close>Keep it</button>
+      <button class="btn coral" id="doClear">Yes, start over</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save -->
+<div class="scrim" id="sheetSave" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+  <div class="sheet">
+    <h2 id="saveTitle">Great job!</h2>
+    <p>Save your picture or print it.</p>
+    <div class="big">
+      <button class="btn teal" id="doSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Save picture</button>
+      <button class="btn" id="doPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print</button>
+    </div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Keep painting</button></p>
+  </div>
+</div>
+
+<img id="printImg" alt="">
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Content ---------- */
+const PICTURES = [
+  { id: 'dolphin',    name: 'Dolphin',     src: 'art/dolphin.png',    thumb: 'art/dolphin_thumb.jpg' },
+  { id: 'pufferfish', name: 'Puffer Fish', src: 'art/pufferfish.png', thumb: 'art/pufferfish_thumb.jpg' },
+  { id: 'seahorse',   name: 'Seahorse',    src: 'art/seahorse.png',   thumb: 'art/seahorse_thumb.jpg' },
+  { id: 'blank',      name: 'Blank page',  src: null }
+];
+const LOGO_SRC = 'icons/logo-small.png';
+const SITE = 'www.lookandseecolorme.com';
+
+const COLORS = [
+  ['Red','#E5322D'],['Coral','#FF6245'],['Orange','#FF8F1F'],['Sunny yellow','#FEC621'],['Lemon','#FFE66B'],
+  ['Lime','#9BD14B'],['Green','#2E9E4F'],['Teal','#1FA6B1'],['Sky blue','#5CC4F0'],['Blue','#2F73AF'],
+  ['Purple','#7E57C2'],['Berry','#CE2967'],['Pink','#F79BC0'],['Peach','#FFCFA3'],['Brown','#8D5A3B'],
+  ['Gray','#9AA3AB'],['Black','#24262B'],['White','#FFFFFF']
+];
+
+/* size presets in canvas pixels (canvas is 1200 px wide) */
+const SIZES = {
+  crayon: [14, 28, 48, 80],
+  marker: [10, 22, 40, 66],
+  pencil: [4, 8, 14, 24],
+  eraser: [18, 36, 64, 110]
+};
+const DOT = [8, 13, 19, 26];
+
+/* ---------- Elements ---------- */
+const $ = s => document.querySelector(s);
+const board = $('#board'), stage = $('#stage');
+const paint = $('#paint'), live = $('#live'), lines = $('#lines');
+const pctx = paint.getContext('2d');
+const lctx = live.getContext('2d');
+const mask = document.createElement('canvas');
+const mctx = mask.getContext('2d');
+
+let W = 1200, H = 1740;
+let tool = 'crayon', color = COLORS[3][1], sizeIdx = 1;
+let current = PICTURES[0];
+let undoStack = [];
+const UNDO_MAX = 10;
+
+/* ---------- Paper grain textures (generated, no downloads) ---------- */
+function makeGrain(size, cells, wFine, lo, hi, opacity) {
+  // tileable value noise, several octaves + fine white noise, mapped to alpha
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d'); const img = g.createImageData(size, size); const d = img.data;
+  const oct = cells.map(n => { const a = new Float32Array(n * n); for (let i = 0; i < a.length; i++) a[i] = Math.random(); return { n, a }; });
+  const sm = t => t * t * (3 - 2 * t);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    let v = 0, wsum = 0;
+    oct.forEach((o, k) => {
+      const fx = x / size * o.n, fy = y / size * o.n;
+      const x0 = Math.floor(fx), y0 = Math.floor(fy), tx = sm(fx - x0), ty = sm(fy - y0);
+      const x1 = (x0 + 1) % o.n, y1 = (y0 + 1) % o.n, A = o.a;
+      const a = A[y0 * o.n + x0], b = A[y0 * o.n + x1], cc = A[y1 * o.n + x0], dd = A[y1 * o.n + x1];
+      const w = 1 / (k + 1);
+      v += ((a * (1 - tx) + b * tx) * (1 - ty) + (cc * (1 - tx) + dd * tx) * ty) * w; wsum += w;
+    });
+    v = v / wsum * (1 - wFine) + Math.random() * wFine;
+    let t = Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+    t = sm(t);
+    const i = (y * size + x) * 4;
+    d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = Math.round(t * opacity * 255);
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}
+const grains = {
+  crayon: makeGrain(512, [64, 160, 256], 0.35, 0.28, 0.62, 0.96),
+  pencil: makeGrain(256, [128, 256], 0.5, 0.3, 0.6, 0.9)
+};
+const patterns = {};
+function pattern(kind) {
+  if (!patterns[kind]) patterns[kind] = lctx.createPattern(grains[kind], 'repeat');
+  return patterns[kind];
+}
+
+/* ---------- Tool & color UI ---------- */
+const TOOL_SVG = {
+  crayon: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M23 22 30 6l7 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="21" y="21" width="18" height="40" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="29" width="18" height="18" fill="#fff" opacity=".85" stroke="#14263A" stroke-width="2"/><path d="M24 35h12M24 40h9" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/></g></svg>`,
+  marker: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M26 16 28 5h4l2 11z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="23" y="15" width="14" height="9" rx="2" fill="#E9EEF2" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="23" width="18" height="38" rx="6" fill="#fff" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="23" width="18" height="10" fill="${c}" stroke="#14263A" stroke-width="2.5"/></g></svg>`,
+  pencil: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M24 18 30 3l6 15z" fill="#F6D7A7" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 8 30 3l2 5z" fill="${c}" stroke="#14263A" stroke-width="1.5" stroke-linejoin="round"/><rect x="24" y="17" width="12" height="44" fill="${c}" stroke="#14263A" stroke-width="2.5"/><path d="M28 17v44M32 17v44" stroke="#14263A" stroke-width="1" opacity=".35"/></g></svg>`,
+  eraser: () => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><rect x="19" y="10" width="22" height="42" rx="6" fill="#F7A6B9" stroke="#14263A" stroke-width="2.5"/><path d="M19 32h22v14a6 6 0 0 1-6 6H25a6 6 0 0 1-6-6z" fill="#5CC4F0" stroke="#14263A" stroke-width="2.5"/></g></svg>`
+};
+function crayonSwatch(c) {
+  const light = c.toUpperCase() === '#FFFFFF';
+  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="26" width="24" height="16" fill="${light ? '#E9EEF2' : '#fff'}" opacity=".9" stroke="#14263A" stroke-width="2"/></g></svg>`;
+}
+const toolBtns = [...document.querySelectorAll('.tool')];
+function drawToolIcons() { toolBtns.forEach(b => b.innerHTML = TOOL_SVG[b.dataset.tool](color)); }
+toolBtns.forEach(b => b.addEventListener('click', () => {
+  tool = b.dataset.tool;
+  toolBtns.forEach(x => x.setAttribute('aria-pressed', x === b));
+  buildSizes(); remember();
+}));
+
+const sizesEl = $('#sizes');
+function buildSizes() {
+  sizesEl.innerHTML = '';
+  DOT.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'size'; b.setAttribute('aria-label', ['Small', 'Medium', 'Big', 'Huge'][i]);
+    b.setAttribute('aria-pressed', i === sizeIdx);
+    const dot = document.createElement('i');
+    const s = tool === 'pencil' ? Math.max(4, d * 0.6) : d;
+    dot.style.width = dot.style.height = s + 'px';
+    dot.style.background = tool === 'eraser' ? '#fff' : color;
+    dot.style.boxShadow = '0 0 0 2px #14263A';
+    b.appendChild(dot);
+    b.addEventListener('click', () => { sizeIdx = i; buildSizes(); remember(); });
+    sizesEl.appendChild(b);
+  });
+}
+
+const colorsEl = $('#colors');
+COLORS.forEach(([name, c]) => {
+  const b = document.createElement('button');
+  b.className = 'sw'; b.setAttribute('aria-label', name); b.dataset.c = c;
+  b.setAttribute('aria-pressed', c === color);
+  b.innerHTML = crayonSwatch(c);
+  b.addEventListener('click', () => {
+    color = c;
+    colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x === b));
+    if (tool === 'eraser') { tool = 'crayon'; toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === 'crayon')); }
+    drawToolIcons(); buildSizes(); remember();
+  });
+  colorsEl.appendChild(b);
+});
+
+/* ---------- Layout: fit the page in the board, plus pinch zoom ---------- */
+let fit = { x: 0, y: 0, s: 1, cssW: 0, cssH: 0 };
+let view = { z: 1, tx: 0, ty: 0 };
+function layout() {
+  const r = board.getBoundingClientRect(); const pad = 14;
+  const aw = r.width - pad * 2, ah = r.height - pad * 2;
+  const cssW = Math.max(50, Math.min(aw, ah * W / H)); const cssH = cssW * H / W;
+  fit = { x: (r.width - cssW) / 2, y: (r.height - cssH) / 2, cssW, cssH };
+  stage.style.width = cssW + 'px'; stage.style.height = cssH + 'px';
+  applyView();
+}
+function applyView() {
+  if (view.z <= 1.01) { view = { z: 1, tx: 0, ty: 0 }; }
+  stage.style.transform = `translate(${fit.x + view.tx}px, ${fit.y + view.ty}px) scale(${view.z})`;
+  $('#btnFit').classList.toggle('on', view.z > 1.01);
+}
+window.addEventListener('resize', layout);
+$('#btnFit').addEventListener('click', () => { view = { z: 1, tx: 0, ty: 0 }; applyView(); });
+
+/* ---------- Drawing ---------- */
+const pointers = new Map();
+let stroke = null;      // active stroke
+let gesture = null;     // active pinch
+let dirty = null, raf = 0;
+
+function toCanvas(e) {
+  const r = paint.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
+}
+function widthFor(e) {
+  const base = SIZES[tool][sizeIdx];
+  if (e.pointerType === 'pen' && e.pressure > 0) return base * (0.45 + e.pressure * 1.1);
+  return base;
+}
+function grow(x, y, w) {
+  const m = w / 2 + 4;
+  if (!dirty) dirty = { x0: x - m, y0: y - m, x1: x + m, y1: y + m };
+  else { dirty.x0 = Math.min(dirty.x0, x - m); dirty.y0 = Math.min(dirty.y0, y - m); dirty.x1 = Math.max(dirty.x1, x + m); dirty.y1 = Math.max(dirty.y1, y + m); }
+}
+function setupLiveLook() {
+  // marker = transparent ink that gets darker where strokes overlap
+  if (tool === 'marker') { live.style.opacity = '0.62'; live.style.mixBlendMode = 'multiply'; }
+  else { live.style.opacity = '1'; live.style.mixBlendMode = 'normal'; }
+}
+function strokeCtx() {
+  if (tool === 'eraser') return pctx;
+  if (tool === 'marker') return lctx;
+  return mctx; // crayon / pencil draw a solid shape first, the grain is applied on top
+}
+function seg(ctx, a, c, b, w) {
+  ctx.lineWidth = w;
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(c.x, c.y, b.x, b.y); ctx.stroke();
+}
+function beginStroke(e) {
+  pushUndo();
+  const p = toCanvas(e), w = widthFor(e);
+  setupLiveLook();
+  const ctx = strokeCtx();
+  ctx.save();
+  ctx.lineCap = ctx.lineJoin = 'round';
+  if (tool === 'eraser') { ctx.globalCompositeOperation = 'destination-out'; ctx.strokeStyle = '#000'; }
+  else ctx.strokeStyle = color;
+  // each stroke shifts the paper grain a little, so going over an area fills it in, like pressing a real crayon
+  const off = new DOMMatrix().translate(Math.random() * 512, Math.random() * 512);
+  ['crayon', 'pencil'].forEach(k => { try { pattern(k).setTransform(off); } catch (_) {} });
+  stroke = { id: e.pointerId, ctx, last: p, mid: p, w, moved: false };
+  // a dot for a single tap
+  seg(ctx, p, p, { x: p.x + 0.1, y: p.y + 0.1 }, w); grow(p.x, p.y, w); schedule();
+}
+function moveStroke(e) {
+  const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+  for (const ev of (evs.length ? evs : [e])) {
+    const p = toCanvas(ev), w = widthFor(ev);
+    const s = stroke, mid = { x: (s.last.x + p.x) / 2, y: (s.last.y + p.y) / 2 };
+    seg(s.ctx, s.mid, s.last, mid, (s.w + w) / 2);
+    grow(s.last.x, s.last.y, Math.max(s.w, w)); grow(mid.x, mid.y, Math.max(s.w, w));
+    s.mid = mid; s.last = p; s.w = w; s.moved = true;
+  }
+  schedule();
+}
+function schedule() { if (!raf) raf = requestAnimationFrame(flush); }
+function flush() {
+  raf = 0;
+  if (!dirty || !stroke) { dirty = null; return; }
+  if (tool === 'crayon' || tool === 'pencil') {
+    const x = Math.max(0, Math.floor(dirty.x0)), y = Math.max(0, Math.floor(dirty.y0));
+    const w = Math.min(W, Math.ceil(dirty.x1)) - x, h = Math.min(H, Math.ceil(dirty.y1)) - y;
+    if (w > 0 && h > 0) {
+      lctx.save();
+      // clip first: 'destination-in' would otherwise wipe the whole canvas outside the rectangle
+      lctx.beginPath(); lctx.rect(x, y, w, h); lctx.clip();
+      lctx.clearRect(x, y, w, h);
+      lctx.drawImage(mask, x, y, w, h, x, y, w, h);
+      lctx.globalCompositeOperation = 'destination-in';
+      lctx.fillStyle = pattern(tool);
+      lctx.fillRect(x, y, w, h);
+      lctx.restore();
+    }
+  }
+  dirty = null;
+}
+function endStroke(commit) {
+  if (!stroke) return;
+  if (raf) { cancelAnimationFrame(raf); raf = 0; flush(); }
+  stroke.ctx.restore();
+  if (commit) {
+    if (tool === 'marker') {
+      pctx.save(); pctx.globalAlpha = 0.62; pctx.globalCompositeOperation = 'multiply';
+      pctx.drawImage(live, 0, 0); pctx.restore();
+    } else if (tool !== 'eraser') {
+      pctx.drawImage(live, 0, 0);
+    }
+  } else {
+    undo(true); // throw the stroke away (a second finger arrived: it was a pinch)
+  }
+  lctx.clearRect(0, 0, W, H); mctx.clearRect(0, 0, W, H);
+  stroke = null;
+  if (commit) autosave();
+}
+
+board.addEventListener('pointerdown', e => {
+  if (e.button > 0) return;
+  if (e.target.closest('.ibtn')) return;
+  board.setPointerCapture?.(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1) { beginStroke(e); }
+  else if (pointers.size === 2) {
+    if (stroke) endStroke(false);
+    startGesture();
+  }
+  e.preventDefault();
+});
+board.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (gesture) moveGesture();
+  else if (stroke && stroke.id === e.pointerId) moveStroke(e);
+  e.preventDefault();
+});
+function lift(e) {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.delete(e.pointerId);
+  if (stroke && stroke.id === e.pointerId) endStroke(e.type !== 'pointercancel');
+  if (gesture && pointers.size < 2) gesture = null;
+}
+board.addEventListener('pointerup', lift);
+board.addEventListener('pointercancel', lift);
+board.addEventListener('contextmenu', e => e.preventDefault());
+
+function two() { const [a, b] = [...pointers.values()]; return { cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y) || 1 }; }
+function startGesture() { const t = two(); gesture = { ...t, z: view.z, tx: view.tx, ty: view.ty }; }
+function moveGesture() {
+  const t = two(), g = gesture, br = board.getBoundingClientRect();
+  const z = Math.min(5, Math.max(1, g.z * t.d / g.d));
+  // keep the point under the fingers in place
+  const ox = br.left + fit.x, oy = br.top + fit.y;
+  const px = (g.cx - ox - g.tx) / g.z, py = (g.cy - oy - g.ty) / g.z;
+  view.z = z; view.tx = t.cx - ox - px * z; view.ty = t.cy - oy - py * z;
+  applyView();
+}
+board.addEventListener('wheel', e => {   // mouse / trackpad zoom on computers
+  e.preventDefault();
+  const br = board.getBoundingClientRect(), ox = br.left + fit.x, oy = br.top + fit.y;
+  const z = Math.min(5, Math.max(1, view.z * Math.exp(-e.deltaY * 0.0015)));
+  const px = (e.clientX - ox - view.tx) / view.z, py = (e.clientY - oy - view.ty) / view.z;
+  view.z = z; view.tx = e.clientX - ox - px * z; view.ty = e.clientY - oy - py * z; applyView();
+}, { passive: false });
+
+/* ---------- Undo ---------- */
+function pushUndo() {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  c.getContext('2d').drawImage(paint, 0, 0);
+  undoStack.push(c); if (undoStack.length > UNDO_MAX) undoStack.shift();
+  $('#btnUndo').disabled = false;
+}
+function undo(silent) {
+  const c = undoStack.pop(); if (!c) return;
+  pctx.save(); pctx.globalCompositeOperation = 'copy'; pctx.drawImage(c, 0, 0); pctx.restore();
+  $('#btnUndo').disabled = undoStack.length === 0;
+  if (!silent) autosave();
+}
+$('#btnUndo').addEventListener('click', () => undo());
+
+/* ---------- Sheets ---------- */
+function openSheet(id) { $(id).classList.add('on'); }
+function closeSheets() { document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); }
+document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheets(); }));
+$('#btnClear').addEventListener('click', () => openSheet('#sheetClear'));
+$('#doClear').addEventListener('click', () => { pushUndo(); pctx.clearRect(0, 0, W, H); autosave(); closeSheets(); });
+$('#btnSave').addEventListener('click', () => openSheet('#sheetSave'));
+$('#btnPics').addEventListener('click', () => { renderPicks(); openSheet('#sheetPics'); });
+
+const picksEl = $('#picks');
+function renderPicks() {
+  picksEl.innerHTML = '';
+  PICTURES.forEach(p => {
+    const b = document.createElement('button');
+    b.className = 'pick'; b.setAttribute('aria-current', p.id === current.id);
+    b.innerHTML = (p.thumb ? `<img src="${p.thumb}" alt="">` : `<div class="blank">Draw anything!</div>`) + `<span>${p.name}</span>`;
+    b.addEventListener('click', async () => { closeSheets(); await openPicture(p); });
+    picksEl.appendChild(b);
+  });
+}
+
+/* ---------- Save & print (picture + website, made on the device) ---------- */
+const logoImg = new Image(); logoImg.src = LOGO_SRC;
+async function composeImage() {
+  try { await document.fonts.load('600 40px Fredoka'); } catch (_) {}
+  const band = 120;
+  const c = document.createElement('canvas'); c.width = W; c.height = H + band;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+  g.drawImage(paint, 0, 0);
+  if (current.src && lines.complete) g.drawImage(lines, 0, 0, W, H);
+  g.fillStyle = '#E9F6F7'; g.fillRect(0, H, W, band);
+  g.fillStyle = '#14263A'; g.fillRect(0, H, W, 4);
+  let x = 30;
+  if (logoImg.complete && logoImg.naturalWidth) { const lh = 88, lw = lh * logoImg.naturalWidth / logoImg.naturalHeight; g.drawImage(logoImg, x, H + 18, lw, lh); x += lw + 20; }
+  g.fillStyle = '#14263A'; g.font = '600 40px Fredoka, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'right';
+  g.fillText(SITE, W - 30, H + band / 2 + 2);
+  return c;
+}
+$('#doSave').addEventListener('click', async () => {
+  const c = await composeImage();
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const name = `my-${current.id}-color-me.png`;
+  try {
+    const file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      await navigator.share({ files: [file], title: 'My Color Me! picture' });
+      return;
+    }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+$('#doPrint').addEventListener('click', async () => {
+  const c = await composeImage();
+  const img = $('#printImg'); img.src = c.toDataURL('image/png');
+  closeSheets();
+  await img.decode().catch(() => {});
+  window.print();
+});
+
+/* ---------- Keep each picture on this device (IndexedDB, nothing is sent anywhere) ---------- */
+let dbp = null;
+function db() {
+  if (!dbp) dbp = new Promise((res, rej) => {
+    try { const r = indexedDB.open('colorme-paint', 1); r.onupgradeneeded = () => r.result.createObjectStore('art'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }
+    catch (e) { rej(e); }
+  });
+  return dbp;
+}
+async function idb(mode, fn) { const d = await db(); return new Promise((res, rej) => { const t = d.transaction('art', mode); const q = fn(t.objectStore('art')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }); }
+let saveTimer = 0;
+function autosave() {
+  clearTimeout(saveTimer);
+  const id = current.id;
+  saveTimer = setTimeout(() => paint.toBlob(b => { idb('readwrite', s => s.put(b, id)).catch(() => {}); }, 'image/png'), 600);
+}
+function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify({ tool, color, sizeIdx, pic: current.id })); } catch (_) {} }
+function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
+
+/* ---------- Open a picture ---------- */
+async function openPicture(p) {
+  if (saveTimer) { clearTimeout(saveTimer); await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); saveTimer = 0; }
+  current = p; remember();
+  if (p.src) {
+    lines.style.display = '';
+    lines.src = p.src;
+    await lines.decode().catch(() => new Promise(r => lines.onload = r));
+    W = lines.naturalWidth; H = lines.naturalHeight;
+  } else { lines.style.display = 'none'; lines.removeAttribute('src'); W = 1200; H = 1700; }
+  [paint, live, mask].forEach(c => { c.width = W; c.height = H; });
+  undoStack = []; $('#btnUndo').disabled = true;
+  view = { z: 1, tx: 0, ty: 0 }; layout();
+  try {
+    const blob = await idb('readonly', s => s.get(p.id));
+    if (blob) { const bmp = await createImageBitmap(blob); pctx.drawImage(bmp, 0, 0); }
+  } catch (_) {}
+}
+
+/* ---------- Start ---------- */
+const prefs = recall();
+if (prefs.tool && SIZES[prefs.tool]) tool = prefs.tool;
+if (prefs.color && COLORS.some(c => c[1] === prefs.color)) color = prefs.color;
+if (Number.isInteger(prefs.sizeIdx)) sizeIdx = Math.min(3, Math.max(0, prefs.sizeIdx));
+toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === tool));
+colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === color));
+drawToolIcons(); buildSizes();
+const first = PICTURES.find(p => p.id === prefs.pic) || PICTURES[0];
+openPicture(first).then(() => { if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
+
+/* ---------- Works offline after the first visit ---------- */
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+})();
+</script>
+</body>
+</html>
