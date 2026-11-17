@@ -1,9 +1,9 @@
 // Color Me! Paint: offline cache. Nothing here talks to any server except this website.
-const CACHE = 'colorme-paint-v1';
+const CACHE = 'colorme-paint-v2';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
-  'art/dolphin.png', 'art/pufferfish.png', 'art/seahorse.png',
-  'art/dolphin_thumb.jpg', 'art/pufferfish_thumb.jpg', 'art/seahorse_thumb.jpg',
+  'books/ocean/book.json', 'books/ocean/cover.jpg',
+  'books/ocean/art/ocean01.webp', 'books/ocean/art/ocean02.webp', 'books/ocean/art/ocean03.webp',
   'icons/logo-small.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   '../assets/img/icon.webp', '../assets/img/logo.webp', '../assets/img/icon-32.png',
   '../assets/fonts/fredoka-latin-600-normal.ttf', '../assets/fonts/fredoka-latin-700-normal.ttf'
@@ -23,5 +23,13 @@ self.addEventListener('fetch', e => {
     e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(() => caches.match(e.request).then(r => r || caches.match('index.html'))));
     return;
   }
-  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+  // book.json: network first so new pictures show up; everything else: cache first, saved after the first use
+  if (url.pathname.endsWith('book.json')) {
+    e.respondWith(fetch(e.request).then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; }).catch(() => caches.match(e.request)));
+    return;
+  }
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).then(res => {
+    if (res.ok) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }
+    return res;
+  })));
 });

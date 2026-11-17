@@ -44,6 +44,8 @@ button{font:inherit;color:inherit}
 .ibtn[disabled]{opacity:.35;pointer-events:none}
 .ibtn.pics{background:var(--sun)}
 .ibtn.save{background:var(--coral);color:#fff}
+.ibtn.find{background:var(--teal);color:#fff}
+@media (max-width:420px){.top{gap:4px;padding:8px 6px}.actions{gap:4px}.ibtn{width:46px;height:48px;border-radius:14px}.ibtn svg{width:25px;height:25px}.brand .word{display:none}}
 
 /* Drawing board */
 .board{grid-area:board;position:relative;overflow:hidden;touch-action:none;display:grid;place-items:center;padding:10px}
@@ -53,6 +55,20 @@ button{font:inherit;color:inherit}
 #lines{pointer-events:none;z-index:3}
 .zoomout{position:absolute;right:14px;bottom:14px;z-index:5;display:none}
 .zoomout.on{display:grid}
+
+/* Can You Find Me? tray */
+.tray{position:absolute;left:10px;right:10px;bottom:10px;z-index:6;background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 10px 10px;touch-action:pan-x}
+.tray[hidden]{display:none}
+.tray-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font:700 18px/1.1 Fredoka,system-ui,sans-serif;padding:0 2px 6px}
+.tray-head .x{border:0;background:none;font:700 30px/1 Fredoka,system-ui,sans-serif;width:40px;height:36px;cursor:pointer;color:var(--ink)}
+.tray-head.done b{color:var(--berry)}
+.figs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:safe center}
+.figs::-webkit-scrollbar{display:none}
+.fig{flex:none;width:92px;border:3px solid var(--ink);border-radius:16px;background:#fff;padding:6px 4px 4px;display:grid;justify-items:center;gap:2px;cursor:pointer;position:relative}
+.fig img{width:62px;height:62px;object-fit:contain}
+.fig span{font:600 14px/1.1 Fredoka,system-ui,sans-serif}
+.fig[aria-pressed="true"]{background:#E3F6E8;border-color:#2E9E4F}
+.fig[aria-pressed="true"]::after{content:"";position:absolute;top:-9px;right:-9px;width:28px;height:28px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/18px no-repeat;border:2px solid var(--ink)}
 
 /* Tools */
 .tools{grid-area:tools;display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 6px 2px;flex-wrap:nowrap}
@@ -96,12 +112,27 @@ button{font:inherit;color:inherit}
 .sheet{background:var(--paper);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));text-align:center}
 .sheet h2{margin:0 0 4px;font:700 24px/1.15 Fredoka,system-ui,sans-serif}
 .sheet p{margin:0 0 14px;color:var(--muted);font-size:15px}
-.picks{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:10px 0 14px}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 8px}
 @media (min-width:520px){.picks{grid-template-columns:repeat(4,1fr)}}
+.sheet{width:min(720px,100%)}
 .pick{border:3px solid var(--ink);border-radius:18px;background:#fff;padding:8px;cursor:pointer;display:grid;gap:6px;justify-items:center;box-shadow:0 3px 0 var(--ink)}
 .pick img,.pick .blank{width:100%;aspect-ratio:2/3;object-fit:contain;border-radius:8px;background:#fff}
 .pick .blank{display:grid;place-items:center;border:2px dashed #b8c4cc;color:var(--muted);font-size:13px}
 .pick span{font-size:15px}
+.pick{position:relative}
+.pick.locked img{opacity:.55}
+.pick .lock{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:var(--sun);border:2px solid var(--ink);display:grid;place-items:center}
+.pick .lock svg{width:18px;height:18px}
+.sec{margin:14px 0 0;font:700 18px/1.2 Fredoka,system-ui,sans-serif;text-align:left}
+.sec small{font-size:14px;color:var(--muted);font-weight:600}
+.sec-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.sec-row .sec{margin:0}
+.btn.small{min-height:42px;font-size:16px;padding:0 16px;white-space:nowrap;flex:none}
+.btn[hidden]{display:none}
+.linkbtn{border:0;background:none;font:600 14px/1.4 Fredoka,system-ui,sans-serif;color:var(--teal);text-decoration:underline;cursor:pointer;padding:4px}
+.shop-cover{width:150px;border:3px solid var(--ink);border-radius:12px;margin:0 auto 14px;display:block;background:#fff}
+.gate{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:320px;margin:0 auto}
+.gate button{min-height:60px;border:3px solid var(--ink);border-radius:16px;background:#fff;font:700 24px/1 Fredoka,system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
 .pick[aria-current="true"]{background:var(--sun)}
 .big{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 .btn{min-height:56px;padding:0 22px;border:3px solid var(--ink);border-radius:999px;background:#fff;font:700 19px/1 Fredoka,system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:10px}
@@ -128,6 +159,7 @@ button{font:inherit;color:inherit}
       <img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
     </a>
     <div class="actions">
+      <button class="ibtn find" id="btnFind" aria-label="Can you find me?" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/><circle cx="8.6" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="12.4" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg></button>
       <button class="ibtn pics" id="btnPics" aria-label="Pick a picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button>
       <button class="ibtn" id="btnUndo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button class="ibtn" id="btnClear" aria-label="Start over"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg></button>
@@ -140,6 +172,10 @@ button{font:inherit;color:inherit}
       <canvas id="paint"></canvas>
       <canvas id="live"></canvas>
       <img id="lines" alt="" draggable="false">
+    </div>
+    <div class="tray" id="tray" hidden>
+      <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
+      <div class="figs" id="figs"></div>
     </div>
     <button class="ibtn zoomout" id="btnFit" aria-label="Show the whole picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
   </main>
@@ -162,7 +198,10 @@ button{font:inherit;color:inherit}
   <div class="sheet">
     <h2 id="picsTitle">Pick a picture!</h2>
     <p>Paint anywhere you like, even outside the lines.</p>
-    <div class="picks" id="picks"></div>
+    <h3 class="sec">Free pictures</h3>
+    <div class="picks" id="picksFree"></div>
+    <div class="sec-row"><h3 class="sec">Ocean Animals book <small id="oceanCount"></small></h3><button class="btn coral small" id="btnShopOcean">Unlock all</button></div>
+    <div class="picks" id="picksBook"></div>
     <p class="note">Free. No ads. No sign-up. <b>Your drawings stay on this device.</b><br>More friends from the Look &amp; See, Color Me! books at www.lookandseecolorme.com</p>
   </div>
 </div>
@@ -192,6 +231,28 @@ button{font:inherit;color:inherit}
   </div>
 </div>
 
+<!-- Shop (grown-ups) -->
+<div class="scrim" id="sheetShop" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+  <div class="sheet">
+    <h2 id="shopTitle">Ocean Animals</h2>
+    <p>The full Look &amp; See, Color Me! book: 45 ocean scenes to paint, each with its own "Can You Find Me?" game.</p>
+    <img class="shop-cover" src="books/ocean/cover.jpg" alt="Ocean Animals book cover">
+    <div class="big"><button class="btn coral" id="doBuy">Unlock the book &middot; <span id="price">US$5.99</span></button></div>
+    <p class="note" id="shopMsg"></p>
+    <p class="note">One-time purchase. No ads, no subscription.<br><button class="linkbtn" id="doRestore">Restore purchases</button> &middot; <button class="linkbtn" data-close>Not now</button></p>
+  </div>
+</div>
+
+<!-- Parental gate -->
+<div class="scrim" id="sheetGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="sheet">
+    <h2 id="gateTitle">Grown-ups only</h2>
+    <p>Please answer to continue: <b id="gateQ"></b></p>
+    <div class="gate" id="gateOpts"></div>
+    <p class="note"><button class="linkbtn" data-close>Cancel</button></p>
+  </div>
+</div>
+
 <img id="printImg" alt="">
 
 <script>
@@ -199,12 +260,32 @@ button{font:inherit;color:inherit}
 'use strict';
 
 /* ---------- Content ---------- */
-const PICTURES = [
-  { id: 'dolphin',    name: 'Dolphin',     src: 'art/dolphin.png',    thumb: 'art/dolphin_thumb.jpg' },
-  { id: 'pufferfish', name: 'Puffer Fish', src: 'art/pufferfish.png', thumb: 'art/pufferfish_thumb.jpg' },
-  { id: 'seahorse',   name: 'Seahorse',    src: 'art/seahorse.png',   thumb: 'art/seahorse_thumb.jpg' },
-  { id: 'blank',      name: 'Blank page',  src: null }
-];
+// Pictures come from each book's book.json. The first three Ocean pictures are free; the rest unlock with the book.
+const BOOKS = [{ id: 'ocean', dir: 'books/ocean/', product: 'ocean_animals_book', price: 'US$5.99' }];
+const FREE = new Set(['ocean01', 'ocean02', 'ocean03']);
+const BLANK = { id: 'blank', name: 'Blank page', src: null, figs: [] };
+let PICTURES = [BLANK];
+const DEMO_PURCHASES = false;   // preview builds set this to true: purchases are simulated, nothing is charged
+// The App Store / Google Play wrapper provides window.ColorMeStore = { available, buy(productId), restore() }.
+const Store = window.ColorMeStore || { available: false, async buy() { return false; }, async restore() { return []; } };
+
+async function loadBooks() {
+  for (const b of BOOKS) {
+    try {
+      const data = await (await fetch(b.dir + 'book.json')).json();
+      data.pictures.forEach(p => PICTURES.push({
+        id: p.id, name: p.title, book: b.id, src: b.dir + 'art/' + p.id + '.webp', thumb: b.dir + 'art/' + p.id + '_thumb.jpg',
+        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name }))
+      }));
+    } catch (_) {}
+  }
+  // free pictures first, blank page after them
+  PICTURES.sort((a, b) => (rank(a) - rank(b)));
+}
+function rank(p) { return FREE.has(p.id) ? 0 : p.id === 'blank' ? 1 : 2; }
+function owned() { try { return JSON.parse(localStorage.getItem('colorme-owned')) || []; } catch (_) { return []; } }
+function addOwned(id) { const o = owned(); if (!o.includes(id)) o.push(id); try { localStorage.setItem('colorme-owned', JSON.stringify(o)); } catch (_) {} }
+function unlocked(p) { return !p.book || FREE.has(p.id) || owned().includes(p.book); }
 const LOGO_SRC = 'icons/logo-small.png';
 const SITE = 'www.lookandseecolorme.com';
 
@@ -449,7 +530,7 @@ function endStroke(commit) {
 
 board.addEventListener('pointerdown', e => {
   if (e.button > 0) return;
-  if (e.target.closest('.ibtn')) return;
+  if (e.target.closest('.ibtn') || e.target.closest('.tray')) return;
   board.setPointerCapture?.(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   if (pointers.size === 1) { beginStroke(e); }
@@ -512,24 +593,113 @@ $('#btnUndo').addEventListener('click', () => undo());
 
 /* ---------- Sheets ---------- */
 function openSheet(id) { $(id).classList.add('on'); }
-function closeSheets() { document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); }
+function closeSheets() { document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); if (gateCancel) { const g = gateCancel; gateCancel = null; g(); } }
 document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheets(); }));
 $('#btnClear').addEventListener('click', () => openSheet('#sheetClear'));
 $('#doClear').addEventListener('click', () => { pushUndo(); pctx.clearRect(0, 0, W, H); autosave(); closeSheets(); });
 $('#btnSave').addEventListener('click', () => openSheet('#sheetSave'));
 $('#btnPics').addEventListener('click', () => { renderPicks(); openSheet('#sheetPics'); });
 
-const picksEl = $('#picks');
+const LOCK = '<span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="#14263A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
+function pickButton(p) {
+  const b = document.createElement('button');
+  const open = unlocked(p);
+  b.className = 'pick' + (open ? '' : ' locked'); b.setAttribute('aria-current', p.id === current.id);
+  b.setAttribute('aria-label', p.name + (open ? '' : ' (locked)'));
+  b.innerHTML = (p.thumb ? `<img src="${p.thumb}" alt="" loading="lazy">` : `<div class="blank">Draw anything!</div>`) + `<span>${p.name}</span>` + (open ? '' : LOCK);
+  b.addEventListener('click', async () => {
+    if (!open) { openShop(p); return; }
+    closeSheets(); await openPicture(p);
+  });
+  return b;
+}
 function renderPicks() {
-  picksEl.innerHTML = '';
-  PICTURES.forEach(p => {
-    const b = document.createElement('button');
-    b.className = 'pick'; b.setAttribute('aria-current', p.id === current.id);
-    b.innerHTML = (p.thumb ? `<img src="${p.thumb}" alt="">` : `<div class="blank">Draw anything!</div>`) + `<span>${p.name}</span>`;
-    b.addEventListener('click', async () => { closeSheets(); await openPicture(p); });
-    picksEl.appendChild(b);
+  const free = $('#picksFree'), book = $('#picksBook');
+  free.innerHTML = ''; book.innerHTML = '';
+  PICTURES.forEach(p => (FREE.has(p.id) || !p.book ? free : book).appendChild(pickButton(p)));
+  const has = owned().includes('ocean');
+  $('#btnShopOcean').hidden = has;
+  $('#oceanCount').textContent = '45 scenes';
+}
+$('#btnShopOcean').addEventListener('click', () => openShop(null));
+
+/* ---------- Unlocking a book (grown-ups only) ---------- */
+let shopFor = null;
+function openShop(p) {
+  shopFor = p; closeSheets();
+  $('#price').textContent = BOOKS[0].price;
+  $('#shopMsg').textContent = '';
+  openSheet('#sheetShop');
+}
+function parentalGate() {
+  return new Promise(resolve => {
+    const a = 3 + Math.floor(Math.random() * 7), b = 4 + Math.floor(Math.random() * 6), ans = a * b;
+    const opts = new Set([ans]);
+    while (opts.size < 4) opts.add(Math.max(2, ans + (Math.floor(Math.random() * 9) - 4) * (Math.random() < .5 ? 1 : a)));
+    $('#gateQ').textContent = `${a} \u00d7 ${b} = ?`;
+    const box = $('#gateOpts'); box.innerHTML = '';
+    [...opts].sort(() => Math.random() - .5).forEach(v => {
+      const btn = document.createElement('button'); btn.textContent = v;
+      btn.addEventListener('click', () => { gateCancel = null; closeSheets(); resolve(v === ans); });
+      box.appendChild(btn);
+    });
+    closeSheets();
+    gateCancel = () => resolve(false);
+    openSheet('#sheetGate');
   });
 }
+let gateCancel = null;
+async function unlockBook(restore) {
+  const ok = await parentalGate(); gateCancel = null;
+  if (!ok) return;
+  openSheet('#sheetShop');
+  const msg = $('#shopMsg');
+  let got = false;
+  if (Store.available) {
+    try { got = restore ? (await Store.restore()).includes(BOOKS[0].product) : await Store.buy(BOOKS[0].product); } catch (_) { got = false; }
+    if (!got) msg.textContent = restore ? 'No earlier purchase found on this account.' : 'The purchase did not go through. Nothing was charged.';
+  } else if (DEMO_PURCHASES) {
+    got = true;
+  } else {
+    msg.textContent = 'The full book is coming soon to the App Store and Google Play. Enjoy the free pictures for now!';
+  }
+  if (got) {
+    addOwned('ocean');
+    closeSheets();
+    if (shopFor) await openPicture(shopFor); else { renderPicks(); openSheet('#sheetPics'); }
+  }
+}
+$('#doBuy').addEventListener('click', () => unlockBook(false));
+$('#doRestore').addEventListener('click', () => unlockBook(true));
+
+/* ---------- Can You Find Me? ---------- */
+const tray = $('#tray'), figsEl = $('#figs');
+function foundMap() { try { return JSON.parse(localStorage.getItem('colorme-found')) || {}; } catch (_) { return {}; } }
+function renderFind() {
+  const figs = current.figs || [];
+  $('#btnFind').hidden = figs.length === 0;
+  if (!figs.length) { tray.hidden = true; return; }
+  const found = foundMap()[current.id] || [];
+  figsEl.innerHTML = '';
+  figs.forEach((f, i) => {
+    const b = document.createElement('button');
+    b.className = 'fig'; b.setAttribute('aria-pressed', found.includes(i));
+    b.innerHTML = `<img src="${f.img}" alt=""><span>${f.name}</span>`;
+    b.addEventListener('click', () => {
+      const m = foundMap(); const list = new Set(m[current.id] || []);
+      list.has(i) ? list.delete(i) : list.add(i);
+      m[current.id] = [...list]; try { localStorage.setItem('colorme-found', JSON.stringify(m)); } catch (_) {}
+      renderFind();
+    });
+    figsEl.appendChild(b);
+  });
+  const all = found.length === figs.length;
+  $('#trayTitle').textContent = all ? 'You found them all!' : 'Can You Find Me?';
+  $('#trayTitle').parentElement.classList.toggle('done', all);
+}
+$('#btnFind').addEventListener('click', () => { tray.hidden = !tray.hidden; renderFind(); });
+$('#trayClose').addEventListener('click', () => { tray.hidden = true; });
+tray.addEventListener('pointerdown', e => e.stopPropagation());
 
 /* ---------- Save & print (picture + website, made on the device) ---------- */
 const logoImg = new Image(); logoImg.src = LOGO_SRC;
@@ -593,7 +763,8 @@ function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs'
 /* ---------- Open a picture ---------- */
 async function openPicture(p) {
   if (saveTimer) { clearTimeout(saveTimer); await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); saveTimer = 0; }
-  current = p; remember();
+  if (!unlocked(p)) p = PICTURES.find(unlocked) || BLANK;
+  current = p; remember(); tray.hidden = true; renderFind();
   if (p.src) {
     lines.style.display = '';
     lines.src = p.src;
@@ -617,8 +788,7 @@ if (Number.isInteger(prefs.sizeIdx)) sizeIdx = Math.min(3, Math.max(0, prefs.siz
 toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === tool));
 colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === color));
 drawToolIcons(); buildSizes();
-const first = PICTURES.find(p => p.id === prefs.pic) || PICTURES[0];
-openPicture(first).then(() => { if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
+loadBooks().then(() => openPicture(PICTURES.find(p => p.id === prefs.pic) || PICTURES[0])).then(() => { if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
 
 /* ---------- Works offline after the first visit ---------- */
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
