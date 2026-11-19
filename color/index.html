@@ -1,7 +1,19 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Free Coloring Pages · Look & See, Color Me!</title>
+<html lang="en"><head><meta charset="utf-8"><title>Free Coloring Pages · Look &amp; See, Color Me!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=../#color">
+<meta http-equiv="refresh" content="2; url=../#color">
 <link rel="canonical" href="../#color"></head>
-<body><script>location.replace('../#color')</script>
+<body>
+<script>
+  // Count this short link (no cookies), then go on. The visit keeps its real source (Instagram, QR, ...).
+  window.goatcounter = {no_onload: true};
+  var gone = false;
+  function go() { if (!gone) { gone = true; location.replace('../#color'); } }
+  function countThenGo() {
+    try { window.goatcounter.count({path: '/color', referrer: document.referrer}); } catch (e) {}
+    go();
+  }
+  setTimeout(go, 1200);
+</script>
+<script data-goatcounter="https://lookandseecolorme.goatcounter.com/count" async src="https://gc.zgo.at/count.js" onload="countThenGo()" onerror="go()"></script>
 <p><a href="../#color">Go to the free coloring pages</a></p></body></html>

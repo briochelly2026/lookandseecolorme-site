@@ -1,7 +1,19 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Videos · Look & See, Color Me!</title>
+<html lang="en"><head><meta charset="utf-8"><title>Videos · Look &amp; See, Color Me!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=../#videos">
+<meta http-equiv="refresh" content="2; url=../#videos">
 <link rel="canonical" href="../#videos"></head>
-<body><script>location.replace('../#videos')</script>
+<body>
+<script>
+  // Count this short link (no cookies), then go on. The visit keeps its real source (Instagram, QR, ...).
+  window.goatcounter = {no_onload: true};
+  var gone = false;
+  function go() { if (!gone) { gone = true; location.replace('../#videos'); } }
+  function countThenGo() {
+    try { window.goatcounter.count({path: '/videos', referrer: document.referrer}); } catch (e) {}
+    go();
+  }
+  setTimeout(go, 1200);
+</script>
+<script data-goatcounter="https://lookandseecolorme.goatcounter.com/count" async src="https://gc.zgo.at/count.js" onload="countThenGo()" onerror="go()"></script>
 <p><a href="../#videos">Watch Mia's videos</a></p></body></html>
