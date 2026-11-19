@@ -136,6 +136,8 @@ footer{max-width:640px;margin:0 auto;padding:6px 16px 32px;text-align:center;fon
 footer img{width:44px;height:44px;margin:0 auto 6px}
 footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:none}
 </style>
+<!-- Visitor statistics: GoatCounter (no cookies, no personal data). See privacy.html#stats -->
+<script data-goatcounter="https://lookandseecolorme.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <!--BODY-START-->
@@ -244,7 +246,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
       <p id="r-page-text">Print it at home and color along with Mia on YouTube.</p>
       <div class="pagepic"><img id="r-page-img" src="../assets/img/color/twinkle.webp" alt=""><img class="col" id="r-page-col" src="../assets/img/color/twinkle_color.webp" alt=""></div>
       <div style="display:grid;gap:12px">
-        <a class="btn primary full" id="r-page-pdf" href="../downloads/color/twinkle-sea-star-coloring-page.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Print my free page (PDF)</a>
+        <a class="btn primary full" id="r-page-pdf" data-goatcounter-click="quiz-download-page" href="../downloads/color/twinkle-sea-star-coloring-page.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Print my free page (PDF)</a>
         <a class="btn full" id="r-paint" href="../paint/" hidden>Or paint it on the tablet</a>
       </div>
     </div>
@@ -258,7 +260,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
         <div class="t">
           <h3 id="r-book-title">Ocean Animals</h3>
           <p id="r-book-text">45 seek-and-find scenes to color, with every hidden friend's name in English.</p>
-          <a class="btn sun" id="r-book-btn" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener">See it on Amazon</a>
+          <a class="btn sun" id="r-book-btn" data-goatcounter-click="quiz-click-amazon" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener">See it on Amazon</a>
         </div>
       </div>
     </div>
@@ -421,6 +423,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     }
     fillResult(name);
     show(6);
+    try{ window.goatcounter && window.goatcounter.count({path:'quiz-completed', title:'Quiz completed', event:true}); }catch(e){}
   });
 
   document.getElementById('r-share').addEventListener('click', function(){
