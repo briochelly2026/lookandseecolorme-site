@@ -408,6 +408,11 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     var th = answers.themes, fav = th[0] || 'ocean';
     var bookKey = th.filter(function(k){ return BOOKS[k] })[0] || 'ocean';
     var pageKey = {ocean:'twinkle',dinosaurs:'shelly',jungle:'finn',farm:'shelly'}[bookKey] || 'twinkle';
+    // Came from a "Get <name> free" button on the home page: give that exact page.
+    var wp = params.get('page'), wf = params.get('pdf'), wt = params.get('t');
+    if(wp && /^[a-z0-9]+$/.test(wp) && wf && /^[a-z0-9-]+-coloring-page\.pdf$/.test(wf)){
+      return {fav:fav, bookKey:bookKey, page:PAGES[wp] || {t:(wt||'Your free page').slice(0,60), f:wp, pdf:wf}};
+    }
     return {fav:fav, bookKey:bookKey, page:PAGES[pageKey]};
   }
   function fillResult(name){
@@ -480,6 +485,8 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
       .then(function(t){ finish(String(t).trim() === 'already') })
       .catch(function(){ finish(false) });
   });
+
+  (function(){ var wt = params.get('t'); if(wt && params.get('page')){ document.querySelector('.intro h1').textContent = 'Get '+wt.slice(0,60)+' free!'; } })();
 
   /* One free page per family: this device remembers the quiz was done (localStorage, not a cookie). */
   var KEY = 'lsq_done_v1';
