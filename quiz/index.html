@@ -272,6 +272,31 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     </div>
   </section>
 
+  <!-- 7 · Already did the quiz -->
+  <section class="step" data-step="7" hidden>
+    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">Welcome back! You already got your free page.<small>Look out for new free pages in your inbox. We send them to every family on our list.</small></div></div>
+    <div class="card">
+      <span class="pill">Color along with Mia</span>
+      <h2>New friends every week</h2>
+      <p>Watch Mia draw and color a new character on YouTube, or paint on the tablet with our free app.</p>
+      <div style="display:grid;gap:12px">
+        <a class="btn primary full" href="https://www.youtube.com/@LookSeeColorMe" target="_blank" rel="noopener">Watch Mia on YouTube</a>
+        <a class="btn full" href="../paint/">Paint on the tablet</a>
+      </div>
+    </div>
+    <div class="card">
+      <span class="pill">The book</span>
+      <div class="bookrow">
+        <div class="cover"><img src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals"></div>
+        <div class="t">
+          <h3>Ocean Animals</h3>
+          <p>45 seek-and-find scenes to color, with every hidden friend's name in English.</p>
+          <a class="btn sun" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-click-amazon-returning">See it on Amazon</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <div class="nav" id="nav" hidden>
     <button class="back" type="button" id="prev">Back</button>
     <button class="btn primary" type="button" id="next" disabled>Next</button>
@@ -317,7 +342,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   function show(n){
     step = n;
     steps.forEach(function(s){ var on = +s.dataset.step === n; s.hidden = !on; if(on){ s.classList.remove('slide'); void s.offsetWidth; s.classList.add('slide'); } });
-    prog.hidden = (n === 0 || n === 6);
+    prog.hidden = (n === 0 || n >= 6);
     prog.querySelectorAll('span').forEach(function(b,i){ b.classList.toggle('on', i < n) });
     nav.hidden = !(n >= 1 && n <= 4);
     prev.style.visibility = n <= 1 ? 'hidden' : 'visible';
@@ -409,22 +434,37 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent = 'Please type a valid email address.'; document.getElementById('email').focus(); return; }
     if(!document.getElementById('consent').checked){ err.textContent = 'Please tick the box so we can email you.'; return; }
     err.textContent = '';
-    if(!sent && !form.website.value){
-      sent = true;
-      var row = {
-        email: email, name: name,
-        themes: answers.themes.join(', '), other_theme: document.getElementById('other-theme').value.trim(),
-        favorite: answers.themes[0] || '', where: answers.where.join(', '), materials: answers.materials.join(', '),
-        play: answers.play, source: source, consent: 'yes', page: location.pathname
-      };
-      if(ENDPOINT){
-        try{ fetch(ENDPOINT, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)}); }catch(x){}
-      } else { console.log('[quiz preview] would save:', row); }
+    if(form.website.value){ fillResult(name); show(6); return; }   // bot: show page, save nothing
+    if(sent) return;
+    sent = true; sendBtn.disabled = true; sendBtn.textContent = 'One moment...';
+    var row = {
+      email: email.toLowerCase(), name: name,
+      themes: answers.themes.join(', '), other_theme: document.getElementById('other-theme').value.trim(),
+      favorite: answers.themes[0] || '', where: answers.where.join(', '), materials: answers.materials.join(', '),
+      play: answers.play, source: source, consent: 'yes', page: location.pathname
+    };
+    function done(already){
+      if(already){ showAlready(); return; }
+      fillResult(name);
+      remember(pick().page.f);
+      show(6);
+      try{ window.goatcounter && window.goatcounter.count({path:'quiz-completed', title:'Quiz completed', event:true}); }catch(e){}
     }
-    fillResult(name);
-    show(6);
-    try{ window.goatcounter && window.goatcounter.count({path:'quiz-completed', title:'Quiz completed', event:true}); }catch(e){}
+    if(!ENDPOINT){ console.log('[quiz preview] would save:', row); done(false); return; }
+    // The sheet answers "already" when this email has done the quiz before (one free page per family).
+    var finished = false, finish = function(a){ if(!finished){ finished = true; done(a); } };
+    setTimeout(function(){ finish(false) }, 7000);   // slow network: never leave the parent stuck
+    fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)})
+      .then(function(r){ return r.text() })
+      .then(function(t){ finish(String(t).trim() === 'already') })
+      .catch(function(){ finish(false) });
   });
+
+  /* One free page per family: this device remembers the quiz was done (localStorage, not a cookie). */
+  var KEY = 'lsq_done_v1';
+  function remember(page){ try{ localStorage.setItem(KEY, JSON.stringify({page:page, at:Date.now()})) }catch(e){} }
+  function showAlready(){ remember(''); show(7); }
+  try{ if(localStorage.getItem(KEY) && !params.has('again')) { show(7); } else { show(0); } }catch(e){ show(0); }
 
   document.getElementById('r-share').addEventListener('click', function(){
     var data = {title:'Free coloring page quiz', text:'Answer 5 quick questions and Mia picks a free coloring page for your little artist!', url:'https://www.lookandseecolorme.com/quiz/'};
@@ -433,7 +473,6 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     else if(navigator.clipboard){ navigator.clipboard.writeText(data.url).then(function(){ b.textContent='Link copied!'; setTimeout(function(){ b.textContent='Share with a friend' },1800) }); }
   });
 
-  show(0);
 })();
 </script>
 </body>
