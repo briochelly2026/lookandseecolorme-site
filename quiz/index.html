@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--PAGE-START-->
+<title>Free Coloring Page Quiz · Look & See, Color Me!</title>
+<meta name="description" content="Answer 5 quick questions about your little artist and Mia will pick a free printable coloring page just for them.">
+<meta property="og:title" content="Get a free coloring page picked for your little artist">
+<meta property="og:description" content="A 1-minute quiz for grown-ups. Mia picks a free printable page your child will love.">
+<meta property="og:image" content="https://www.lookandseecolorme.com/assets/img/logo.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/img/icon-32.png">
+<link rel="apple-touch-icon" href="../assets/img/icon-180.png">
+<meta name="theme-color" content="#3AA6B9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap">
+<style>
+/* One question per screen, Mia talks in a bubble, big tappable tiles. Brand palette from BRIEF_MAESTRO §3. */
+:root{
+  --ink:#1F2A55; --sea:#3AA6B9; --sun:#F9C93E; --coral:#F26B4E; --fuchsia:#C4325F;
+  --paper:#FFFFFF; --deep:#1C7A8C; --foam:#E9F6F8; --sand:#FFF7DE; --muted:#4F5878; --line:#CFE6EA;
+  --rainbow:linear-gradient(90deg,#F26B4E 0 20%,#F9C93E 20% 40%,#6DB56D 40% 60%,#3AA6B9 60% 80%,#8E5BB5 80%);
+  --display:"Fredoka","Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Verdana",system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+html,body{height:100%}
+body{margin:0;background:var(--foam);color:var(--ink);font:600 17px/1.5 var(--body);-webkit-font-smoothing:antialiased;
+  background-image:radial-gradient(circle at 12% 18%,rgba(58,166,185,.14) 0 60px,transparent 61px),radial-gradient(circle at 88% 70%,rgba(249,201,62,.22) 0 80px,transparent 81px),radial-gradient(circle at 75% 12%,rgba(242,107,78,.12) 0 34px,transparent 35px)}
+img{max-width:100%;display:block}
+a{color:var(--deep)}
+:focus-visible{outline:3px solid var(--sun);outline-offset:3px;border-radius:8px}
+h1,h2,h3{font-family:var(--display);font-weight:700;line-height:1.12;margin:0;text-wrap:balance}
+p{margin:0}
+
+.top{background:var(--paper);position:relative}
+.top::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:var(--rainbow)}
+.top .in{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px max(16px,env(safe-area-inset-left,0px))}
+.top a.home{display:flex;align-items:center;gap:8px;text-decoration:none}
+.top a.home img{height:40px;width:auto}
+.top a.home .word{height:32px}
+.top .www{font:600 13px/1 var(--display);color:var(--deep);text-decoration:none;white-space:nowrap}
+@media (max-width:380px){.top a.home .word{height:26px}.top .www{display:none}}
+
+main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
+.progress{display:flex;gap:6px;margin:6px 0 18px}
+.progress span{flex:1;height:10px;border-radius:99px;background:#fff;border:2px solid var(--ink)}
+.progress span.on:nth-child(1){background:#F26B4E}.progress span.on:nth-child(2){background:#F9C93E}
+.progress span.on:nth-child(3){background:#6DB56D}.progress span.on:nth-child(4){background:#3AA6B9}
+.progress span.on:nth-child(5){background:#8E5BB5}
+.progress[hidden]{display:none}
+
+.mia{display:flex;align-items:flex-end;gap:10px;margin-bottom:18px}
+.mia img{width:96px;height:auto;flex:none;filter:drop-shadow(0 4px 0 rgba(31,42,85,.12))}
+.bubble{position:relative;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:14px 16px;font:600 19px/1.3 var(--display);margin-bottom:22px;box-shadow:0 4px 0 var(--ink)}
+.bubble::before{content:"";position:absolute;left:-14px;bottom:14px;border:10px solid transparent;border-right:14px solid var(--ink)}
+.bubble::after{content:"";position:absolute;left:-8px;bottom:17px;border:7px solid transparent;border-right:10px solid #fff}
+.bubble small{display:block;font:700 14px/1.35 var(--body);color:var(--muted);margin-top:4px}
+.pop{animation:pop .35s ease-out}
+@keyframes pop{from{transform:scale(.92);opacity:0}to{transform:none;opacity:1}}
+.slide{animation:slide .3s ease-out}
+@keyframes slide{from{transform:translateX(18px);opacity:0}to{transform:none;opacity:1}}
+
+.step[hidden]{display:none}
+.hint{font:700 14px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--deep);margin:0 0 10px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.tiles.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:360px){.tiles.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tile{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:104px;padding:12px 8px;border:3px solid var(--ink);border-radius:20px;background:#fff;color:var(--ink);font:600 16px/1.2 var(--display);text-align:center;cursor:pointer;box-shadow:0 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background .15s;position:relative;-webkit-tap-highlight-color:transparent}
+.tile .e{font-size:36px;line-height:1}
+.tile:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.tile:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.tile[aria-pressed="true"]{background:var(--sun)}
+.tile[aria-pressed="true"]::after{content:"✓";position:absolute;top:6px;right:8px;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;font:700 14px/24px var(--body)}
+.tiles.wide{grid-template-columns:1fr}
+.tiles.wide .tile{flex-direction:row;justify-content:flex-start;min-height:76px;padding:14px 18px;gap:14px;font-size:18px;text-align:left}
+.tiles.wide .tile span.t small{display:block;font:700 14px/1.3 var(--body);color:var(--muted)}
+.other{margin-top:12px}
+.other[hidden]{display:none}
+
+.field{display:grid;gap:6px;margin-bottom:14px}
+.field label{font:600 15px/1.2 var(--display)}
+.field input{width:100%;font:700 18px/1.2 var(--body);padding:15px 16px;border:3px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink)}
+.field input::placeholder{color:#8A93AE}
+.check{display:flex;gap:12px;align-items:flex-start;font:700 15px/1.4 var(--body);color:var(--ink);margin:6px 0 16px;cursor:pointer}
+.check input{width:24px;height:24px;flex:none;margin-top:1px;accent-color:var(--coral)}
+.err{color:var(--fuchsia);font:700 15px/1.3 var(--body);min-height:20px;margin-bottom:8px}
+.hp{position:absolute;left:-5000px;width:1px;height:1px;overflow:hidden}
+.fine{font:700 13px/1.45 var(--body);color:var(--muted);margin-top:14px}
+
+.nav{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:20px}
+.back{appearance:none;background:none;border:0;font:600 16px/1 var(--display);color:var(--deep);padding:12px 4px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font:600 19px/1 var(--display);padding:17px 28px;border-radius:999px;text-decoration:none;border:3px solid var(--ink);background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,opacity .15s;cursor:pointer}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.btn.primary{background:var(--coral);color:#fff}
+.btn.sun{background:var(--sun)}
+.btn[disabled]{opacity:.4;pointer-events:none}
+.btn.full{width:100%}
+.btn svg{width:20px;height:20px;flex:none}
+
+/* intro */
+.intro{text-align:center;display:grid;justify-items:center;gap:16px;padding-top:6px}
+.intro img.big{width:190px;height:auto}
+.intro h1{font-size:clamp(30px,7.5vw,42px)}
+.intro .sub{font-size:18px;color:var(--muted);max-width:30ch}
+.chips{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:2px}
+.chips span{font:700 14px/1 var(--body);background:#fff;border:2px solid var(--line);border-radius:99px;padding:8px 12px}
+.for-grownups{display:inline-block;font:700 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;background:var(--ink);color:#fff;border-radius:99px;padding:8px 14px}
+
+/* result */
+.card{background:#fff;border:3px solid var(--ink);border-radius:24px;box-shadow:0 5px 0 var(--ink);padding:18px;margin-bottom:18px}
+.card h2{font-size:26px;margin-bottom:6px}
+.card .pill{display:inline-block;font:700 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;background:var(--foam);color:var(--deep);border-radius:99px;padding:7px 11px;margin-bottom:10px}
+.card p{color:var(--muted);margin-bottom:14px}
+.pagepic{position:relative;border-radius:16px;overflow:hidden;border:2px solid var(--line);margin-bottom:14px;background:#fff;aspect-ratio:3/4}
+.pagepic img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.pagepic img.col{clip-path:inset(0 0 0 52%)}
+.bookrow{display:flex;gap:16px;align-items:center}
+.bookrow .cover{width:120px;flex:none;border-radius:8px;overflow:hidden;box-shadow:0 4px 12px rgba(31,42,85,.25);position:relative}
+.bookrow .cover.soon img{filter:blur(1.5px) saturate(.7);opacity:.75}
+.bookrow .cover .tag{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-8deg);background:var(--sun);border:2px solid var(--ink);border-radius:10px;font:700 12px/1.1 var(--display);padding:6px 8px;white-space:nowrap}
+.bookrow .t{display:grid;gap:10px}
+.bookrow h3{font-size:21px}
+.bookrow p{margin:0;font-size:15px}
+.tip{display:flex;gap:12px;align-items:flex-start;background:var(--sand);border:2px dashed #E3B92F;border-radius:18px;padding:14px;margin-bottom:18px;font:700 15px/1.45 var(--body)}
+.tip b{font-family:var(--display);font-weight:600}
+.share{text-align:center;display:grid;gap:10px;justify-items:center;margin-top:8px}
+.share p{color:var(--muted);font-size:15px}
+
+footer{max-width:640px;margin:0 auto;padding:6px 16px 32px;text-align:center;font:700 14px/1.6 var(--body);color:var(--muted)}
+footer img{width:44px;height:44px;margin:0 auto 6px}
+footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:none}
+</style>
+</head>
+<body>
+<!--BODY-START-->
+<header class="top"><div class="in">
+  <a class="home" href="../" aria-label="Look &amp; See, Color Me! home"><img src="../assets/img/icon.webp" alt=""><img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!"></a>
+  <a class="www" href="../">www.lookandseecolorme.com</a>
+</div></header>
+
+<main>
+  <div class="progress" id="progress" hidden aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- 0 · Intro -->
+  <section class="step intro" data-step="0">
+    <span class="for-grownups">A 1-minute quiz for grown-ups</span>
+    <img class="big pop" src="img/mia_cheer.webp" alt="Mia, the Look &amp; See, Color Me! girl, cheering with a yellow crayon" width="382" height="400">
+    <h1>Get a free coloring page picked for your little artist</h1>
+    <p class="sub">Tell Mia what your child loves. She'll pick a printable page just for them.</p>
+    <button class="btn primary" type="button" data-start>Let's start!</button>
+    <div class="chips"><span>5 quick taps</span><span>Free printable</span><span>No app needed</span></div>
+  </section>
+
+  <!-- 1 · Themes -->
+  <section class="step" data-step="1" hidden>
+    <div class="mia"><img src="img/mia_magnifier.webp" alt="" width="341" height="400"><div class="bubble">What does your little artist love most?<small>Pick as many as you like. Your answers help us choose our next books!</small></div></div>
+    <div class="tiles three" data-q="themes" data-multi>
+      <button class="tile" type="button" data-v="ocean"><span class="e">🐠</span>Ocean animals</button>
+      <button class="tile" type="button" data-v="dinosaurs"><span class="e">🦖</span>Dinosaurs</button>
+      <button class="tile" type="button" data-v="farm"><span class="e">🐮</span>Farm animals</button>
+      <button class="tile" type="button" data-v="jungle"><span class="e">🦁</span>Jungle animals</button>
+      <button class="tile" type="button" data-v="space"><span class="e">🚀</span>Space</button>
+      <button class="tile" type="button" data-v="princesses"><span class="e">👑</span>Princesses &amp; fairies</button>
+      <button class="tile" type="button" data-v="unicorns"><span class="e">🦄</span>Unicorns</button>
+      <button class="tile" type="button" data-v="vehicles"><span class="e">🚒</span>Cars, trucks &amp; trains</button>
+      <button class="tile" type="button" data-v="bugs"><span class="e">🦋</span>Bugs &amp; butterflies</button>
+      <button class="tile" type="button" data-v="pets"><span class="e">🐶</span>Pets</button>
+      <button class="tile" type="button" data-v="food"><span class="e">🧁</span>Sweets &amp; food</button>
+      <button class="tile" type="button" data-v="other"><span class="e">✨</span>Something else</button>
+    </div>
+    <div class="field other" id="other-wrap" hidden>
+      <label for="other-theme">What else do they love?</label>
+      <input id="other-theme" type="text" maxlength="60" placeholder="e.g. robots, mermaids, superheroes" autocomplete="off">
+    </div>
+  </section>
+
+  <!-- 2 · Where -->
+  <section class="step" data-step="2" hidden>
+    <div class="mia"><img src="img/mia_thinking.webp" alt="" width="328" height="400"><div class="bubble">Where do they like to color?<small>Pick all that apply.</small></div></div>
+    <div class="tiles" data-q="where" data-multi>
+      <button class="tile" type="button" data-v="coloring_book"><span class="e">📚</span>Coloring books</button>
+      <button class="tile" type="button" data-v="printed_pages"><span class="e">🖨️</span>Printed pages</button>
+      <button class="tile" type="button" data-v="tablet"><span class="e">📲</span>On a tablet</button>
+      <button class="tile" type="button" data-v="phone"><span class="e">📱</span>On a phone</button>
+    </div>
+  </section>
+
+  <!-- 3 · Materials -->
+  <section class="step" data-step="3" hidden>
+    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">What do they love to color with?<small>Pick all that apply.</small></div></div>
+    <div class="tiles" data-q="materials" data-multi>
+      <button class="tile" type="button" data-v="crayons"><span class="e">🖍️</span>Crayons</button>
+      <button class="tile" type="button" data-v="markers"><span class="e">🖊️</span>Markers</button>
+      <button class="tile" type="button" data-v="colored_pencils"><span class="e">✏️</span>Colored pencils</button>
+      <button class="tile" type="button" data-v="paints"><span class="e">🎨</span>Paints</button>
+      <button class="tile" type="button" data-v="stickers"><span class="e">⭐</span>Stickers</button>
+      <button class="tile" type="button" data-v="glitter"><span class="e">✨</span>Glitter &amp; gel pens</button>
+    </div>
+  </section>
+
+  <!-- 4 · Coloring vs seek-and-find (single choice, auto-advance) -->
+  <section class="step" data-step="4" hidden>
+    <div class="mia"><img src="img/mia_surprised.webp" alt="" width="338" height="400"><div class="bubble">Which do they enjoy more?</div></div>
+    <div class="tiles wide" data-q="play">
+      <button class="tile" type="button" data-v="coloring"><span class="e">🖍️</span><span class="t">Coloring<small>Filling every space with color</small></span></button>
+      <button class="tile" type="button" data-v="seek_find"><span class="e">🔍</span><span class="t">Seek-and-find<small>Hunting for little hidden things</small></span></button>
+      <button class="tile" type="button" data-v="both"><span class="e">🌈</span><span class="t">Both, equally!<small>Find it, then color it</small></span></button>
+    </div>
+  </section>
+
+  <!-- 5 · Email -->
+  <section class="step" data-step="5" hidden>
+    <div class="mia"><img src="img/mia_laugh.webp" alt="" width="336" height="400"><div class="bubble">Yay! Your page is ready!<small>Where should we send new free pages?</small></div></div>
+    <form id="lead" novalidate>
+      <div class="field">
+        <label for="email">Grown-up's email</label>
+        <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+      </div>
+      <div class="field">
+        <label for="fname">Your first name <span style="color:var(--muted);font-weight:500">(optional)</span></label>
+        <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi">
+      </div>
+      <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+      <label class="check"><input type="checkbox" id="consent" required><span>Yes, email me free coloring pages and news from Look &amp; See, Color Me! I'm a parent or caregiver, 18 or older. Unsubscribe anytime.</span></label>
+      <p class="err" id="err" role="alert"></p>
+      <button class="btn primary full" type="submit" id="send">Show my free page</button>
+      <p class="fine">We only use your email to send free printables and book news. We never sell or share it, and we don't ask anything about your child except what they like to color. <a href="../privacy.html#email">Privacy policy</a></p>
+    </form>
+  </section>
+
+  <!-- 6 · Result (filled by script) -->
+  <section class="step" data-step="6" hidden>
+    <div class="mia"><img src="img/mia_cheer.webp" alt="" width="382" height="400"><div class="bubble" id="r-hello">Here's your free page!</div></div>
+
+    <div class="card">
+      <span class="pill">Your free printable</span>
+      <h2 id="r-page-title">Twinkle the Sea Star</h2>
+      <p id="r-page-text">Print it at home and color along with Mia on YouTube.</p>
+      <div class="pagepic"><img id="r-page-img" src="../assets/img/color/twinkle.webp" alt=""><img class="col" id="r-page-col" src="../assets/img/color/twinkle_color.webp" alt=""></div>
+      <div style="display:grid;gap:12px">
+        <a class="btn primary full" id="r-page-pdf" href="../downloads/color/twinkle-sea-star-coloring-page.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Print my free page (PDF)</a>
+        <a class="btn full" id="r-paint" href="../paint/" hidden>Or paint it on the tablet</a>
+      </div>
+    </div>
+
+    <div class="tip" id="r-tip" hidden><span style="font-size:26px">💡</span><span id="r-tip-text"></span></div>
+
+    <div class="card">
+      <span class="pill" id="r-book-pill">The book for them</span>
+      <div class="bookrow">
+        <div class="cover" id="r-cover"><img id="r-cover-img" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals"><span class="tag" hidden id="r-cover-tag">Coming soon!</span></div>
+        <div class="t">
+          <h3 id="r-book-title">Ocean Animals</h3>
+          <p id="r-book-text">45 seek-and-find scenes to color, with every hidden friend's name in English.</p>
+          <a class="btn sun" id="r-book-btn" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener">See it on Amazon</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="share">
+      <p>Know a family who loves coloring? Share the quiz!</p>
+      <button class="btn" type="button" id="r-share">Share with a friend</button>
+      <a class="back" href="../#color">See all free coloring pages</a>
+    </div>
+  </section>
+
+  <div class="nav" id="nav" hidden>
+    <button class="back" type="button" id="prev">Back</button>
+    <button class="btn primary" type="button" id="next" disabled>Next</button>
+  </div>
+</main>
+
+<footer>
+  <img src="../assets/img/icon.webp" alt="Look &amp; See, Color Me! icon">
+  <a class="site" href="../">www.lookandseecolorme.com</a>
+  <p>Seek-and-Find coloring books for kids of all ages · <a href="https://www.instagram.com/lookandseecolorme" target="_blank" rel="noopener">@lookandseecolorme</a></p>
+  <p><a href="../privacy.html#email">Privacy</a> · © 2026 Look &amp; See Books</p>
+</footer>
+
+<script>
+(function(){
+  /* Where answers go: a Google Apps Script web app that appends one row per quiz to a Google Sheet.
+     Empty = preview mode (nothing is sent). No cookies, no trackers; only the answers below are sent. */
+  var ENDPOINT = '';
+
+  var AMAZON = 'https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&i=stripbooks';
+  var PAGES = {
+    twinkle:{t:'Twinkle the Sea Star',f:'twinkle',pdf:'twinkle-sea-star-coloring-page.pdf'},
+    finn:{t:'Finn the Clownfish',f:'finn',pdf:'finn-clownfish-coloring-page.pdf'},
+    shelly:{t:'Shelly the Sea Turtle',f:'shelly',pdf:'shelly-sea-turtle-coloring-page.pdf'}
+  };
+  var BOOKS = {
+    ocean:{t:'Ocean Animals',c:'cover_ocean.jpg',live:true,txt:'45 seek-and-find scenes to color, with every hidden friend\'s name in English.'},
+    dinosaurs:{t:'Dinosaurs',c:'cover_dinosaurs.jpg',txt:'Our next book is all about dinosaurs! You\'ll be the first to know when it\'s out.'},
+    farm:{t:'Farm Animals',c:'cover_farm.jpg',txt:'A whole book of farm friends is on the way. You\'ll be the first to know when it\'s out.'},
+    jungle:{t:'Jungle Friends',c:'cover_jungle.jpg',txt:'Lions, monkeys and parrots are coming soon. You\'ll be the first to know when it\'s out.'}
+  };
+  var THEME_NAMES = {space:'space',princesses:'princesses and fairies',unicorns:'unicorns',vehicles:'cars, trucks and trains',bugs:'bugs and butterflies',pets:'pets',food:'sweets and food'};
+  var ORDER = ['themes','where','materials','play'];
+
+  var answers = {themes:[],where:[],materials:[],play:''};
+  var step = 0, LAST_Q = 5, sent = false;
+  var steps = document.querySelectorAll('.step');
+  var nav = document.getElementById('nav'), next = document.getElementById('next'), prev = document.getElementById('prev');
+  var prog = document.getElementById('progress');
+  var params = new URLSearchParams(location.search);
+  var source = ['utm_source','utm_medium','utm_campaign','utm_content'].map(function(k){return params.get(k)||''}).filter(Boolean).join(' / ') || (document.referrer ? 'ref: '+document.referrer.split('/')[2] : 'direct');
+
+  function show(n){
+    step = n;
+    steps.forEach(function(s){ var on = +s.dataset.step === n; s.hidden = !on; if(on){ s.classList.remove('slide'); void s.offsetWidth; s.classList.add('slide'); } });
+    prog.hidden = (n === 0 || n === 6);
+    prog.querySelectorAll('span').forEach(function(b,i){ b.classList.toggle('on', i < n) });
+    nav.hidden = !(n >= 1 && n <= 4);
+    prev.style.visibility = n <= 1 ? 'hidden' : 'visible';
+    // single-choice step advances on tap, so it has no Next button
+    next.style.display = (n === 4) ? 'none' : '';
+    updateNext();
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(n === 5){ setTimeout(function(){ document.getElementById('email').focus({preventScroll:true}) }, 350); }
+  }
+  function updateNext(){
+    var q = ORDER[step-1];
+    next.disabled = !(q && (Array.isArray(answers[q]) ? answers[q].length : answers[q]));
+  }
+
+  document.querySelector('[data-start]').addEventListener('click', function(){ show(1) });
+  next.addEventListener('click', function(){ if(step < LAST_Q) show(step+1) });
+  prev.addEventListener('click', function(){ if(step > 1) show(step-1) });
+
+  document.querySelectorAll('[data-q]').forEach(function(group){
+    var q = group.dataset.q, multi = group.hasAttribute('data-multi');
+    group.querySelectorAll('.tile').forEach(function(t){
+      t.setAttribute('aria-pressed','false');
+      t.addEventListener('click', function(){
+        var v = t.dataset.v;
+        if(multi){
+          var i = answers[q].indexOf(v);
+          if(i === -1) answers[q].push(v); else answers[q].splice(i,1);   // keeps pick order: first pick = favorite
+          t.setAttribute('aria-pressed', i === -1 ? 'true' : 'false');
+          if(q === 'themes'){ var o = document.getElementById('other-wrap'); o.hidden = answers.themes.indexOf('other') === -1; if(!o.hidden && v === 'other' && i === -1) document.getElementById('other-theme').focus(); }
+          updateNext();
+        } else {
+          answers[q] = v;
+          group.querySelectorAll('.tile').forEach(function(x){ x.setAttribute('aria-pressed', x === t ? 'true' : 'false') });
+          setTimeout(function(){ show(step+1) }, 260);
+        }
+      });
+    });
+  });
+
+  /* ---------- result ---------- */
+  function pick(){
+    var th = answers.themes, fav = th[0] || 'ocean';
+    var bookKey = th.filter(function(k){ return BOOKS[k] })[0] || 'ocean';
+    var pageKey = {ocean:'twinkle',dinosaurs:'shelly',jungle:'finn',farm:'shelly'}[bookKey] || 'twinkle';
+    return {fav:fav, bookKey:bookKey, page:PAGES[pageKey]};
+  }
+  function fillResult(name){
+    var r = pick(), b = BOOKS[r.bookKey], p = r.page;
+    var $ = function(id){ return document.getElementById(id) };
+    $('r-hello').textContent = (name ? 'Thank you, '+name+'! ' : '') + 'Here\'s a free page for your little artist!';
+    $('r-page-title').textContent = p.t;
+    $('r-page-img').src = '../assets/img/color/'+p.f+'.webp';
+    $('r-page-img').alt = p.t+' coloring page, line art';
+    $('r-page-col').src = '../assets/img/color/'+p.f+'_color.webp';
+    $('r-page-pdf').href = '../downloads/color/'+p.pdf;
+    var digital = answers.where.indexOf('tablet') > -1 || answers.where.indexOf('phone') > -1;
+    $('r-paint').hidden = !digital;
+
+    var themeMsg = '';
+    if(BOOKS[r.fav] && r.fav !== 'ocean' && !BOOKS[r.fav].live) themeMsg = 'We\'re drawing '+BOOKS[r.fav].t.toLowerCase()+' right now! Until then, here\'s a sea friend to color.';
+    else if(THEME_NAMES[r.fav]) themeMsg = 'Thanks for voting for '+THEME_NAMES[r.fav]+'! Mia is taking notes for our next books. Meanwhile, here\'s a sea friend to color.';
+    else if(r.fav === 'other') themeMsg = 'Thanks for telling us! Mia is taking notes for our next books. Meanwhile, here\'s a sea friend to color.';
+    else themeMsg = 'Print it at home, then color along with Mia on YouTube!';
+    $('r-page-text').textContent = themeMsg;
+
+    var tip = '';
+    if(answers.materials.indexOf('markers') > -1) tip = '<b>Marker tip:</b> slide a piece of cardboard under the page so the ink doesn\'t bleed through.';
+    else if(answers.play === 'seek_find' || answers.play === 'both') tip = '<b>Seek-and-find tip:</b> before coloring, ask them to find the smallest thing on the page and say its name out loud.';
+    else if(answers.materials.indexOf('paints') > -1) tip = '<b>Paint tip:</b> print on thicker paper (cardstock) so it stays flat while it dries.';
+    $('r-tip').hidden = !tip; $('r-tip-text').innerHTML = tip;
+
+    $('r-cover-img').src = '../assets/img/'+b.c;
+    $('r-cover-img').alt = 'Cover of Look & See, Color Me! '+b.t;
+    $('r-book-title').textContent = b.t;
+    $('r-book-text').textContent = b.txt;
+    $('r-cover').classList.toggle('soon', !b.live);
+    $('r-cover-tag').hidden = !!b.live;
+    var btn = $('r-book-btn');
+    if(b.live){ btn.hidden = false; btn.href = AMAZON; $('r-book-pill').textContent = 'The book for them'; }
+    else { btn.hidden = true; $('r-book-pill').textContent = 'Coming soon'; }
+  }
+
+  /* ---------- email step ---------- */
+  var form = document.getElementById('lead'), err = document.getElementById('err'), sendBtn = document.getElementById('send');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('email').value.trim();
+    var name = document.getElementById('fname').value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent = 'Please type a valid email address.'; document.getElementById('email').focus(); return; }
+    if(!document.getElementById('consent').checked){ err.textContent = 'Please tick the box so we can email you.'; return; }
+    err.textContent = '';
+    if(!sent && !form.website.value){
+      sent = true;
+      var row = {
+        email: email, name: name,
+        themes: answers.themes.join(', '), other_theme: document.getElementById('other-theme').value.trim(),
+        favorite: answers.themes[0] || '', where: answers.where.join(', '), materials: answers.materials.join(', '),
+        play: answers.play, source: source, consent: 'yes', page: location.pathname
+      };
+      if(ENDPOINT){
+        try{ fetch(ENDPOINT, {method:'POST', mode:'no-cors', keepalive:true, headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)}); }catch(x){}
+      } else { console.log('[quiz preview] would save:', row); }
+    }
+    fillResult(name);
+    show(6);
+  });
+
+  document.getElementById('r-share').addEventListener('click', function(){
+    var data = {title:'Free coloring page quiz', text:'Answer 5 quick questions and Mia picks a free coloring page for your little artist!', url:'https://www.lookandseecolorme.com/quiz/'};
+    var b = this;
+    if(navigator.share){ navigator.share(data).catch(function(){}); }
+    else if(navigator.clipboard){ navigator.clipboard.writeText(data.url).then(function(){ b.textContent='Link copied!'; setTimeout(function(){ b.textContent='Share with a friend' },1800) }); }
+  });
+
+  show(0);
+})();
+</script>
+</body>
+</html>
