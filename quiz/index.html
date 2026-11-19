@@ -155,6 +155,10 @@ main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
 .introbuy b{display:block;font:600 17px/1.2 var(--display);color:var(--ink)}
 .introbuy .go{flex:none;display:inline-flex;align-items:center;gap:6px;background:var(--coral);color:#fff;font:600 17px/1 var(--display);padding:11px 14px;border-radius:99px;border:2px solid var(--ink)}
 .introbuy .go svg{width:18px;height:18px}
+.peek{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 6px}
+.peek figure{margin:0;background:#fff;border:2px solid var(--ink);border-radius:10px;overflow:hidden;aspect-ratio:900/1342}
+.peek img{width:100%;height:100%;object-fit:cover}
+.peekcap{font:700 13px/1.3 var(--body);color:var(--muted);text-align:center;margin-bottom:14px}
 footer{max-width:640px;margin:0 auto;padding:6px 16px 32px;text-align:center;font:700 14px/1.6 var(--body);color:var(--muted)}
 footer img{width:44px;height:44px;margin:0 auto 6px}
 footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:none}
@@ -336,18 +340,24 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
   <!-- 7 · Already did the quiz -->
   <section class="step" data-step="7" hidden>
-    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">Welcome back! You already got your free page.<small>Look out for new free pages in your inbox. We send them to every family on our list.</small></div></div>
+    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">Welcome back! We're so happy you love our drawings!<small>You already got your free page. Ready to color a lot more?</small></div></div>
     <div class="buy">
       <span class="badge">Now on Amazon</span>
       <div class="buyrow">
         <img class="bcover" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy">
         <div class="btxt">
-          <h2>Get the whole book!</h2>
-          <p>Ocean Animals: 45 scenes to find, color and name. A perfect gift for your little artist.</p>
+          <h2>Want more pages to color?</h2>
+          <p>We know your little artist loves our drawings. That's why we made a whole book of them: <b>45 seek-and-find scenes</b> to color, all in <i>Look &amp; See, Color Me! Ocean Animals</i>.</p>
         </div>
       </div>
-      <ul class="perks"><li>45 seek-and-find scenes</li><li>Every hidden friend's name in English</li><li>Free printable stickers</li></ul>
-      <a class="btn amz full" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-back-amazon-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy on Amazon</a>
+      <div class="peek" aria-label="A peek inside the book">
+        <figure><img src="../assets/img/p01_color.webp" alt="Inside page: a happy fish scene, colored" loading="lazy"></figure>
+        <figure><img src="../assets/img/p40.webp" alt="Inside page: a busy ocean party scene to color" loading="lazy"></figure>
+        <figure><img src="../assets/img/p40_color.webp" alt="Inside page: the ocean party scene, colored" loading="lazy"></figure>
+      </div>
+      <p class="peekcap">A peek inside: find the hidden friends, then color them!</p>
+      <ul class="perks"><li>Hours of fun away from screens</li><li>45 seek-and-find scenes</li><li>Every hidden friend's name in English</li><li>Free printable stickers</li><li>A perfect gift for birthdays and holidays</li></ul>
+      <a class="btn amz full" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-back-amazon-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy the book on Amazon</a>
     </div>
     <div class="card yt">
       <span class="pill">Follow us on YouTube</span>
@@ -362,13 +372,13 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     </div>
 
     <div class="card">
-      <span class="pill">The book</span>
+      <span class="pill">Don't miss it</span>
       <div class="bookrow">
         <div class="cover"><img src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals"></div>
         <div class="t">
-          <h3>Ocean Animals</h3>
-          <p>45 seek-and-find scenes to color, with every hidden friend's name in English.</p>
-          <a class="btn sun" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-click-amazon-returning">See it on Amazon</a>
+          <h3>Color more today!</h3>
+          <p>Order <b>Ocean Animals</b> on Amazon and keep the fun going: 45 new scenes to find and color.</p>
+          <a class="btn amz" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-click-amazon-returning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy now</a>
         </div>
       </div>
     </div>
