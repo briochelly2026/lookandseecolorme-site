@@ -138,6 +138,27 @@ main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
 .yt .vid:hover .play{transform:translate(-50%,-50%) scale(1.08)}
 .yt .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 12px 10px;background:linear-gradient(transparent,rgba(0,0,0,.7));color:#fff;font:600 15px/1.2 var(--display)}
 .ytbtn{background:#FF0000!important;color:#fff!important}
+.buy{position:relative;background:linear-gradient(160deg,#FFF7DE 0%,#FFE9A8 100%);border:3px solid var(--ink);border-radius:24px;box-shadow:0 5px 0 var(--ink);padding:22px 18px 18px;margin:8px 0 22px}
+.buy .badge{position:absolute;top:-14px;left:18px;background:var(--fuchsia);color:#fff;font:700 13px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;border-radius:99px;border:2px solid var(--ink)}
+.buyrow{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.bcover{width:118px;flex:none;border-radius:8px;box-shadow:0 6px 14px rgba(31,42,85,.3);transform:rotate(-3deg)}
+.btxt h2{font-size:28px;margin-bottom:6px}
+.btxt p{font:700 15px/1.4 var(--body);color:var(--muted)}
+.perks{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:6px;font:700 15px/1.3 var(--body)}
+.perks li::before{content:"✓";display:inline-grid;place-items:center;width:22px;height:22px;margin-right:8px;border-radius:50%;background:var(--sea);color:#fff;font-size:13px}
+.btn.amz{background:var(--coral);color:#fff;font-size:24px;padding:20px 24px;animation:nudge 2.4s ease-in-out infinite}
+.btn.amz svg{width:26px;height:26px}
+@keyframes nudge{0%,86%,100%{transform:none}90%{transform:scale(1.04)}95%{transform:scale(.99)}}
+.introbuy{display:flex;align-items:center;gap:12px;width:100%;max-width:420px;margin-top:10px;padding:10px 12px;background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);text-decoration:none;color:var(--ink);text-align:left}
+.introbuy img{width:52px;border-radius:5px;flex:none}
+.introbuy span{flex:1;font:700 14px/1.3 var(--body);color:var(--muted)}
+.introbuy b{display:block;font:600 17px/1.2 var(--display);color:var(--ink)}
+.introbuy .go{flex:none;display:inline-flex;align-items:center;gap:6px;background:var(--coral);color:#fff;font:600 17px/1 var(--display);padding:11px 14px;border-radius:99px;border:2px solid var(--ink)}
+.introbuy .go svg{width:18px;height:18px}
+.peek{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0 6px}
+.peek figure{margin:0;background:#fff;border:2px solid var(--ink);border-radius:10px;overflow:hidden;aspect-ratio:900/1342}
+.peek img{width:100%;height:100%;object-fit:cover}
+.peekcap{font:700 13px/1.3 var(--body);color:var(--muted);text-align:center;margin-bottom:14px}
 footer{max-width:640px;margin:0 auto;padding:6px 16px 32px;text-align:center;font:700 14px/1.6 var(--body);color:var(--muted)}
 footer img{width:44px;height:44px;margin:0 auto 6px}
 footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:none}
@@ -163,6 +184,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     <p class="sub">Tell Mia what your child loves. She'll pick a printable page just for them.</p>
     <button class="btn primary" type="button" data-start>Let's start!</button>
     <div class="chips"><span>5 quick taps</span><span>Free printable</span><span>No app needed</span></div>
+    <a class="introbuy" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-amazon-intro"><img src="../assets/img/cover_ocean.jpg" alt="" loading="lazy"><span><b>Our book is on Amazon!</b>Ocean Animals: 45 seek-and-find scenes</span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy</span></a>
   </section>
 
   <!-- 1 · Themes -->
@@ -231,8 +253,8 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
         <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
       </div>
       <div class="field">
-        <label for="fname">Your first name <span style="color:var(--muted);font-weight:500">(optional)</span></label>
-        <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi">
+        <label for="fname">Your first name</label>
+        <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi" required>
       </div>
       <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <label class="check"><input type="checkbox" id="consent" required><span>Yes, email me free coloring pages and news from Look &amp; See, Color Me!, including our Black Friday surprise. I'm a parent or caregiver, 18 or older. Unsubscribe anytime.</span></label>
@@ -246,6 +268,19 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   <section class="step" data-step="6" hidden>
     <div class="mia"><img src="img/mia_cheer.webp" alt="" width="382" height="400"><div class="bubble" id="r-hello">Here's your free page!</div></div>
 
+    <div class="buy">
+      <span class="badge">Now on Amazon</span>
+      <div class="buyrow">
+        <img class="bcover" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy">
+        <div class="btxt">
+          <h2>Get the whole book!</h2>
+          <p>Your little artist will love Ocean Animals: hours of finding, coloring and learning new words.</p>
+        </div>
+      </div>
+      <ul class="perks"><li>45 seek-and-find scenes</li><li>Every hidden friend's name in English</li><li>Free printable stickers</li></ul>
+      <a class="btn amz full" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-amazon-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy on Amazon</a>
+    </div>
+
     <div class="card">
       <span class="pill">Your free printable</span>
       <h2 id="r-page-title">Twinkle the Sea Star</h2>
@@ -253,7 +288,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
       <div class="pagepic"><img id="r-page-img" src="../assets/img/color/twinkle.webp" alt=""><img class="col" id="r-page-col" src="../assets/img/color/twinkle_color.webp" alt=""></div>
       <div style="display:grid;gap:12px">
         <a class="btn primary full" id="r-page-pdf" data-goatcounter-click="quiz-download-page" href="../downloads/color/twinkle-sea-star-coloring-page.pdf" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Print my free page (PDF)</a>
-        <a class="btn full" id="r-paint" href="../paint/" hidden>Or paint it on the tablet</a>
+        <a class="btn full" id="r-paint" href="../paint/" hidden>Or paint it online (tablet or phone)</a>
       </div>
     </div>
 
@@ -271,7 +306,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
     <div class="tip" id="r-tip" hidden><span style="font-size:26px">💡</span><span id="r-tip-text"></span></div>
 
-    <div class="card">
+    <div class="card" id="r-bookcard">
       <span class="pill" id="r-book-pill">The book for them</span>
       <div class="bookrow">
         <div class="cover" id="r-cover"><img id="r-cover-img" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals"><span class="tag" hidden id="r-cover-tag">Coming soon!</span></div>
@@ -283,6 +318,19 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
       </div>
     </div>
 
+    <div class="buy">
+      <span class="badge">Now on Amazon</span>
+      <div class="buyrow">
+        <img class="bcover" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy">
+        <div class="btxt">
+          <h2>Don't forget your book!</h2>
+          <p>Order Look &amp; See, Color Me! Ocean Animals today. It makes a perfect gift.</p>
+        </div>
+      </div>
+      <ul class="perks"><li>45 seek-and-find scenes</li><li>Every hidden friend's name in English</li><li>Free printable stickers</li></ul>
+      <a class="btn amz full" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-amazon-bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy on Amazon</a>
+    </div>
+
     <div class="share">
       <p>Know a family who loves coloring? Share the quiz!</p>
       <button class="btn" type="button" id="r-share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg><span>Share with a friend</span></button>
@@ -292,7 +340,25 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
   <!-- 7 · Already did the quiz -->
   <section class="step" data-step="7" hidden>
-    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">Welcome back! You already got your free page.<small>Look out for new free pages in your inbox. We send them to every family on our list.</small></div></div>
+    <div class="mia"><img src="img/mia_wink.webp" alt="" width="328" height="400"><div class="bubble">Welcome back! We're so happy you love our drawings!<small>You already got your free page. Ready to color a lot more?</small></div></div>
+    <div class="buy">
+      <span class="badge">Now on Amazon</span>
+      <div class="buyrow">
+        <img class="bcover" src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals" loading="lazy">
+        <div class="btxt">
+          <h2>Want more pages to color?</h2>
+          <p>We know your little artist loves our drawings. That's why we made a whole book of them: <b>45 seek-and-find scenes</b> to color, all in <i>Look &amp; See, Color Me! Ocean Animals</i>.</p>
+        </div>
+      </div>
+      <div class="peek" aria-label="A peek inside the book">
+        <figure><img src="../assets/img/p01_color.webp" alt="Inside page: a happy fish scene, colored" loading="lazy"></figure>
+        <figure><img src="../assets/img/p40.webp" alt="Inside page: a busy ocean party scene to color" loading="lazy"></figure>
+        <figure><img src="../assets/img/p40_color.webp" alt="Inside page: the ocean party scene, colored" loading="lazy"></figure>
+      </div>
+      <p class="peekcap">A peek inside: find the hidden friends, then color them!</p>
+      <ul class="perks"><li>Hours of fun away from screens</li><li>45 seek-and-find scenes</li><li>Every hidden friend's name in English</li><li>Free printable stickers</li><li>A perfect gift for birthdays and holidays</li></ul>
+      <a class="btn amz full" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-back-amazon-top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy the book on Amazon</a>
+    </div>
     <div class="card yt">
       <span class="pill">Follow us on YouTube</span>
       <h2>Color along with Mia!</h2>
@@ -306,13 +372,13 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     </div>
 
     <div class="card">
-      <span class="pill">The book</span>
+      <span class="pill">Don't miss it</span>
       <div class="bookrow">
         <div class="cover"><img src="../assets/img/cover_ocean.jpg" alt="Cover of Look &amp; See, Color Me! Ocean Animals"></div>
         <div class="t">
-          <h3>Ocean Animals</h3>
-          <p>45 seek-and-find scenes to color, with every hidden friend's name in English.</p>
-          <a class="btn sun" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-click-amazon-returning">See it on Amazon</a>
+          <h3>Color more today!</h3>
+          <p>Order <b>Ocean Animals</b> on Amazon and keep the fun going: 45 new scenes to find and color.</p>
+          <a class="btn amz" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-click-amazon-returning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy now</a>
         </div>
       </div>
     </div>
@@ -447,6 +513,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     $('r-cover').classList.toggle('soon', !b.live);
     $('r-cover-tag').hidden = !!b.live;
     var btn = $('r-book-btn');
+    $('r-bookcard').hidden = !!b.live;
     if(b.live){ btn.hidden = false; btn.href = AMAZON; $('r-book-pill').textContent = 'The book for them'; }
     else { btn.hidden = true; $('r-book-pill').textContent = 'Coming soon'; }
   }
@@ -458,6 +525,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     var email = document.getElementById('email').value.trim();
     var name = document.getElementById('fname').value.trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent = 'Please type a valid email address.'; document.getElementById('email').focus(); return; }
+    if(name.length < 2){ err.textContent = 'Please type your first name.'; document.getElementById('fname').focus(); return; }
     if(!document.getElementById('consent').checked){ err.textContent = 'Please tick the box so we can email you.'; return; }
     err.textContent = '';
     if(form.website.value){ fillResult(name); show(6); return; }   // bot: show page, save nothing
@@ -479,7 +547,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     if(!ENDPOINT){ console.log('[quiz preview] would save:', row); done(false); return; }
     // The sheet answers "already" when this email has done the quiz before (one free page per family).
     var finished = false, finish = function(a){ if(!finished){ finished = true; done(a); } };
-    setTimeout(function(){ finish(false) }, 7000);   // slow network: never leave the parent stuck
+    setTimeout(function(){ finish(false) }, 15000);   // slow network: never leave the parent stuck
     fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)})
       .then(function(r){ return r.text() })
       .then(function(t){ finish(String(t).trim() === 'already') })
