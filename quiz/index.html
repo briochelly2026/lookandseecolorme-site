@@ -537,7 +537,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     if(!ENDPOINT){ console.log('[quiz preview] would save:', row); done(false); return; }
     // The sheet answers "already" when this email has done the quiz before (one free page per family).
     var finished = false, finish = function(a){ if(!finished){ finished = true; done(a); } };
-    setTimeout(function(){ finish(false) }, 7000);   // slow network: never leave the parent stuck
+    setTimeout(function(){ finish(false) }, 15000);   // slow network: never leave the parent stuck
     fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)})
       .then(function(r){ return r.text() })
       .then(function(t){ finish(String(t).trim() === 'already') })
