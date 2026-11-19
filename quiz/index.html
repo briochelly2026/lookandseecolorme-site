@@ -231,8 +231,8 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
         <input id="email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
       </div>
       <div class="field">
-        <label for="fname">Your first name <span style="color:var(--muted);font-weight:500">(optional)</span></label>
-        <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi">
+        <label for="fname">Your first name</label>
+        <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi" required>
       </div>
       <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
       <label class="check"><input type="checkbox" id="consent" required><span>Yes, email me free coloring pages and news from Look &amp; See, Color Me!, including our Black Friday surprise. I'm a parent or caregiver, 18 or older. Unsubscribe anytime.</span></label>
@@ -458,6 +458,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     var email = document.getElementById('email').value.trim();
     var name = document.getElementById('fname').value.trim();
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){ err.textContent = 'Please type a valid email address.'; document.getElementById('email').focus(); return; }
+    if(name.length < 2){ err.textContent = 'Please type your first name.'; document.getElementById('fname').focus(); return; }
     if(!document.getElementById('consent').checked){ err.textContent = 'Please tick the box so we can email you.'; return; }
     err.textContent = '';
     if(form.website.value){ fillResult(name); show(6); return; }   // bot: show page, save nothing
