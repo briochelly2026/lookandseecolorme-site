@@ -1,7 +1,19 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Ocean Animals · Look & See, Color Me!</title>
+<html lang="en"><head><meta charset="utf-8"><title>Ocean Animals · Look &amp; See, Color Me!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="refresh" content="0; url=../#ocean-animals">
+<meta http-equiv="refresh" content="2; url=../#ocean-animals">
 <link rel="canonical" href="../#ocean-animals"></head>
-<body><script>location.replace('../#ocean-animals')</script>
+<body>
+<script>
+  // Count this short link (no cookies), then go on. The visit keeps its real source (Instagram, QR, ...).
+  window.goatcounter = {no_onload: true};
+  var gone = false;
+  function go() { if (!gone) { gone = true; location.replace('../#ocean-animals'); } }
+  function countThenGo() {
+    try { window.goatcounter.count({path: '/ocean', referrer: document.referrer || 'book-qr'}); } catch (e) {}
+    go();
+  }
+  setTimeout(go, 1200);
+</script>
+<script data-goatcounter="https://lookandseecolorme.goatcounter.com/count" async src="https://gc.zgo.at/count.js" onload="countThenGo()" onerror="go()"></script>
 <p><a href="../#ocean-animals">Go to the Ocean Animals stickers</a></p></body></html>
