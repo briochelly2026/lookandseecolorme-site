@@ -1163,9 +1163,8 @@ document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', 
     location.href = 'https://www.youtube.com/playlist?list=' + list;
     return;
   }
-  $('#videoTitle').textContent = b.querySelector('.bt').textContent;
-  $('#videoBox').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${list}&rel=0" title="Mia on YouTube" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-  openSheet('#sheetVideo');
+  // website: open the playlist on YouTube in a new tab (the YouTube app on phones), so every view counts
+  window.open('https://www.youtube.com/playlist?list=' + list, '_blank', 'noopener');
 }));
 $('#sheetVideo').addEventListener('click', e => { if (!$('#sheetVideo').classList.contains('on')) $('#videoBox').innerHTML = ''; });
 
