@@ -159,6 +159,16 @@ main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
 .peek figure{margin:0;background:#fff;border:2px solid var(--ink);border-radius:10px;overflow:hidden;aspect-ratio:900/1342}
 .peek img{width:100%;height:100%;object-fit:cover}
 .peekcap{font:700 13px/1.3 var(--body);color:var(--muted);text-align:center;margin-bottom:14px}
+.hook{text-align:center;font:600 15px/1.3 var(--display);color:var(--deep);background:#fff;border:2px solid var(--line);border-radius:99px;padding:8px 14px;margin:0 auto 14px;width:fit-content;max-width:100%}
+.hook b{color:var(--coral)}
+.tiles.three .tile{min-height:86px;padding:8px 6px;font-size:15px}
+.tiles.three .tile .e{font-size:30px}
+#other-next{margin-top:12px}
+.yourpage{display:flex;gap:14px;align-items:center;background:#fff;border:3px dashed var(--coral);border-radius:18px;padding:10px 14px;margin:-6px 0 16px}
+.yourpage img{width:74px;height:74px;object-fit:contain;flex:none}
+.yourpage span{display:block;font:700 12px/1 var(--display);letter-spacing:.08em;text-transform:uppercase;color:var(--deep)}
+.yourpage b{display:block;font:600 19px/1.2 var(--display);margin:4px 0 2px}
+.yourpage em{font:700 13px/1.2 var(--body);color:var(--muted);font-style:normal}
 footer{max-width:640px;margin:0 auto;padding:6px 16px 32px;text-align:center;font:700 14px/1.6 var(--body);color:var(--muted)}
 footer img{width:44px;height:44px;margin:0 auto 6px}
 footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:none}
@@ -174,7 +184,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 </div></header>
 
 <main>
-  <div class="progress" id="progress" hidden aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="progress" id="progress" hidden aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 
   <!-- 0 · Intro -->
   <section class="step intro" data-step="0">
@@ -189,8 +199,9 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
   <!-- 1 · Themes -->
   <section class="step" data-step="1" hidden>
-    <div class="mia"><img src="img/mia_magnifier.webp" alt="" width="341" height="400"><div class="bubble">What does your little artist love most?<small>Pick as many as you like. Your answers help us choose our next books!</small></div></div>
-    <div class="tiles three" data-q="themes" data-multi>
+    <div class="hook"><b>Free coloring page</b> for your little artist · just 3 taps</div>
+    <div class="mia"><img src="img/mia_magnifier.webp" alt="" width="341" height="400"><div class="bubble">What does your little artist love most?<small>Tap one, and Mia picks a free page to match!</small></div></div>
+    <div class="tiles three" data-q="themes">
       <button class="tile" type="button" data-v="ocean"><span class="e">🐠</span>Ocean animals</button>
       <button class="tile" type="button" data-v="dinosaurs"><span class="e">🦖</span>Dinosaurs</button>
       <button class="tile" type="button" data-v="farm"><span class="e">🐮</span>Farm animals</button>
@@ -207,13 +218,14 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     <div class="field other" id="other-wrap" hidden>
       <label for="other-theme">What else do they love?</label>
       <input id="other-theme" type="text" maxlength="60" placeholder="e.g. robots, mermaids, superheroes" autocomplete="off">
+      <button class="btn primary full" type="button" id="other-next">Next</button>
     </div>
   </section>
 
   <!-- 2 · Where -->
   <section class="step" data-step="2" hidden>
-    <div class="mia"><img src="img/mia_thinking.webp" alt="" width="328" height="400"><div class="bubble">Where do they like to color?<small>Pick all that apply.</small></div></div>
-    <div class="tiles" data-q="where" data-multi>
+    <div class="mia"><img src="img/mia_thinking.webp" alt="" width="328" height="400"><div class="bubble">Where do they color most?<small>Tap one.</small></div></div>
+    <div class="tiles" data-q="where">
       <button class="tile" type="button" data-v="coloring_book"><span class="e">📚</span>Coloring books</button>
       <button class="tile" type="button" data-v="printed_pages"><span class="e">🖨️</span>Printed pages</button>
       <button class="tile" type="button" data-v="tablet"><span class="e"><svg width="52" height="40" viewBox="0 0 52 40" aria-hidden="true"><rect x="2" y="2" width="48" height="36" rx="6" fill="#1F2A55"/><rect x="7" y="7" width="38" height="26" rx="2" fill="#E9F6F8"/><path d="M12 28c4-6 8-9 12-7s8-4 14-8" stroke="#F26B4E" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="47" cy="20" r="1.4" fill="#fff"/></svg></span>On a tablet</button>
@@ -246,7 +258,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
   <!-- 5 · Email -->
   <section class="step" data-step="5" hidden>
-    <div class="mia"><img src="img/mia_laugh.webp" alt="" width="336" height="400"><div class="bubble">Yay! Your page is ready!<small>Where should we send new free pages?</small></div></div>
+        <div class="yourpage" style="margin-top:4px"><img id="e-page-img" src="../assets/img/color/twinkle_color.webp" alt=""><div><span>Yay! Your free page is ready</span><b id="e-page-title">Twinkle the Sea Star</b><em>Type your email to unlock it</em></div></div>
     <form id="lead" novalidate>
       <div class="field">
         <label for="email">Grown-up's email</label>
@@ -257,9 +269,9 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
         <input id="fname" name="fname" type="text" autocomplete="given-name" maxlength="40" placeholder="So we can say hi" required>
       </div>
       <div class="hp" aria-hidden="true"><label>Leave this empty<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-      <label class="check"><input type="checkbox" id="consent" required><span>Yes, email me free coloring pages and news from Look &amp; See, Color Me!, including our Black Friday surprise. I'm a parent or caregiver, 18 or older. Unsubscribe anytime.</span></label>
+      <label class="check"><input type="checkbox" id="consent" required><span>Yes, email me free coloring pages and news, including our Black Friday surprise. I'm 18+. Unsubscribe anytime.</span></label>
       <p class="err" id="err" role="alert"></p>
-      <button class="btn primary full" type="submit" id="send">Show my free page</button>
+      <button class="btn primary full" type="submit" id="send">Unlock my free page</button>
       <p class="fine">We only use your email to send free printables and book news. We never sell or share it, and we don't ask anything about your child except what they like to color. <a href="../privacy.html#email">Privacy policy</a></p>
     </form>
   </section>
@@ -426,18 +438,23 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   var params = new URLSearchParams(location.search);
   var source = ['utm_source','utm_medium','utm_campaign','utm_content'].map(function(k){return params.get(k)||''}).filter(Boolean).join(' / ') || (document.referrer ? 'ref: '+document.referrer.split('/')[2] : 'direct');
 
+  var SEQ = [1,2,4,5];   // 3 taps (theme, where, coloring vs seek-and-find), then email. Materials step retired 2026-11-20.
+  function after(n){ return SEQ[SEQ.indexOf(n)+1] || 5 }
+  function before(n){ return SEQ[Math.max(0,SEQ.indexOf(n)-1)] }
+  function gc(path){ var tries = 0; (function go(){ try{ if(window.goatcounter && window.goatcounter.count){ window.goatcounter.count({path:path, title:path, event:true}); return; } }catch(e){} if(tries++ < 20) setTimeout(go, 500); })(); }
   function show(n){
     step = n;
+    if(SEQ.indexOf(n) > -1) gc('quiz-step-'+n);
     steps.forEach(function(s){ var on = +s.dataset.step === n; s.hidden = !on; if(on){ s.classList.remove('slide'); void s.offsetWidth; s.classList.add('slide'); } });
     prog.hidden = (n === 0 || n >= 6);
-    prog.querySelectorAll('span').forEach(function(b,i){ b.classList.toggle('on', i < n) });
+    prog.querySelectorAll('span').forEach(function(b,i){ b.classList.toggle('on', i <= SEQ.indexOf(n)) });
     nav.hidden = !(n >= 1 && n <= 4);
     prev.style.visibility = n <= 1 ? 'hidden' : 'visible';
     // single-choice step advances on tap, so it has no Next button
-    next.style.display = (n === 4) ? 'none' : '';
+    next.style.display = 'none';   // every question advances on tap
     updateNext();
     window.scrollTo({top:0,behavior:'smooth'});
-    if(n === 5){ setTimeout(function(){ document.getElementById('email').focus({preventScroll:true}) }, 350); }
+    if(n === 5){ var pg = pick().page; document.getElementById('e-page-img').src = '../assets/img/color/'+pg.f+'_color.webp'; document.getElementById('e-page-title').textContent = pg.t; }
   }
   function updateNext(){
     var q = ORDER[step-1];
@@ -445,8 +462,9 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   }
 
   document.querySelector('[data-start]').addEventListener('click', function(){ show(1) });
-  next.addEventListener('click', function(){ if(step < LAST_Q) show(step+1) });
-  prev.addEventListener('click', function(){ if(step > 1) show(step-1) });
+  next.addEventListener('click', function(){ if(step < LAST_Q) show(after(step)) });
+  prev.addEventListener('click', function(){ if(step > 1) show(before(step)) });
+  document.getElementById('other-next').addEventListener('click', function(){ show(after(1)) });
 
   document.querySelectorAll('[data-q]').forEach(function(group){
     var q = group.dataset.q, multi = group.hasAttribute('data-multi');
@@ -461,9 +479,13 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
           if(q === 'themes'){ var o = document.getElementById('other-wrap'); o.hidden = answers.themes.indexOf('other') === -1; if(!o.hidden && v === 'other' && i === -1) document.getElementById('other-theme').focus(); }
           updateNext();
         } else {
-          answers[q] = v;
+          answers[q] = Array.isArray(answers[q]) ? [v] : v;
           group.querySelectorAll('.tile').forEach(function(x){ x.setAttribute('aria-pressed', x === t ? 'true' : 'false') });
-          setTimeout(function(){ show(step+1) }, 260);
+          if(q === 'themes'){
+            var o = document.getElementById('other-wrap'); o.hidden = v !== 'other';
+            if(v === 'other'){ document.getElementById('other-theme').focus(); return; }   // wait for the text + Next
+          }
+          setTimeout(function(){ show(after(step)) }, 260);
         }
       });
     });
@@ -554,16 +576,16 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
       .catch(function(){ finish(false) });
   });
 
-  (function(){ var wt = params.get('t'); if(wt && params.get('page')){ document.querySelector('.intro h1').textContent = 'Get '+wt.slice(0,60)+' free!'; } })();
+  (function(){ var wt = params.get('t'); if(wt && params.get('page')){ var hk = document.querySelector('.hook'); hk.textContent = ''; var bb = document.createElement('b'); bb.textContent = 'Get '+wt.slice(0,60)+' free'; hk.appendChild(bb); hk.appendChild(document.createTextNode(' · just 3 taps')); } })();
 
   /* One free page per family: this device remembers the quiz was done (localStorage, not a cookie). */
   var KEY = 'lsq_done_v1';
   function remember(page){ try{ localStorage.setItem(KEY, JSON.stringify({page:page, at:Date.now()})) }catch(e){} }
   function showAlready(){ remember(''); show(7); }
-  try{ if(localStorage.getItem(KEY) && !params.has('again')) { show(7); } else { show(0); } }catch(e){ show(0); }
+  try{ if(localStorage.getItem(KEY) && !params.has('again')) { show(7); } else { show(1); } }catch(e){ show(1); }
 
   document.getElementById('r-share').addEventListener('click', function(){
-    var data = {title:'Free coloring page quiz', text:'Answer 5 quick questions and Mia picks a free coloring page for your little artist!', url:'https://www.lookandseecolorme.com/quiz/'};
+    var data = {title:'Free coloring page quiz', text:'3 quick taps and Mia picks a free coloring page for your little artist!', url:'https://www.lookandseecolorme.com/quiz/'};
     var b = this;
     if(navigator.share){ navigator.share(data).catch(function(){}); }
     else if(navigator.clipboard){ navigator.clipboard.writeText(data.url).then(function(){ b.lastChild.textContent='Link copied!'; setTimeout(function(){ b.lastChild.textContent='Share with a friend' },1800) }); }
