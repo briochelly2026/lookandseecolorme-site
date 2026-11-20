@@ -648,10 +648,23 @@ function buildSizes() {
 const colorsEl = $('#colors');
 // tapping a crayon shows its name big and says it
 let nameTimer = 0;
+// Mia's recorded voice (voice/*.mp3): one clip at a time; "then" plays after it
+let voiceAudio = null;
+function play(src, then) {
+  try {
+    if (voiceAudio) { voiceAudio.onended = null; voiceAudio.pause(); }
+    try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {}
+    const a = voiceAudio = new Audio(src);
+    a.onended = () => { if (then && voiceAudio === a) then(); };
+    a.play().catch(() => {});
+  } catch (_) {}
+}
+function mia(line, then) { play('voice/say-' + line + '.mp3', then); }
+function slug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
 function showColorName(name) {
   const el = $('#colorName'); el.textContent = name; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
   clearTimeout(nameTimer); nameTimer = setTimeout(() => el.classList.remove('on'), 1400);
-  sayWord(name);
+  play('voice/color-' + slug(name) + '.mp3');
 }
 function sayWord(w) {
   try {
@@ -974,7 +987,7 @@ function showHome() {
   const own = owned().includes('ocean');
   const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
   home.classList.add('on');
-  renderHomeArt(); renderKid();
+  renderHomeArt(); renderKid(); mia('hi');
   if (!kid().asked) setTimeout(openProfile, 400); else checkBirthday();
 }
 function hideHome() { home.classList.remove('on'); }
@@ -1005,7 +1018,7 @@ function renderFind() {
     b.className = 'fig' + (f.box ? '' : ' manual'); b.setAttribute('aria-pressed', found.includes(i));
     b.innerHTML = `<img src="${f.img}" alt=""><span>${f.name}</span>`;
     b.addEventListener('click', () => {
-      if (f.box) { b.classList.remove('hint'); void b.offsetWidth; b.classList.add('hint'); missAt(null, 'Find me in your picture!'); return; }
+      if (f.box) { b.classList.remove('hint'); void b.offsetWidth; b.classList.add('hint'); missAt(null, 'Find me in your picture!'); mia('find-me'); return; }
       if (!foundList().includes(i)) foundIt(i);   // friends we cannot point to on the drawing: tap the card
     });
     figsEl.appendChild(b);
@@ -1039,7 +1052,7 @@ function tapFind(e) {
       if (fx >= x - slack && fx <= x + w + slack && fy >= y - slack && fy <= y + h + slack && w * h < area) { hit = i; area = w * h; }
     });
   });
-  if (hit < 0) { missAt(e, 'Try again!'); return; }
+  if (hit < 0) { missAt(e, 'Try again!'); mia('try-again'); return; }
   if (foundList().includes(hit)) { missAt(e, figs[hit].name + '!'); return; }
   foundIt(hit);
 }
@@ -1052,7 +1065,7 @@ function foundIt(i) {
 function enterFind() {
   closeSheets();
   if (foundList().length >= (current.figs || []).length) setFound([]);   // play again
-  app.classList.add('finding'); tray.hidden = false; renderFind();
+  app.classList.add('finding'); tray.hidden = false; renderFind(); mia('find-friends');
   view = { z: 1, tx: 0, ty: 0 }; layout();
 }
 function exitFind() { app.classList.remove('finding'); tray.hidden = true; view = { z: 1, tx: 0, ty: 0 }; layout(); }
@@ -1062,13 +1075,9 @@ tray.addEventListener('pointerdown', e => e.stopPropagation());
 $('#findBar').addEventListener('pointerdown', e => e.stopPropagation());
 
 // Say a friend's name: Mia's recorded voice when the book has it, otherwise the device voice
-let voiceAudio = null;
-function say(f) {
-  try {
-    if (voiceAudio) { voiceAudio.pause(); voiceAudio = null; }
-    if (f.voice) { voiceAudio = new Audio(f.voice); voiceAudio.play().catch(() => {}); return; }
-    sayWord(f.name + '!');
-  } catch (_) {}
+function say(f, then) {
+  if (f.voice) { play(f.voice, then); return; }
+  sayWord(f.name + '!');
 }
 
 // "I'm done!"
@@ -1096,26 +1105,26 @@ $('#btnDone').addEventListener('click', () => {
   $('#cheerText').textContent = hasFriends ? 'Now, can you find my friends in your picture?' : 'Shall we do the next one?';
   if (hasFriends) { box.innerHTML = ''; box.append(bigBtn('Find my friends!', 'green', enterFind), bigBtn('Keep painting', '', closeSheets)); }
   else finishButtons(box);
-  openSheet('#sheetCheer');
+  openSheet('#sheetCheer'); mia('good-job');
 });
 
 // Repeat with me: every friend, one by one, then the next picture
 let parade = 0;
-function showParade() {
+function showParade(first) {
   const figs = current.figs, f = figs[parade];
   const img = $('#paradePic'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation = '';
   img.src = f.img; img.alt = f.name;
   $('#paradeName').textContent = f.name;
   $('#paradeStep').textContent = `${parade + 1} of ${figs.length}`;
   $('#paradeNext').textContent = parade + 1 < figs.length ? 'Next' : 'Done!';
-  say(f);
+  if (first) mia('repeat', () => say(f)); else say(f);
 }
-function startParade() { if (!finding()) return; parade = 0; closeSheets(); openSheet('#sheetParade'); showParade(); }
+function startParade() { if (!finding()) return; parade = 0; closeSheets(); openSheet('#sheetParade'); showParade(true); }
 $('#paradeSay').addEventListener('click', () => say(current.figs[parade]));
 $('#paradeNext').addEventListener('click', () => {
   if (++parade < current.figs.length) { showParade(); return; }
   $('#winTitle').innerHTML = ''; $('#winTitle').append(`You found them all${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'Shall we do the next one?');
-  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin');
+  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin'); mia('found-all');
 });
 
 /* ---------- Save & print (picture + website, made on the device) ---------- */
@@ -1256,7 +1265,7 @@ function checkBirthday() {
     img.src = gift.thumb; img.hidden = false;
     btns.append(bigBtn('Open my gift', 'coral', () => { closeSheets(); hideHome(); openPicture(gift); }));
   } else { img.hidden = true; btns.append(bigBtn("Let's color!", 'coral', () => { closeSheets(); $('#homeGo').click(); })); }
-  openSheet('#sheetBday');
+  openSheet('#sheetBday'); mia('birthday');
   // the name is shown, not spoken: a device voice saying it sounds robotic (Mia's recorded voice says the greetings)
 }
 

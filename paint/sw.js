@@ -1,8 +1,9 @@
 // Color Me! Paint: offline cache. Nothing here talks to any server except this website.
-const CACHE = 'colorme-paint-v10';
+const CACHE = 'colorme-paint-v11';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
   'books/ocean/book.json', 'books/ocean/cover.jpg', 'img/mia-hi.webp', 'img/watch-color.webp', 'img/watch-stories.webp', 'img/intro.mp4', 'img/intro.webm',
+  'voice/say-hi.mp3', 'voice/say-good-job.mp3', 'voice/say-find-friends.mp3', 'voice/say-try-again.mp3', 'voice/say-found-all.mp3', 'voice/say-birthday.mp3', 'voice/say-find-me.mp3', 'voice/say-repeat.mp3',
   'books/ocean/art/ocean01.webp', 'books/ocean/art/ocean02.webp', 'books/ocean/art/ocean03.webp',
   'icons/logo-small.png', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png',
   '../assets/img/icon.webp', '../assets/img/logo.webp', '../assets/img/icon-32.png',
