@@ -1,0 +1,21 @@
+{
+  "name": "colorme-paint-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Look & See, Color Me! Paint for the App Store and Google Play (Capacitor wrapper around ../paint)",
+  "scripts": {
+    "web": "node scripts/build-web.mjs",
+    "sync": "npm run web && npx cap sync",
+    "android": "npm run sync && npx cap open android",
+    "ios": "npm run sync && npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.2",
+    "@capacitor/core": "8.6.2",
+    "@capacitor/ios": "8.6.2",
+    "cordova-plugin-purchase": "13.20.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.6.2"
+  }
+}

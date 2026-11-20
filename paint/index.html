@@ -267,6 +267,7 @@ const BLANK = { id: 'blank', name: 'Blank page', src: null, figs: [] };
 let PICTURES = [BLANK];
 const DEMO_PURCHASES = false;   // preview builds set this to true: purchases are simulated, nothing is charged
 // The App Store / Google Play wrapper provides window.ColorMeStore = { available, buy(productId), restore() }.
+// Optional: priceOf(productId) returns the store's localized price string (or '' while unknown).
 const Store = window.ColorMeStore || { available: false, async buy() { return false; }, async restore() { return []; } };
 
 async function loadBooks() {
@@ -627,7 +628,7 @@ $('#btnShopOcean').addEventListener('click', () => openShop(null));
 let shopFor = null;
 function openShop(p) {
   shopFor = p; closeSheets();
-  $('#price').textContent = BOOKS[0].price;
+  $('#price').textContent = (Store.priceOf && Store.priceOf(BOOKS[0].product)) || BOOKS[0].price;
   $('#shopMsg').textContent = '';
   openSheet('#sheetShop');
 }

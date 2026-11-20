@@ -1,0 +1,8 @@
+{
+  "appId": "com.lookandseecolorme.paint",
+  "appName": "Color Me! Paint",
+  "webDir": "www",
+  "backgroundColor": "#FFF8EE",
+  "android": { "allowMixedContent": false },
+  "ios": { "contentInset": "never" }
+}
