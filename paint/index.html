@@ -978,12 +978,13 @@ $('#doRestore').addEventListener('click', () => unlockBook(true));
 
 
 /* ---------- Intro ---------- */
+let introDone; const introOver = new Promise(r => { introDone = r; });
 (function intro() {
   const el = $('#intro'), v = $('#introVid');
-  if (!el) return;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.remove(); return; }
+  if (!el) { introDone(); return; }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.remove(); introDone(); return; }
   let done = false;
-  const finish = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => el.remove(), 500); };
+  const finish = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => { el.remove(); introDone(); }, 500); };
   setTimeout(() => el.classList.add('pop'), 1900);
   setTimeout(finish, 3300);
   el.addEventListener('click', finish);
@@ -999,7 +1000,7 @@ function showHome() {
   const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
   home.classList.add('on');
   renderHomeArt(); renderKid();
-  if (!kid().welcomed) { setTimeout(() => openWelcome(true), 400); return; }
+  if (!kid().welcomed) { introOver.then(() => setTimeout(() => openWelcome(true), 300)); return; }
   mia('hi');
   if (!kid().asked) setTimeout(openProfile, 400); else checkBirthday();
 }
