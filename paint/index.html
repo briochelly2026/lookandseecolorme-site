@@ -446,7 +446,6 @@ button{font:inherit;color:inherit}
   <div class="sheet">
     <h2 id="videoTitle">Watch Mia</h2>
     <div class="vframe" id="videoBox"></div>
-    <p class="note"><a href="https://www.youtube.com/@LookSeeColorMe" target="_blank" rel="noopener">See all of Mia's videos on YouTube</a></p>
     <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
   </div>
 </div>
@@ -1154,17 +1153,17 @@ function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify
 function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
 
 
-/* ---------- Watch Mia: her videos play on YouTube, so every view counts on the channel ---------- */
-document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', async () => {
+/* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
+document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', () => {
   const list = b.dataset.list;
-  if (window.ColorMeNative) {
-    // in the store app, leaving the app is for grown-ups: ask first, then open YouTube
-    if (!(await parentalGate())) return; gateCancel = null; closeSheets();
-    location.href = 'https://www.youtube.com/playlist?list=' + list;
-    return;
-  }
-  // website: open the playlist on YouTube in a new tab (the YouTube app on phones), so every view counts
-  window.open('https://www.youtube.com/playlist?list=' + list, '_blank', 'noopener');
+  // The video plays inside the app, so the child never leaves it. Plays still count as views on the channel.
+  // In the store app the player is framed through our website, because YouTube's player needs a web address to run.
+  const src = window.ColorMeNative
+    ? 'https://www.lookandseecolorme.com/paint/watch.html?list=' + list
+    : 'https://www.youtube-nocookie.com/embed/videoseries?list=' + list + '&rel=0&playsinline=1';
+  $('#videoTitle').textContent = b.querySelector('.bt').textContent;
+  $('#videoBox').innerHTML = `<iframe src="${src}" title="Mia on YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  openSheet('#sheetVideo');
 }));
 $('#sheetVideo').addEventListener('click', e => { if (!$('#sheetVideo').classList.contains('on')) $('#videoBox').innerHTML = ''; });
 
