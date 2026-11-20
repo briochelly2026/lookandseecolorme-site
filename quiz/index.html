@@ -572,9 +572,31 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     setTimeout(function(){ finish(false) }, 15000);   // slow network: never leave the parent stuck
     fetch(ENDPOINT, {method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(row)})
       .then(function(r){ return r.text() })
-      .then(function(t){ finish(String(t).trim() === 'already') })
-      .catch(function(){ finish(false) });
+      .then(function(t){
+        var already = String(t).trim() === 'already';
+        if(!already) toMailerLite(row);   // new family only: joins the email list (welcome email is automatic)
+        finish(already);
+      })
+      .catch(function(){ toMailerLite(row); finish(false) });
   });
+
+  /* MailerLite: every new quiz family joins the group "Quiz - free coloring page", which fires the welcome email.
+     Uses MailerLite's public form endpoint (form "Quiz connector"), so no API key lives in this page. */
+  var ML_FORM = 'https://assets.mailerlite.com/jsonp/2809870/forms/204670689142114011/subscribe';
+  function toMailerLite(row){
+    try{
+      var p = pick().page;
+      var b = new URLSearchParams();
+      b.append('fields[email]', row.email);
+      b.append('fields[name]', row.name);
+      b.append('fields[favorite_theme]', row.favorite || '');
+      b.append('fields[signup_source]', (row.source || 'quiz').slice(0, 120));
+      b.append('fields[free_page_name]', p.t || '');
+      b.append('fields[free_page_link]', 'https://lookandseecolorme.com/downloads/color/' + (p.pdf || ''));
+      b.append('ml-submit', '1'); b.append('anticsrf', 'true');
+      fetch(ML_FORM, {method:'POST', body:b, keepalive:true}).catch(function(){});
+    }catch(e){}
+  }
 
   (function(){ var wt = params.get('t'); if(wt && params.get('page')){ var hk = document.querySelector('.hook'); hk.textContent = ''; var bb = document.createElement('b'); bb.textContent = 'Get '+wt.slice(0,60)+' free'; hk.appendChild(bb); hk.appendChild(document.createTextNode(' · just 3 taps')); } })();
 
