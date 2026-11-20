@@ -80,3 +80,37 @@
   };
   init();
 })();
+
+/* Native save / share for drawings (Capacitor Filesystem + Share).
+ * The picture goes only where the grown-up sends it from the phone's own share sheet:
+ * nothing is uploaded to us. */
+(function () {
+  var C = window.Capacitor;
+  if (!C || !C.isNativePlatform || !C.isNativePlatform()) return;
+  function b64(blob) {
+    return new Promise(function (res, rej) {
+      var r = new FileReader();
+      r.onload = function () { res(String(r.result).split(',')[1]); };
+      r.onerror = rej; r.readAsDataURL(blob);
+    });
+  }
+  function write(blob, name) {
+    var FS = C.Plugins.Filesystem;
+    return b64(blob).then(function (data) {
+      return FS.writeFile({ path: name, data: data, directory: 'CACHE' });
+    }).then(function (r) { return r.uri; });
+  }
+  window.ColorMeNative = {
+    share: function (blob, name, text) {
+      return write(blob, name).then(function (uri) {
+        return C.Plugins.Share.share({ title: 'My Color Me! picture', text: text, files: [uri], dialogTitle: 'Share your art' });
+      });
+    },
+    // "Save" opens the same sheet: it offers Save Image / Save to Photos / Files on the phone.
+    save: function (blob, name) {
+      return write(blob, name).then(function (uri) {
+        return C.Plugins.Share.share({ title: 'My Color Me! picture', files: [uri], dialogTitle: 'Save your picture' });
+      });
+    }
+  };
+})();

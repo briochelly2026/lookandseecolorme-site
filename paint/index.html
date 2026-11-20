@@ -48,6 +48,20 @@ button{font:inherit;color:inherit}
 @media (max-width:420px){.top{gap:4px;padding:8px 6px}.actions{gap:4px}.ibtn{width:46px;height:48px;border-radius:14px}.ibtn svg{width:25px;height:25px}.brand .word{display:none}}
 
 
+
+/* Intro (animated logo when the app opens) */
+.intro{position:fixed;inset:0;z-index:30;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .45s ease;cursor:pointer}
+.intro.out{opacity:0;pointer-events:none}
+.intro .ring{position:relative;width:min(88vw,400px);aspect-ratio:1;margin-bottom:-6%}
+.intro video,.intro .still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.intro .word{width:min(70vw,330px);height:auto;opacity:0;transform:translateY(24px) scale(.6)}
+.intro.pop .word{animation:pop .7s cubic-bezier(.2,1.6,.4,1) forwards}
+.intro .spark{position:absolute;width:16px;height:16px;border-radius:50%;opacity:0}
+.intro.pop .spark{animation:spark .9s ease-out forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+@keyframes spark{0%{opacity:1;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.intro{display:none}}
+
 /* Home (welcome) */
 .home{position:fixed;inset:0;z-index:15;display:none;overflow:auto;background:radial-gradient(circle at 20% 10%,#fff 0,var(--paper) 40%,#FFF1DC 100%);
   padding:calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))}
@@ -93,6 +107,41 @@ button{font:inherit;color:inherit}
 .fig span{font:600 14px/1.1 Fredoka,system-ui,sans-serif}
 .fig[aria-pressed="true"]{background:#E3F6E8;border-color:#2E9E4F}
 .fig[aria-pressed="true"]::after{content:"";position:absolute;top:-9px;right:-9px;width:28px;height:28px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/18px no-repeat;border:2px solid var(--ink)}
+
+
+/* Two steps: paint, then "I'm done!" -> find the friends in the picture */
+.done-btn{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.done-btn svg{width:28px;height:28px}
+.done-btn:active{transform:translate(-50%,3px);box-shadow:none}
+.findbar{position:absolute;left:10px;right:10px;top:10px;z-index:6;display:none;align-items:center;gap:10px;background:var(--sun);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 8px 8px 12px}
+.findbar .lupa{width:40px;height:40px;flex:none}
+.findbar b{flex:1;font:700 19px/1.15 Fredoka,system-ui,sans-serif}
+.findbar b small{display:block;font:600 15px/1.2 Fredoka,system-ui,sans-serif;color:var(--ink);opacity:.8}
+.findbar .count{flex:none;font:700 20px/1 Fredoka,system-ui,sans-serif;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 12px}
+.findbar .x{flex:none;border:0;background:none;font:700 32px/1 Fredoka,system-ui,sans-serif;width:40px;height:40px;cursor:pointer;color:var(--ink)}
+.app.finding .findbar{display:flex}
+.app.finding .tools,.app.finding .colors,.app.finding .done-btn{display:none}
+.marks{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+.app.finding .marks{display:block}
+.mark{position:absolute;border:5px solid #2E9E4F;border-radius:50%;box-shadow:0 0 0 3px #fff,inset 0 0 0 3px #fff;animation:markin .5s cubic-bezier(.2,1.6,.4,1)}
+.mark i{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/22px no-repeat;border:3px solid var(--ink)}
+.mark span{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 10px;font:700 16px/1 Fredoka,system-ui,sans-serif;white-space:nowrap;color:var(--ink)}
+.miss{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 12px;font:700 17px/1 Fredoka,system-ui,sans-serif;animation:missout 1.1s ease-out forwards;white-space:nowrap}
+@keyframes markin{0%{transform:scale(.3);opacity:0}100%{transform:none;opacity:1}}
+@keyframes missout{0%{opacity:0;margin-top:0}15%{opacity:1}100%{opacity:0;margin-top:-40px}}
+.fig.hint{animation:wiggle .5s}
+@keyframes wiggle{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.app.finding .tray{display:block}
+.fig.manual::before{content:"Tap me!";position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:var(--sun);border:2px solid var(--ink);border-radius:999px;font:700 11px/1 Fredoka,system-ui,sans-serif;padding:3px 6px;white-space:nowrap}
+.fig.manual[aria-pressed="true"]::before{display:none}
+/* Mia cheers */
+.cheer{display:flex;align-items:flex-end;justify-content:center;gap:2px;margin:0 0 12px}
+.cheer .mia{width:min(140px,34vw);height:auto;flex:none}
+.cheer .bubble{margin-bottom:40px;max-width:300px}
+.parade-pic{width:min(240px,62vw);height:min(240px,62vw);object-fit:contain;display:block;margin:4px auto 6px;animation:markin .5s cubic-bezier(.2,1.6,.4,1)}
+.parade-name{font:700 clamp(40px,11vw,60px)/1.05 Fredoka,system-ui,sans-serif;color:var(--berry);margin:0 0 4px}
+.parade-step{font:600 15px/1 Fredoka,system-ui,sans-serif;color:var(--muted);margin-bottom:10px}
+.btn.green{background:#2E9E4F;color:#fff}
 
 /* Tools */
 .tools{grid-area:tools;display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 6px 2px;flex-wrap:nowrap}
@@ -163,6 +212,7 @@ button{font:inherit;color:inherit}
 .btn svg{width:26px;height:26px}
 .btn.coral{background:var(--coral);color:#fff}
 .btn.teal{background:var(--teal);color:#fff}
+.btn.berry{background:var(--berry);color:#fff}
 .btn:active{transform:translateY(3px);box-shadow:none}
 .note{margin-top:14px;font-size:13px;color:var(--muted)}
 .note b{color:var(--ink)}
@@ -183,7 +233,6 @@ button{font:inherit;color:inherit}
       <img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
     </a>
     <div class="actions">
-      <button class="ibtn find" id="btnFind" aria-label="Can you find me?" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/><circle cx="8.6" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="12.4" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg></button>
       <button class="ibtn pics" id="btnPics" aria-label="Pick a picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button>
       <button class="ibtn" id="btnUndo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
       <button class="ibtn" id="btnClear" aria-label="Start over"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg></button>
@@ -196,7 +245,15 @@ button{font:inherit;color:inherit}
       <canvas id="paint"></canvas>
       <canvas id="live"></canvas>
       <img id="lines" alt="" draggable="false">
+      <div class="marks" id="marks"></div>
     </div>
+    <div class="findbar" id="findBar" role="status">
+      <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="#14263A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5" fill="#fff"/><path d="m15.5 15.5 5 5"/><circle cx="8.6" cy="10" r="1.1" fill="#14263A" stroke="none"/><circle cx="12.4" cy="10" r="1.1" fill="#14263A" stroke="none"/></svg>
+      <b>Can You Find Me?<small>Tap each friend in your picture!</small></b>
+      <span class="count" id="findCount">0/3</span>
+      <button class="x" id="findExit" aria-label="Back to painting">&times;</button>
+    </div>
+    <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
     <div class="tray" id="tray" hidden>
       <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
       <div class="figs" id="figs"></div>
@@ -217,6 +274,22 @@ button{font:inherit;color:inherit}
   <footer class="foot"><a href="https://www.lookandseecolorme.com" target="_blank" rel="noopener">www.lookandseecolorme.com</a></footer>
 </div>
 
+
+
+<!-- Intro: animated logo -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="ring">
+    <img class="still" src="../assets/img/icon.webp" alt="">
+    <video id="introVid" muted playsinline autoplay preload="auto"><source src="img/intro.webm" type="video/webm"><source src="img/intro.mp4" type="video/mp4"></video>
+    <i class="spark" style="left:50%;top:50%;background:#FF6245;--dx:-150px;--dy:-120px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#FEC621;--dx:150px;--dy:-130px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#1FA6B1;--dx:-170px;--dy:60px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#CE2967;--dx:170px;--dy:70px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#9BD14B;--dx:0px;--dy:-180px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#7E57C2;--dx:-60px;--dy:170px"></i>
+  </div>
+  <img class="word" src="../assets/img/logo.webp" alt="">
+</div>
 
 <!-- Home / welcome -->
 <section class="home" id="home" aria-label="Welcome">
@@ -240,7 +313,7 @@ button{font:inherit;color:inherit}
     <ul class="parents-list">
       <li>3 pictures are free. Each book unlocks with one purchase, no subscription.</li>
       <li>No ads, no sign-up, no data collected. Drawings stay on this device.</li>
-      <li>Every picture has a "Can You Find Me?" game: tap the friends you find.</li>
+      <li>When a picture is done, kids tap "I'm done!" and play "Can You Find Me?": they find each friend on the drawing and repeat its name.</li>
       <li>Privacy policy: lookandseecolorme.com/privacy</li>
     </ul>
     <div class="big"><button class="btn" id="parentsRestore">Restore purchases</button></div>
@@ -278,9 +351,11 @@ button{font:inherit;color:inherit}
 <div class="scrim" id="sheetSave" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
   <div class="sheet">
     <h2 id="saveTitle">Great job!</h2>
-    <p>Save your picture or print it.</p>
+    <p>Save your picture, or ask a grown-up to share it with Mia!</p>
+    <p class="note" id="shareMsg"></p>
     <div class="big">
       <button class="btn teal" id="doSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Save picture</button>
+      <button class="btn berry" id="doShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4"/><path d="m15.4 6.5-6.8 4"/></svg>Share your art</button>
       <button class="btn" id="doPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print</button>
     </div>
     <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Keep painting</button></p>
@@ -296,6 +371,38 @@ button{font:inherit;color:inherit}
     <div class="big"><button class="btn coral" id="doBuy">Unlock the book &middot; <span id="price">US$5.99</span></button></div>
     <p class="note" id="shopMsg"></p>
     <p class="note">One-time purchase. No ads, no subscription.<br><button class="linkbtn" id="doRestore">Restore purchases</button> &middot; <button class="linkbtn" data-close>Not now</button></p>
+  </div>
+</div>
+
+
+<!-- Mia cheers when the painting is done -->
+<div class="scrim" id="sheetCheer" role="dialog" aria-modal="true" aria-labelledby="cheerTitle">
+  <div class="sheet">
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="cheerTitle">Good job!<br>You made a wonderful work of art!</div></div>
+    <p id="cheerText">Now, can you find my friends in your picture?</p>
+    <div class="big" id="cheerBtns"></div>
+  </div>
+</div>
+
+<!-- Repeat with me: each friend, one by one -->
+<div class="scrim" id="sheetParade" role="dialog" aria-modal="true" aria-labelledby="paradeName">
+  <div class="sheet">
+    <div class="cheer" style="margin:0"><img class="mia" src="img/mia-hi.webp" alt="Mia" style="width:min(90px,24vw)"><div class="bubble" style="margin-bottom:24px">Repeat with me!</div></div>
+    <img class="parade-pic" id="paradePic" alt="">
+    <div class="parade-name" id="paradeName"></div>
+    <div class="parade-step" id="paradeStep"></div>
+    <div class="big">
+      <button class="btn" id="paradeSay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>Again</button>
+      <button class="btn coral" id="paradeNext">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- Picture finished -->
+<div class="scrim" id="sheetWin" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+  <div class="sheet">
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="winTitle">You found them all!<br>Shall we do the next one?</div></div>
+    <div class="big" id="winBtns"></div>
   </div>
 </div>
 
@@ -332,7 +439,7 @@ async function loadBooks() {
       const data = await (await fetch(b.dir + 'book.json')).json();
       data.pictures.forEach(p => PICTURES.push({
         id: p.id, name: p.title, book: b.id, src: b.dir + 'art/' + p.id + '.webp', thumb: b.dir + 'art/' + p.id + '_thumb.jpg',
-        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name }))
+        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name, box: f.box || null, voice: f.voice ? b.dir + f.voice : null }))
       }));
     } catch (_) {}
   }
@@ -364,7 +471,7 @@ const DOT = [8, 13, 19, 26];
 
 /* ---------- Elements ---------- */
 const $ = s => document.querySelector(s);
-const board = $('#board'), stage = $('#stage');
+const board = $('#board'), stage = $('#stage'), app = document.querySelector('.app');
 const paint = $('#paint'), live = $('#live'), lines = $('#lines');
 const pctx = paint.getContext('2d');
 const lctx = live.getContext('2d');
@@ -470,9 +577,12 @@ let fit = { x: 0, y: 0, s: 1, cssW: 0, cssH: 0 };
 let view = { z: 1, tx: 0, ty: 0 };
 function layout() {
   const r = board.getBoundingClientRect(); const pad = 14;
-  const aw = r.width - pad * 2, ah = r.height - pad * 2;
+  const finding = app.classList.contains('finding');
+  const top = finding ? $('#findBar').offsetHeight + 20 : pad;
+  const bot = finding ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad + 72;   // room for "I'm done!" / the friends
+  const aw = r.width - pad * 2, ah = r.height - top - bot;
   const cssW = Math.max(50, Math.min(aw, ah * W / H)); const cssH = cssW * H / W;
-  fit = { x: (r.width - cssW) / 2, y: (r.height - cssH) / 2, cssW, cssH };
+  fit = { x: (r.width - cssW) / 2, y: top + (ah - cssH) / 2, cssW, cssH };
   stage.style.width = cssW + 'px'; stage.style.height = cssH + 'px';
   applyView();
 }
@@ -489,6 +599,7 @@ const pointers = new Map();
 let stroke = null;      // active stroke
 let gesture = null;     // active pinch
 let dirty = null, raf = 0;
+let tap = null;         // a tap while finding friends
 
 function toCanvas(e) {
   const r = paint.getBoundingClientRect();
@@ -588,10 +699,15 @@ function endStroke(commit) {
 board.addEventListener('pointerdown', e => {
   if (e.button > 0) return;
   if (e.target.closest('.ibtn') || e.target.closest('.tray')) return;
+  if (e.target.closest('.findbar') || e.target.closest('.done-btn')) return;
   board.setPointerCapture?.(e.pointerId);
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  if (pointers.size === 1) { beginStroke(e); }
+  if (pointers.size === 1) {
+    if (finding()) tap = { id: e.pointerId, x: e.clientX, y: e.clientY };   // finding friends: a tap, no paint
+    else beginStroke(e);
+  }
   else if (pointers.size === 2) {
+    tap = null;
     if (stroke) endStroke(false);
     startGesture();
   }
@@ -600,6 +716,7 @@ board.addEventListener('pointerdown', e => {
 board.addEventListener('pointermove', e => {
   if (!pointers.has(e.pointerId)) return;
   pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (tap && tap.id === e.pointerId && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 14) tap = null;
   if (gesture) moveGesture();
   else if (stroke && stroke.id === e.pointerId) moveStroke(e);
   e.preventDefault();
@@ -607,6 +724,7 @@ board.addEventListener('pointermove', e => {
 function lift(e) {
   if (!pointers.has(e.pointerId)) return;
   pointers.delete(e.pointerId);
+  if (tap && tap.id === e.pointerId) { const t = tap; tap = null; if (e.type !== 'pointercancel' && !gesture) tapFind(e); }
   if (stroke && stroke.id === e.pointerId) endStroke(e.type !== 'pointercancel');
   if (gesture && pointers.size < 2) gesture = null;
 }
@@ -654,7 +772,7 @@ function closeSheets() { document.querySelectorAll('.scrim').forEach(s => s.clas
 document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheets(); }));
 $('#btnClear').addEventListener('click', () => openSheet('#sheetClear'));
 $('#doClear').addEventListener('click', () => { pushUndo(); pctx.clearRect(0, 0, W, H); autosave(); closeSheets(); });
-$('#btnSave').addEventListener('click', () => openSheet('#sheetSave'));
+$('#btnSave').addEventListener('click', () => { $('#shareMsg').textContent = ''; openSheet('#sheetSave'); });
 $('#btnPics').addEventListener('click', () => { renderPicks(); openSheet('#sheetPics'); });
 
 const LOCK = '<span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="#14263A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
@@ -730,6 +848,21 @@ $('#doBuy').addEventListener('click', () => unlockBook(false));
 $('#doRestore').addEventListener('click', () => unlockBook(true));
 
 
+
+/* ---------- Intro ---------- */
+(function intro() {
+  const el = $('#intro'), v = $('#introVid');
+  if (!el) return;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.remove(); return; }
+  let done = false;
+  const finish = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => el.remove(), 500); };
+  setTimeout(() => el.classList.add('pop'), 1900);
+  setTimeout(finish, 3300);
+  el.addEventListener('click', finish);
+  v.addEventListener('error', () => el.classList.add('pop'));
+  const p = v.play && v.play(); if (p && p.catch) p.catch(() => {});
+})();
+
 /* ---------- Home ---------- */
 const home = $('#home');
 function showHome() {
@@ -751,34 +884,136 @@ $('#parentsRestore').addEventListener('click', async () => {
 });
 document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); showHome(); });
 
-/* ---------- Can You Find Me? ---------- */
-const tray = $('#tray'), figsEl = $('#figs');
+/* ---------- Two steps: paint, "I'm done!", then Can You Find Me? on the picture ---------- */
+const tray = $('#tray'), figsEl = $('#figs'), marks = $('#marks');
+function finding() { return app.classList.contains('finding'); }
 function foundMap() { try { return JSON.parse(localStorage.getItem('colorme-found')) || {}; } catch (_) { return {}; } }
+function foundList() { return foundMap()[current.id] || []; }
+function setFound(list) { const m = foundMap(); m[current.id] = list; try { localStorage.setItem('colorme-found', JSON.stringify(m)); } catch (_) {} }
 function renderFind() {
   const figs = current.figs || [];
-  $('#btnFind').hidden = figs.length === 0;
-  if (!figs.length) { tray.hidden = true; return; }
-  const found = foundMap()[current.id] || [];
+  const found = foundList();
   figsEl.innerHTML = '';
   figs.forEach((f, i) => {
     const b = document.createElement('button');
-    b.className = 'fig'; b.setAttribute('aria-pressed', found.includes(i));
+    b.className = 'fig' + (f.box ? '' : ' manual'); b.setAttribute('aria-pressed', found.includes(i));
     b.innerHTML = `<img src="${f.img}" alt=""><span>${f.name}</span>`;
     b.addEventListener('click', () => {
-      const m = foundMap(); const list = new Set(m[current.id] || []);
-      list.has(i) ? list.delete(i) : list.add(i);
-      m[current.id] = [...list]; try { localStorage.setItem('colorme-found', JSON.stringify(m)); } catch (_) {}
-      renderFind();
+      if (f.box) { b.classList.remove('hint'); void b.offsetWidth; b.classList.add('hint'); missAt(null, 'Find me in your picture!'); return; }
+      if (!foundList().includes(i)) foundIt(i);   // friends we cannot point to on the drawing: tap the card
     });
     figsEl.appendChild(b);
   });
-  const all = found.length === figs.length;
-  $('#trayTitle').textContent = all ? 'You found them all!' : 'Can You Find Me?';
-  $('#trayTitle').parentElement.classList.toggle('done', all);
+  $('#trayTitle').textContent = 'Find these friends:';
+  $('#findCount').textContent = `${found.length}/${figs.length}`;
+  marks.innerHTML = '';
+  found.forEach(i => { const f = figs[i]; if (f && f.box) addMark(f); });
 }
-$('#btnFind').addEventListener('click', () => { tray.hidden = !tray.hidden; renderFind(); });
-$('#trayClose').addEventListener('click', () => { tray.hidden = true; });
+function addMark(f) {
+  const [x, y, w, h] = f.box, pad = 0.012;
+  const m = document.createElement('div'); m.className = 'mark';
+  m.style.left = (x - pad) * 100 + '%'; m.style.top = (y - pad) * 100 + '%';
+  m.style.width = (w + pad * 2) * 100 + '%'; m.style.height = (h + pad * 2) * 100 + '%';
+  m.innerHTML = `<i></i><span>${f.name}</span>`;
+  marks.appendChild(m);
+}
+function missAt(e, text) {
+  const d = document.createElement('div'); d.className = 'miss'; d.textContent = text;
+  const br = board.getBoundingClientRect();
+  d.style.left = (e ? e.clientX - br.left : br.width / 2) + 'px';
+  d.style.top = (e ? e.clientY - br.top : br.height / 2) + 'px';
+  board.appendChild(d); setTimeout(() => d.remove(), 1200);
+}
+function tapFind(e) {
+  const p = toCanvas(e), fx = p.x / W, fy = p.y / H, figs = current.figs || [];
+  const slack = 0.025;   // little fingers: a bit of room around each friend
+  let hit = -1, area = Infinity;
+  figs.forEach((f, i) => {
+    if (!f.box) return;
+    const [x, y, w, h] = f.box;
+    if (fx >= x - slack && fx <= x + w + slack && fy >= y - slack && fy <= y + h + slack && w * h < area) { hit = i; area = w * h; }
+  });
+  if (hit < 0) { missAt(e, 'Try again!'); return; }
+  if (foundList().includes(hit)) { missAt(e, figs[hit].name + '!'); return; }
+  foundIt(hit);
+}
+function foundIt(i) {
+  const list = foundList(); list.push(i); setFound(list);
+  say(current.figs[i]);
+  renderFind();
+  if (list.length >= current.figs.length) setTimeout(startParade, 1100);
+}
+function enterFind() {
+  closeSheets();
+  if (foundList().length >= (current.figs || []).length) setFound([]);   // play again
+  app.classList.add('finding'); tray.hidden = false; renderFind();
+  view = { z: 1, tx: 0, ty: 0 }; layout();
+}
+function exitFind() { app.classList.remove('finding'); tray.hidden = true; view = { z: 1, tx: 0, ty: 0 }; layout(); }
+$('#findExit').addEventListener('click', exitFind);
+$('#trayClose').addEventListener('click', exitFind);
 tray.addEventListener('pointerdown', e => e.stopPropagation());
+$('#findBar').addEventListener('pointerdown', e => e.stopPropagation());
+
+// Say a friend's name: Mia's recorded voice when the book has it, otherwise the device voice
+let voiceAudio = null;
+function say(f) {
+  try {
+    if (voiceAudio) { voiceAudio.pause(); voiceAudio = null; }
+    if (f.voice) { voiceAudio = new Audio(f.voice); voiceAudio.play().catch(() => {}); return; }
+    const sp = window.speechSynthesis; if (!sp) return;
+    sp.cancel();
+    const u = new SpeechSynthesisUtterance(f.name + '!');
+    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.25;
+    const v = sp.getVoices().find(v => /^en(-|_)US/i.test(v.lang)); if (v) u.voice = v;
+    sp.speak(u);
+  } catch (_) {}
+}
+
+// "I'm done!"
+function bigBtn(label, cls, fn) { const b = document.createElement('button'); b.className = 'btn ' + cls; b.textContent = label; b.addEventListener('click', fn); return b; }
+function nextPicture() {
+  const list = PICTURES.filter(p => p.id !== 'blank');
+  const i = list.findIndex(p => p.id === current.id);
+  return list[(i + 1) % list.length] || list[0];
+}
+function goNext() {
+  const n = nextPicture(); closeSheets(); exitFind();
+  if (!unlocked(n)) { openShop(n); return; }
+  openPicture(n);
+}
+function goAll() { closeSheets(); exitFind(); renderPicks(); openSheet('#sheetPics'); }
+function goSave() { closeSheets(); $('#shareMsg').textContent = ''; openSheet('#sheetSave'); }
+function finishButtons(box) {
+  box.innerHTML = '';
+  box.append(bigBtn('Next picture', 'coral', goNext), bigBtn('All pictures', '', goAll), bigBtn('Save / Share', 'teal', goSave));
+}
+$('#btnDone').addEventListener('click', () => {
+  const box = $('#cheerBtns');
+  const hasFriends = (current.figs || []).length > 0;
+  $('#cheerText').textContent = hasFriends ? 'Now, can you find my friends in your picture?' : 'Shall we do the next one?';
+  if (hasFriends) { box.innerHTML = ''; box.append(bigBtn('Find my friends!', 'green', enterFind), bigBtn('Keep painting', '', closeSheets)); }
+  else finishButtons(box);
+  openSheet('#sheetCheer');
+});
+
+// Repeat with me: every friend, one by one, then the next picture
+let parade = 0;
+function showParade() {
+  const figs = current.figs, f = figs[parade];
+  const img = $('#paradePic'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation = '';
+  img.src = f.img; img.alt = f.name;
+  $('#paradeName').textContent = f.name;
+  $('#paradeStep').textContent = `${parade + 1} of ${figs.length}`;
+  $('#paradeNext').textContent = parade + 1 < figs.length ? 'Next' : 'Done!';
+  say(f);
+}
+function startParade() { if (!finding()) return; parade = 0; closeSheets(); openSheet('#sheetParade'); showParade(); }
+$('#paradeSay').addEventListener('click', () => say(current.figs[parade]));
+$('#paradeNext').addEventListener('click', () => {
+  if (++parade < current.figs.length) { showParade(); return; }
+  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin');
+});
 
 /* ---------- Save & print (picture + website, made on the device) ---------- */
 const logoImg = new Image(); logoImg.src = LOGO_SRC;
@@ -798,10 +1033,31 @@ async function composeImage() {
   g.fillText(SITE, W - 30, H + band / 2 + 2);
   return c;
 }
+const NATIVE = window.ColorMeNative || null;   // provided by the App Store / Google Play app
+const SHARE_TEXT = 'Colored with Look & See, Color Me! @lookandseecolorme #LookAndSeeColorMe';
+if (NATIVE) $('#doPrint').hidden = true;
+$('#doShare').addEventListener('click', async () => {
+  const ok = await parentalGate(); gateCancel = null;
+  openSheet('#sheetSave');
+  if (!ok) return;
+  const c = await composeImage();
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const name = `my-${current.id}-color-me.png`;
+  const msg = $('#shareMsg');
+  try {
+    if (NATIVE) { await NATIVE.share(blob, name, SHARE_TEXT); msg.textContent = 'Thank you! Tag @lookandseecolorme so Mia can see it.'; return; }
+    const file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: SHARE_TEXT }); return; }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  msg.textContent = 'Saved! Post it and tag @lookandseecolorme so Mia can see it.';
+});
 $('#doSave').addEventListener('click', async () => {
   const c = await composeImage();
   const blob = await new Promise(r => c.toBlob(r, 'image/png'));
   const name = `my-${current.id}-color-me.png`;
+  if (NATIVE) { try { await NATIVE.save(blob, name); } catch (_) {} return; }
   try {
     const file = new File([blob], name, { type: 'image/png' });
     if (navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
@@ -843,7 +1099,7 @@ function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs'
 async function openPicture(p) {
   if (saveTimer) { clearTimeout(saveTimer); await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); saveTimer = 0; }
   if (!unlocked(p)) p = PICTURES.find(unlocked) || BLANK;
-  current = p; remember(); tray.hidden = true; renderFind();
+  current = p; remember(); app.classList.remove('finding'); tray.hidden = true; renderFind();
   if (p.src) {
     lines.style.display = '';
     lines.src = p.src;
