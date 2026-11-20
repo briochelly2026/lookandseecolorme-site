@@ -153,6 +153,18 @@ button{font:inherit;color:inherit}
 .vthumb i{position:absolute;left:50%;top:50%;width:54px;height:40px;transform:translate(-50%,-50%);background:#FF0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat;border-radius:12px;box-shadow:0 2px 0 rgba(0,0,0,.3)}
 .vframe{position:relative;width:100%;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000;margin-bottom:12px}
 .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Child profile */
+.kid{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--ink);border-radius:999px;background:#fff;padding:4px 14px 4px 4px;font:700 18px/1 Fredoka,system-ui,sans-serif;box-shadow:0 3px 0 var(--ink);cursor:pointer;margin:2px auto 0}
+.kid[hidden]{display:none}
+.kid img{width:40px;height:40px;object-fit:contain;border-radius:50%;background:var(--desk)}
+.name-in{width:min(320px,100%);font:700 24px/1 Fredoka,system-ui,sans-serif;text-align:center;border:3px solid var(--ink);border-radius:16px;padding:12px;background:#fff;color:var(--ink);-webkit-user-select:text;user-select:text}
+.avatars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:400px;margin:8px auto 0}
+.avatars button{aspect-ratio:1;border:3px solid var(--ink);border-radius:18px;background:#fff;padding:6px;cursor:pointer}
+.avatars button img{width:100%;height:100%;object-fit:contain}
+.avatars button[aria-pressed="true"]{background:var(--sun);box-shadow:0 0 0 3px var(--sun)}
+.bday{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.bday select{font:700 18px/1 Fredoka,system-ui,sans-serif;border:3px solid var(--ink);border-radius:14px;padding:10px;background:#fff;color:var(--ink)}
+.cake{font-size:64px;line-height:1;margin-bottom:4px}
 /* My art */
 .book.art img{object-fit:contain}
 .book.more .soon-cover{background:var(--sun);color:var(--ink);font-size:20px;line-height:1.2;padding:10px;text-align:center}
@@ -314,7 +326,8 @@ button{font:inherit;color:inherit}
 <section class="home" id="home" aria-label="Welcome">
   <div class="home-in">
     <img class="home-logo" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
-    <div class="hello"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Hi, I'm Mia!<br>Let's color and find sea friends!</div></div>
+    <button class="kid" id="kidChip" hidden><img id="kidAvatar" alt=""><span id="kidChipName"></span></button>
+    <div class="hello"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="helloBubble">Hi, I'm Mia!<br>Let's color and find sea friends!</div></div>
     <button class="btn coral huge" id="homeGo">Let's color!</button>
     <h3 class="sec">My books</h3>
     <div class="shelf">
@@ -338,7 +351,7 @@ button{font:inherit;color:inherit}
     <h2 id="parentsTitle">For grown-ups</h2>
     <ul class="parents-list">
       <li>3 pictures are free. Each book unlocks with one purchase, no subscription.</li>
-      <li>No ads, no sign-up, no data collected. Drawings stay on this device.</li>
+      <li>No ads, no sign-up, no data collected. Drawings, your child's name and birthday stay on this device.</li>
       <li>When a picture is done, kids tap "I'm done!" and play "Can You Find Me?": they find each friend on the drawing and repeat its name.</li>
       <li>Privacy policy: lookandseecolorme.com/privacy</li>
     </ul>
@@ -454,6 +467,30 @@ button{font:inherit;color:inherit}
   </div>
 </div>
 
+<!-- The child's profile: name, favorite friend, birthday. Kept only on this device. -->
+<div class="scrim" id="sheetProfile" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+  <div class="sheet">
+    <div class="cheer" style="margin-bottom:6px"><img class="mia" src="img/mia-hi.webp" alt="Mia" style="width:min(110px,28vw)"><div class="bubble" id="profTitle" style="margin-bottom:26px">Hi! I'm Mia.<br>What's your name?</div></div>
+    <input class="name-in" id="profName" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Your name" aria-label="Your name">
+    <h3 class="sec" style="text-align:center">Pick your friend</h3>
+    <div class="avatars" id="profAvatars"></div>
+    <h3 class="sec" style="text-align:center">When is your birthday? <small>(Mia has a gift!)</small></h3>
+    <div class="bday"><select id="profMonth" aria-label="Month"></select><select id="profDay" aria-label="Day"></select></div>
+    <div class="big" style="margin-top:14px"><button class="btn coral" id="profSave">Let's go!</button></div>
+    <p class="note">Your name and birthday stay only on this device.<br><button class="linkbtn" id="profSkip">Not now</button></p>
+  </div>
+</div>
+
+<!-- Happy birthday -->
+<div class="scrim" id="sheetBday" role="dialog" aria-modal="true" aria-labelledby="bdayTitle">
+  <div class="sheet">
+    <div class="cake" aria-hidden="true">&#127874;</div>
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="bdayTitle"></div></div>
+    <img class="parade-pic" id="bdayGift" alt="" hidden>
+    <div class="big" id="bdayBtns"></div>
+  </div>
+</div>
+
 <!-- Parental gate -->
 <div class="scrim" id="sheetGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="sheet">
@@ -497,7 +534,8 @@ async function loadBooks() {
 function rank(p) { return FREE.has(p.id) ? 0 : p.id === 'blank' ? 1 : 2; }
 function owned() { try { return JSON.parse(localStorage.getItem('colorme-owned')) || []; } catch (_) { return []; } }
 function addOwned(id) { const o = owned(); if (!o.includes(id)) o.push(id); try { localStorage.setItem('colorme-owned', JSON.stringify(o)); } catch (_) {} }
-function unlocked(p) { return !p.book || FREE.has(p.id) || owned().includes(p.book); }
+function gifts() { try { return JSON.parse(localStorage.getItem('colorme-gifts')) || []; } catch (_) { return []; } }
+function unlocked(p) { return !p.book || FREE.has(p.id) || owned().includes(p.book) || gifts().includes(p.id); }
 const LOGO_SRC = 'icons/logo-small.png';
 const SITE = 'www.lookandseecolorme.com';
 
@@ -936,7 +974,8 @@ function showHome() {
   const own = owned().includes('ocean');
   const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
   home.classList.add('on');
-  renderHomeArt();
+  renderHomeArt(); renderKid();
+  if (!kid().asked) setTimeout(openProfile, 400); else checkBirthday();
 }
 function hideHome() { home.classList.remove('on'); }
 $('#homeGo').addEventListener('click', () => { hideHome(); if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
@@ -1051,6 +1090,7 @@ function finishButtons(box) {
   box.append(bigBtn('Next picture', 'coral', goNext), bigBtn('All pictures', '', goAll), bigBtn('My art', 'sun', openArt), bigBtn('Save / Share', 'teal', goSave));
 }
 $('#btnDone').addEventListener('click', () => {
+  $('#cheerTitle').innerHTML = ''; $('#cheerTitle').append(`Good job${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'You made a wonderful work of art!');
   const box = $('#cheerBtns');
   const hasFriends = (current.figs || []).length > 0;
   $('#cheerText').textContent = hasFriends ? 'Now, can you find my friends in your picture?' : 'Shall we do the next one?';
@@ -1074,6 +1114,7 @@ function startParade() { if (!finding()) return; parade = 0; closeSheets(); open
 $('#paradeSay').addEventListener('click', () => say(current.figs[parade]));
 $('#paradeNext').addEventListener('click', () => {
   if (++parade < current.figs.length) { showParade(); return; }
+  $('#winTitle').innerHTML = ''; $('#winTitle').append(`You found them all${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'Shall we do the next one?');
   closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin');
 });
 
@@ -1158,6 +1199,67 @@ function autosave() {
 function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify({ tool, color, sizeIdx, pic: current.id })); } catch (_) {} }
 function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
 
+
+/* ---------- The child's profile (name, favorite friend, birthday): stored only on this device ---------- */
+const AVATARS = ['d01_dolphin', 'd19_octopus', 'd17_turtle', 'd02_seahorse', 'd03_pufferfish', 'd07_starfish', 'd03_crab', 'd05_penguin'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function kid() { try { return JSON.parse(localStorage.getItem('colorme-kid')) || {}; } catch (_) { return {}; } }
+function setKid(k) { try { localStorage.setItem('colorme-kid', JSON.stringify(k)); } catch (_) {} }
+function kidName() { return (kid().name || '').trim(); }
+function avatarSrc(a) { return 'books/ocean/figs/' + (AVATARS.includes(a) ? a : AVATARS[0]) + '.webp'; }
+function renderKid() {
+  const k = kid(), name = kidName();
+  const hello = $('#helloBubble'); hello.innerHTML = '';
+  hello.append(name ? `Hi, ${name}! I'm Mia.` : "Hi, I'm Mia!", document.createElement('br'), "Let's color and find sea friends!");
+  const chip = $('#kidChip'); chip.hidden = !name && !k.avatar;
+  $('#kidAvatar').src = avatarSrc(k.avatar); $('#kidChipName').textContent = name || 'Me';
+}
+let profAvatar = null;
+function openProfile() {
+  const k = kid(); profAvatar = k.avatar || null;
+  $('#profName').value = k.name || '';
+  const box = $('#profAvatars'); box.innerHTML = '';
+  AVATARS.forEach(a => {
+    const b = document.createElement('button'); b.setAttribute('aria-pressed', a === profAvatar); b.setAttribute('aria-label', a.split('_')[1]);
+    b.innerHTML = `<img src="${avatarSrc(a)}" alt="">`;
+    b.addEventListener('click', () => { profAvatar = a; box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+    box.appendChild(b);
+  });
+  const [m, d] = (k.bday || '').split('-').map(Number);
+  $('#profMonth').innerHTML = '<option value="">Month</option>' + MONTHS.map((n, i) => `<option value="${i + 1}"${m === i + 1 ? ' selected' : ''}>${n}</option>`).join('');
+  $('#profDay').innerHTML = '<option value="">Day</option>' + Array.from({ length: 31 }, (_, i) => `<option${d === i + 1 ? ' selected' : ''}>${i + 1}</option>`).join('');
+  openSheet('#sheetProfile');
+}
+$('#profSave').addEventListener('click', () => {
+  const name = $('#profName').value.replace(/[<>]/g, '').trim().slice(0, 20);
+  const m = +$('#profMonth').value, d = +$('#profDay').value;
+  const old = kid();
+  setKid({ ...old, asked: true, name, avatar: profAvatar || old.avatar || null, bday: m && d ? `${m}-${d}` : '' });
+  closeSheets(); renderKid(); checkBirthday();
+  if (name) sayWord(`Hi, ${name}!`);
+});
+$('#profSkip').addEventListener('click', () => { setKid({ ...kid(), asked: true }); closeSheets(); });
+$('#kidChip').addEventListener('click', openProfile);
+
+// Birthday: Mia says happy birthday and gives a picture from the book
+function checkBirthday() {
+  const k = kid(); if (!k.bday) return;
+  const now = new Date(), today = `${now.getMonth() + 1}-${now.getDate()}`;
+  if (k.bday !== today || k.celebrated === now.getFullYear()) return;
+  setKid({ ...k, celebrated: now.getFullYear() });
+  const name = kidName();
+  const gift = PICTURES.find(p => p.book && !unlocked(p));
+  const t = $('#bdayTitle'); t.innerHTML = '';
+  t.append(`Happy birthday${name ? ', ' + name : ''}!`, document.createElement('br'), gift ? 'I have a gift for you: a new picture!' : 'Let’s paint something special today!');
+  const img = $('#bdayGift'), btns = $('#bdayBtns'); btns.innerHTML = '';
+  if (gift) {
+    const g = gifts(); g.push(gift.id); try { localStorage.setItem('colorme-gifts', JSON.stringify(g)); } catch (_) {}
+    img.src = gift.thumb; img.hidden = false;
+    btns.append(bigBtn('Open my gift', 'coral', () => { closeSheets(); hideHome(); openPicture(gift); }));
+  } else { img.hidden = true; btns.append(bigBtn("Let's color!", 'coral', () => { closeSheets(); $('#homeGo').click(); })); }
+  openSheet('#sheetBday');
+  sayWord(`Happy birthday${name ? ', ' + name : ''}!`);
+}
 
 /* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
 document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', () => {
