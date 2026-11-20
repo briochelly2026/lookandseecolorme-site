@@ -151,6 +151,8 @@ button{font:inherit;color:inherit}
 .vthumb{position:relative;display:block;width:100%;aspect-ratio:16/10;border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:#fff}
 .vthumb img{width:100%;height:100%;object-fit:cover;aspect-ratio:auto;border:0;border-radius:0}
 .vthumb i{position:absolute;left:50%;top:50%;width:54px;height:40px;transform:translate(-50%,-50%);background:#FF0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat;border-radius:12px;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.wframe{position:relative;width:min(100%,46vh,340px);aspect-ratio:9/16;margin:0 auto 12px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:#FFF8EE}
+.wframe video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .vframe{position:relative;width:100%;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000;margin-bottom:12px}
 .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 /* Child profile */
@@ -338,6 +340,7 @@ button{font:inherit;color:inherit}
     <div class="shelf" id="homeArtShelf"></div>
     <h3 class="sec">Watch Mia</h3>
     <div class="shelf watch">
+      <button class="book vid" id="homeWelcome"><span class="vthumb"><img src="img/welcome.webp" alt="" style="object-position:50% 25%"><i></i></span><span class="bt">Meet Mia</span></button>
       <button class="book vid" data-list="UULFpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-color.webp" alt=""><i></i></span><span class="bt">Color with Mia</span></button>
       <button class="book vid" data-list="UUSHpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-stories.webp" alt=""><i></i></span><span class="bt">Mia's stories</span></button>
     </div>
@@ -464,6 +467,14 @@ button{font:inherit;color:inherit}
     <h2 id="videoTitle">Watch Mia</h2>
     <div class="vframe" id="videoBox"></div>
     <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
+  </div>
+</div>
+
+<!-- Mia's welcome video (plays inside the app, from the app's own files) -->
+<div class="scrim" id="sheetWelcome" role="dialog" aria-modal="true" aria-label="Mia says hi">
+  <div class="sheet">
+    <div class="wframe"><video id="welcomeVid" src="img/welcome.mp4" poster="img/welcome.webp" playsinline controls preload="metadata"></video></div>
+    <div class="big"><button class="btn coral" id="welcomeGo">Let's color!</button></div>
   </div>
 </div>
 
@@ -885,7 +896,7 @@ $('#btnUndo').addEventListener('click', () => undo());
 
 /* ---------- Sheets ---------- */
 function openSheet(id) { $(id).classList.add('on'); }
-function closeSheets() { document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); if (gateCancel) { const g = gateCancel; gateCancel = null; g(); } }
+function closeSheets() { const wv = document.getElementById('welcomeVid'); if (wv) wv.pause(); document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); if (gateCancel) { const g = gateCancel; gateCancel = null; g(); } }
 document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheets(); }));
 $('#btnClear').addEventListener('click', () => openSheet('#sheetClear'));
 $('#doClear').addEventListener('click', () => { pushUndo(); pctx.clearRect(0, 0, W, H); autosave(); closeSheets(); });
@@ -987,9 +998,27 @@ function showHome() {
   const own = owned().includes('ocean');
   const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
   home.classList.add('on');
-  renderHomeArt(); renderKid(); mia('hi');
+  renderHomeArt(); renderKid();
+  if (!kid().welcomed) { setTimeout(() => openWelcome(true), 400); return; }
+  mia('hi');
   if (!kid().asked) setTimeout(openProfile, 400); else checkBirthday();
 }
+// Mia's welcome video: first time on its own, any time from "Meet Mia"
+let welcomeFirst = false;
+function openWelcome(first) {
+  welcomeFirst = !!first;
+  if (voiceAudio) voiceAudio.pause();
+  const v = $('#welcomeVid'); try { v.currentTime = 0; } catch (_) {}
+  openSheet('#sheetWelcome');
+  const p = v.play(); if (p && p.catch) p.catch(() => {});
+}
+function closeWelcome() {
+  closeSheets();
+  if (welcomeFirst) { welcomeFirst = false; setKid({ ...kid(), welcomed: true }); if (!kid().asked) setTimeout(openProfile, 300); else checkBirthday(); }
+}
+$('#welcomeGo').addEventListener('click', closeWelcome);
+$('#sheetWelcome').addEventListener('click', e => { if (e.target.id === 'sheetWelcome') closeWelcome(); });
+$('#homeWelcome').addEventListener('click', () => openWelcome(false));
 function hideHome() { home.classList.remove('on'); }
 $('#homeGo').addEventListener('click', () => { hideHome(); if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
 $('#homeOcean').addEventListener('click', () => { hideHome(); renderPicks(); openSheet('#sheetPics'); });
@@ -1270,7 +1299,7 @@ function checkBirthday() {
 }
 
 /* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
-document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('.book.vid[data-list]').forEach(b => b.addEventListener('click', () => {
   const list = b.dataset.list;
   // The video plays inside the app, so the child never leaves it. Plays still count as views on the channel.
   // In the store app the player is framed through our website, because YouTube's player needs a web address to run.
