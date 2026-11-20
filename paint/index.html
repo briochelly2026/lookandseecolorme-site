@@ -146,6 +146,13 @@ button{font:inherit;color:inherit}
 /* Name of the crayon you just picked */
 .color-name{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
 .color-name.on{opacity:1;transform:translateX(-50%) scale(1)}
+/* Watch Mia */
+.watch{grid-template-columns:repeat(2,1fr)!important}
+.vthumb{position:relative;display:block;width:100%;aspect-ratio:16/10;border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:#fff}
+.vthumb img{width:100%;height:100%;object-fit:cover;aspect-ratio:auto;border:0;border-radius:0}
+.vthumb i{position:absolute;left:50%;top:50%;width:54px;height:40px;transform:translate(-50%,-50%);background:#FF0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat;border-radius:12px;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000;margin-bottom:12px}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 /* My art */
 .cheer[hidden]{display:none}
 .btn.sun{background:var(--sun);color:var(--ink)}
@@ -312,6 +319,11 @@ button{font:inherit;color:inherit}
       <button class="book" id="homeOcean"><img src="books/ocean/cover.jpg" alt=""><span class="bt">Ocean Animals</span><span class="badge" id="oceanBadge">3 free pictures</span></button>
       <div class="book soon" aria-label="More books coming soon"><div class="soon-cover">?</div><span class="bt">More books</span><span class="badge gray">Coming soon</span></div>
     </div>
+    <h3 class="sec">Watch Mia</h3>
+    <div class="shelf watch">
+      <button class="book vid" data-list="UULFpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-color.webp" alt=""><i></i></span><span class="bt">Color with Mia</span></button>
+      <button class="book vid" data-list="UUSHpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-stories.webp" alt=""><i></i></span><span class="bt">Mia's stories</span></button>
+    </div>
     <p class="note">No ads &middot; No sign-up &middot; Works offline<br><button class="linkbtn" id="homeParents">For grown-ups</button></p>
   </div>
 </section>
@@ -425,6 +437,16 @@ button{font:inherit;color:inherit}
     <p>Everything you painted. Tap one to keep painting it.</p>
     <div class="picks gallery" id="artGrid"></div>
     <div class="cheer" id="artEmpty" hidden><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Nothing here yet!<br>Paint a picture and it will show up here.</div></div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
+  </div>
+</div>
+
+<!-- Mia's videos (website version: YouTube's privacy-enhanced player) -->
+<div class="scrim" id="sheetVideo" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
+  <div class="sheet">
+    <h2 id="videoTitle">Watch Mia</h2>
+    <div class="vframe" id="videoBox"></div>
+    <p class="note"><a href="https://www.youtube.com/@LookSeeColorMe" target="_blank" rel="noopener">See all of Mia's videos on YouTube</a></p>
     <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
   </div>
 </div>
@@ -554,7 +576,7 @@ function crayonSwatch(c, name) {
   const light = c.toUpperCase() === '#FFFFFF';
   // the name is printed on the paper wrapper, like a real crayon
   const fit = name.length > 5 ? ` textLength="${Math.min(27, name.length * 5)}" lengthAdjust="spacingAndGlyphs"` : '';
-  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="20" width="24" height="30" fill="${light ? '#E9EEF2' : '#fff'}" stroke="#14263A" stroke-width="2"/><text x="17" y="35" transform="rotate(-90 17 35)" text-anchor="middle" dominant-baseline="central" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="9" fill="#14263A"${fit}>${name}</text></g></svg>`;
+  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="20" width="24" height="30" fill="${light ? '#E9EEF2' : '#fff'}" stroke="#14263A" stroke-width="2"/><text x="17" y="35" transform="rotate(90 17 35)" text-anchor="middle" dominant-baseline="central" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="9" fill="#14263A"${fit}>${name}</text></g></svg>`;
 }
 const toolBtns = [...document.querySelectorAll('.tool')];
 function drawToolIcons() { toolBtns.forEach(b => b.innerHTML = TOOL_SVG[b.dataset.tool](color)); }
@@ -1131,6 +1153,21 @@ function autosave() {
 function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify({ tool, color, sizeIdx, pic: current.id })); } catch (_) {} }
 function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
 
+
+/* ---------- Watch Mia: her videos play on YouTube, so every view counts on the channel ---------- */
+document.querySelectorAll('.book.vid').forEach(b => b.addEventListener('click', async () => {
+  const list = b.dataset.list;
+  if (window.ColorMeNative) {
+    // in the store app, leaving the app is for grown-ups: ask first, then open YouTube
+    if (!(await parentalGate())) return; gateCancel = null; closeSheets();
+    location.href = 'https://www.youtube.com/playlist?list=' + list;
+    return;
+  }
+  $('#videoTitle').textContent = b.querySelector('.bt').textContent;
+  $('#videoBox').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${list}&rel=0" title="Mia on YouTube" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  openSheet('#sheetVideo');
+}));
+$('#sheetVideo').addEventListener('click', e => { if (!$('#sheetVideo').classList.contains('on')) $('#videoBox').innerHTML = ''; });
 
 /* ---------- My art: a gallery of every picture already painted (all on this device) ---------- */
 function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
