@@ -143,6 +143,14 @@ button{font:inherit;color:inherit}
 .parade-step{font:600 15px/1 Fredoka,system-ui,sans-serif;color:var(--muted);margin-bottom:10px}
 .btn.green{background:#2E9E4F;color:#fff}
 
+/* Name of the crayon you just picked */
+.color-name{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
+.color-name.on{opacity:1;transform:translateX(-50%) scale(1)}
+/* My art */
+.cheer[hidden]{display:none}
+.btn.sun{background:var(--sun);color:var(--ink)}
+.gallery .pick img{aspect-ratio:auto;height:auto;border:2px solid var(--ink);border-radius:8px}
+.gallery .pick time{font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted)}
 /* Tools */
 .tools{grid-area:tools;display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 6px 2px;flex-wrap:nowrap}
 .tool{width:min(58px,12.4vw);height:64px;flex:none;border:0;background:none;padding:0;cursor:pointer;position:relative;border-radius:16px;display:grid;place-items:end center}
@@ -253,6 +261,7 @@ button{font:inherit;color:inherit}
       <span class="count" id="findCount">0/3</span>
       <button class="x" id="findExit" aria-label="Back to painting">&times;</button>
     </div>
+    <div class="color-name" id="colorName" aria-live="polite"></div>
     <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
     <div class="tray" id="tray" hidden>
       <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
@@ -297,6 +306,7 @@ button{font:inherit;color:inherit}
     <img class="home-logo" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
     <div class="hello"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Hi, I'm Mia!<br>Let's color and find sea friends!</div></div>
     <button class="btn coral huge" id="homeGo">Let's color!</button>
+    <div><button class="btn sun" id="homeArt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="m21 16-5-5-9 9"/></svg>My art</button></div>
     <h3 class="sec">My books</h3>
     <div class="shelf">
       <button class="book" id="homeOcean"><img src="books/ocean/cover.jpg" alt=""><span class="bt">Ocean Animals</span><span class="badge" id="oceanBadge">3 free pictures</span></button>
@@ -326,6 +336,7 @@ button{font:inherit;color:inherit}
 <div class="scrim" id="sheetPics" role="dialog" aria-modal="true" aria-labelledby="picsTitle">
   <div class="sheet">
     <h2 id="picsTitle">Pick a picture!</h2>
+    <p><button class="btn sun small" id="picsArt">See my art</button></p>
     <p>Paint anywhere you like, even outside the lines.</p>
     <h3 class="sec">Free pictures</h3>
     <div class="picks" id="picksFree"></div>
@@ -406,6 +417,18 @@ button{font:inherit;color:inherit}
   </div>
 </div>
 
+
+<!-- My art: every picture already painted -->
+<div class="scrim" id="sheetArt" role="dialog" aria-modal="true" aria-labelledby="artTitle">
+  <div class="sheet">
+    <h2 id="artTitle">My art</h2>
+    <p>Everything you painted. Tap one to keep painting it.</p>
+    <div class="picks gallery" id="artGrid"></div>
+    <div class="cheer" id="artEmpty" hidden><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Nothing here yet!<br>Paint a picture and it will show up here.</div></div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
+  </div>
+</div>
+
 <!-- Parental gate -->
 <div class="scrim" id="sheetGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
   <div class="sheet">
@@ -439,7 +462,7 @@ async function loadBooks() {
       const data = await (await fetch(b.dir + 'book.json')).json();
       data.pictures.forEach(p => PICTURES.push({
         id: p.id, name: p.title, book: b.id, src: b.dir + 'art/' + p.id + '.webp', thumb: b.dir + 'art/' + p.id + '_thumb.jpg',
-        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name, box: f.box || null, voice: f.voice ? b.dir + f.voice : null }))
+        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name, box: f.box || null, boxes: f.box ? [f.box, ...(f.more || [])] : [], voice: f.voice ? b.dir + f.voice : null }))
       }));
     } catch (_) {}
   }
@@ -454,7 +477,7 @@ const LOGO_SRC = 'icons/logo-small.png';
 const SITE = 'www.lookandseecolorme.com';
 
 const COLORS = [
-  ['Red','#E5322D'],['Coral','#FF6245'],['Orange','#FF8F1F'],['Sunny yellow','#FEC621'],['Lemon','#FFE66B'],
+  ['Red','#E5322D'],['Coral','#FF6245'],['Orange','#FF8F1F'],['Yellow','#FEC621'],['Lemon','#FFE66B'],
   ['Lime','#9BD14B'],['Green','#2E9E4F'],['Teal','#1FA6B1'],['Sky blue','#5CC4F0'],['Blue','#2F73AF'],
   ['Purple','#7E57C2'],['Berry','#CE2967'],['Pink','#F79BC0'],['Peach','#FFCFA3'],['Brown','#8D5A3B'],
   ['Gray','#9AA3AB'],['Black','#24262B'],['White','#FFFFFF']
@@ -527,9 +550,11 @@ const TOOL_SVG = {
   pencil: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M24 18 30 3l6 15z" fill="#F6D7A7" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 8 30 3l2 5z" fill="${c}" stroke="#14263A" stroke-width="1.5" stroke-linejoin="round"/><rect x="24" y="17" width="12" height="44" fill="${c}" stroke="#14263A" stroke-width="2.5"/><path d="M28 17v44M32 17v44" stroke="#14263A" stroke-width="1" opacity=".35"/></g></svg>`,
   eraser: () => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><rect x="19" y="10" width="22" height="42" rx="6" fill="#F7A6B9" stroke="#14263A" stroke-width="2.5"/><path d="M19 32h22v14a6 6 0 0 1-6 6H25a6 6 0 0 1-6-6z" fill="#5CC4F0" stroke="#14263A" stroke-width="2.5"/></g></svg>`
 };
-function crayonSwatch(c) {
+function crayonSwatch(c, name) {
   const light = c.toUpperCase() === '#FFFFFF';
-  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="26" width="24" height="16" fill="${light ? '#E9EEF2' : '#fff'}" opacity=".9" stroke="#14263A" stroke-width="2"/></g></svg>`;
+  // the name is printed on the paper wrapper, like a real crayon
+  const fit = name.length > 5 ? ` textLength="${Math.min(27, name.length * 5)}" lengthAdjust="spacingAndGlyphs"` : '';
+  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="20" width="24" height="30" fill="${light ? '#E9EEF2' : '#fff'}" stroke="#14263A" stroke-width="2"/><text x="17" y="35" transform="rotate(-90 17 35)" text-anchor="middle" dominant-baseline="central" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="9" fill="#14263A"${fit}>${name}</text></g></svg>`;
 }
 const toolBtns = [...document.querySelectorAll('.tool')];
 function drawToolIcons() { toolBtns.forEach(b => b.innerHTML = TOOL_SVG[b.dataset.tool](color)); }
@@ -558,13 +583,29 @@ function buildSizes() {
 }
 
 const colorsEl = $('#colors');
+// tapping a crayon shows its name big and says it
+let nameTimer = 0;
+function showColorName(name) {
+  const el = $('#colorName'); el.textContent = name; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  clearTimeout(nameTimer); nameTimer = setTimeout(() => el.classList.remove('on'), 1400);
+  sayWord(name);
+}
+function sayWord(w) {
+  try {
+    const sp = window.speechSynthesis; if (!sp) return;
+    sp.cancel();
+    const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.25;
+    const v = sp.getVoices().find(v => /^en(-|_)US/i.test(v.lang)); if (v) u.voice = v;
+    sp.speak(u);
+  } catch (_) {}
+}
 COLORS.forEach(([name, c]) => {
   const b = document.createElement('button');
   b.className = 'sw'; b.setAttribute('aria-label', name); b.dataset.c = c;
   b.setAttribute('aria-pressed', c === color);
-  b.innerHTML = crayonSwatch(c);
+  b.innerHTML = crayonSwatch(c, name);
   b.addEventListener('click', () => {
-    color = c;
+    color = c; showColorName(name);
     colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x === b));
     if (tool === 'eraser') { tool = 'crayon'; toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === 'crayon')); }
     drawToolIcons(); buildSizes(); remember();
@@ -907,10 +948,10 @@ function renderFind() {
   $('#trayTitle').textContent = 'Find these friends:';
   $('#findCount').textContent = `${found.length}/${figs.length}`;
   marks.innerHTML = '';
-  found.forEach(i => { const f = figs[i]; if (f && f.box) addMark(f); });
+  found.forEach(i => { const f = figs[i]; if (f) f.boxes.forEach(b => addMark(f, b)); });
 }
-function addMark(f) {
-  const [x, y, w, h] = f.box, pad = 0.012;
+function addMark(f, box) {
+  const [x, y, w, h] = box, pad = 0.012;
   const m = document.createElement('div'); m.className = 'mark';
   m.style.left = (x - pad) * 100 + '%'; m.style.top = (y - pad) * 100 + '%';
   m.style.width = (w + pad * 2) * 100 + '%'; m.style.height = (h + pad * 2) * 100 + '%';
@@ -929,9 +970,9 @@ function tapFind(e) {
   const slack = 0.025;   // little fingers: a bit of room around each friend
   let hit = -1, area = Infinity;
   figs.forEach((f, i) => {
-    if (!f.box) return;
-    const [x, y, w, h] = f.box;
-    if (fx >= x - slack && fx <= x + w + slack && fy >= y - slack && fy <= y + h + slack && w * h < area) { hit = i; area = w * h; }
+    f.boxes.forEach(([x, y, w, h]) => {
+      if (fx >= x - slack && fx <= x + w + slack && fy >= y - slack && fy <= y + h + slack && w * h < area) { hit = i; area = w * h; }
+    });
   });
   if (hit < 0) { missAt(e, 'Try again!'); return; }
   if (foundList().includes(hit)) { missAt(e, figs[hit].name + '!'); return; }
@@ -961,12 +1002,7 @@ function say(f) {
   try {
     if (voiceAudio) { voiceAudio.pause(); voiceAudio = null; }
     if (f.voice) { voiceAudio = new Audio(f.voice); voiceAudio.play().catch(() => {}); return; }
-    const sp = window.speechSynthesis; if (!sp) return;
-    sp.cancel();
-    const u = new SpeechSynthesisUtterance(f.name + '!');
-    u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.25;
-    const v = sp.getVoices().find(v => /^en(-|_)US/i.test(v.lang)); if (v) u.voice = v;
-    sp.speak(u);
+    sayWord(f.name + '!');
   } catch (_) {}
 }
 
@@ -986,7 +1022,7 @@ function goAll() { closeSheets(); exitFind(); renderPicks(); openSheet('#sheetPi
 function goSave() { closeSheets(); $('#shareMsg').textContent = ''; openSheet('#sheetSave'); }
 function finishButtons(box) {
   box.innerHTML = '';
-  box.append(bigBtn('Next picture', 'coral', goNext), bigBtn('All pictures', '', goAll), bigBtn('Save / Share', 'teal', goSave));
+  box.append(bigBtn('Next picture', 'coral', goNext), bigBtn('All pictures', '', goAll), bigBtn('My art', 'sun', openArt), bigBtn('Save / Share', 'teal', goSave));
 }
 $('#btnDone').addEventListener('click', () => {
   const box = $('#cheerBtns');
@@ -1094,6 +1130,44 @@ function autosave() {
 }
 function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify({ tool, color, sizeIdx, pic: current.id })); } catch (_) {} }
 function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
+
+
+/* ---------- My art: a gallery of every picture already painted (all on this device) ---------- */
+function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
+async function artThumb(p) {
+  let blob = null; try { blob = await idb('readonly', s => s.get(p.id)); } catch (_) {}
+  if (!blob) return null;
+  const bmp = await createImageBitmap(blob).catch(() => null); if (!bmp) return null;
+  const tw = 300, th = Math.round(tw * bmp.height / bmp.width);
+  const c = document.createElement('canvas'); c.width = tw; c.height = th; const g = c.getContext('2d');
+  g.drawImage(bmp, 0, 0, tw, th);
+  const d = g.getImageData(0, 0, tw, th).data; let ink = 0;
+  for (let i = 3; i < d.length; i += 16) if (d[i] > 20) { ink++; if (ink > 30) break; }
+  if (ink <= 30) return null;          // nothing painted yet
+  g.globalCompositeOperation = 'destination-over'; g.fillStyle = '#fff'; g.fillRect(0, 0, tw, th);
+  g.globalCompositeOperation = 'source-over';
+  if (p.src) { const l = await loadImg(p.src); if (l) g.drawImage(l, 0, 0, tw, th); }
+  return c.toDataURL('image/jpeg', 0.85);
+}
+async function openArt() {
+  closeSheets(); hideHome();
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); }
+  const grid = $('#artGrid'); grid.innerHTML = ''; $('#artEmpty').hidden = true;
+  openSheet('#sheetArt');
+  let n = 0;
+  for (const p of PICTURES) {
+    if (!unlocked(p)) continue;
+    const url = await artThumb(p); if (!url) continue;
+    n++;
+    const b = document.createElement('button'); b.className = 'pick';
+    b.innerHTML = `<img src="${url}" alt=""><span>${p.name}</span>`;
+    b.addEventListener('click', async () => { closeSheets(); exitFind(); await openPicture(p); });
+    grid.appendChild(b);
+  }
+  $('#artEmpty').hidden = n > 0;
+}
+$('#homeArt').addEventListener('click', openArt);
+$('#picsArt').addEventListener('click', openArt);
 
 /* ---------- Open a picture ---------- */
 async function openPicture(p) {

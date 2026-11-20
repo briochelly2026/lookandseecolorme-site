@@ -1,5 +1,5 @@
 // Color Me! Paint: offline cache. Nothing here talks to any server except this website.
-const CACHE = 'colorme-paint-v5';
+const CACHE = 'colorme-paint-v6';
 const FILES = [
   './', 'index.html', 'manifest.webmanifest',
   'books/ocean/book.json', 'books/ocean/cover.jpg', 'img/mia-hi.webp', 'img/intro.mp4', 'img/intro.webm',
