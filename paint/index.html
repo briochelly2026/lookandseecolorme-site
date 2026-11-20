@@ -1236,7 +1236,6 @@ $('#profSave').addEventListener('click', () => {
   const old = kid();
   setKid({ ...old, asked: true, name, avatar: profAvatar || old.avatar || null, bday: m && d ? `${m}-${d}` : '' });
   closeSheets(); renderKid(); checkBirthday();
-  if (name) sayWord(`Hi, ${name}!`);
 });
 $('#profSkip').addEventListener('click', () => { setKid({ ...kid(), asked: true }); closeSheets(); });
 $('#kidChip').addEventListener('click', openProfile);
@@ -1258,7 +1257,7 @@ function checkBirthday() {
     btns.append(bigBtn('Open my gift', 'coral', () => { closeSheets(); hideHome(); openPicture(gift); }));
   } else { img.hidden = true; btns.append(bigBtn("Let's color!", 'coral', () => { closeSheets(); $('#homeGo').click(); })); }
   openSheet('#sheetBday');
-  sayWord(`Happy birthday${name ? ', ' + name : ''}!`);
+  // the name is shown, not spoken: a device voice saying it sounds robotic (Mia's recorded voice says the greetings)
 }
 
 /* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
