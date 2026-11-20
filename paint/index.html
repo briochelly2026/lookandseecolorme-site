@@ -47,6 +47,30 @@ button{font:inherit;color:inherit}
 .ibtn.find{background:var(--teal);color:#fff}
 @media (max-width:420px){.top{gap:4px;padding:8px 6px}.actions{gap:4px}.ibtn{width:46px;height:48px;border-radius:14px}.ibtn svg{width:25px;height:25px}.brand .word{display:none}}
 
+
+/* Home (welcome) */
+.home{position:fixed;inset:0;z-index:15;display:none;overflow:auto;background:radial-gradient(circle at 20% 10%,#fff 0,var(--paper) 40%,#FFF1DC 100%);
+  padding:calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))}
+.home.on{display:block}
+.home-in{max-width:620px;margin:0 auto;text-align:center}
+.home-logo{width:min(320px,78%);height:auto;margin:4px auto 2px;display:block}
+.hello{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin:6px 0 10px}
+.hello .mia{width:min(170px,40vw);height:auto;flex:none}
+.bubble{position:relative;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:12px 14px;font:700 19px/1.25 Fredoka,system-ui,sans-serif;text-align:left;margin-bottom:60px;box-shadow:0 3px 0 var(--ink);max-width:250px}
+.bubble:after{content:"";position:absolute;left:-14px;bottom:18px;width:20px;height:20px;background:#fff;border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg)}
+.btn.huge{min-height:68px;font-size:26px;padding:0 40px;margin:2px 0 6px}
+.shelf{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:10px 0 6px}
+@media (min-width:560px){.shelf{grid-template-columns:repeat(3,1fr)}}
+.book{display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--ink);border-radius:18px;background:#fff;padding:10px 8px 12px;box-shadow:0 3px 0 var(--ink);cursor:pointer;font:inherit}
+.book img,.soon-cover{width:100%;aspect-ratio:8.5/11;object-fit:cover;border-radius:10px;border:2px solid var(--ink);background:#fff}
+.soon-cover{display:grid;place-items:center;font:700 54px/1 Fredoka,system-ui,sans-serif;color:var(--muted);background:repeating-linear-gradient(45deg,#F3F6F7 0 12px,#E9EEF0 12px 24px)}
+.book .bt{font:700 17px/1.15 Fredoka,system-ui,sans-serif}
+.badge{font:700 13px/1 Fredoka,system-ui,sans-serif;background:var(--sun);border:2px solid var(--ink);border-radius:999px;padding:5px 10px}
+.badge.ok{background:var(--teal);color:#fff}
+.badge.gray{background:#E9EEF0;color:var(--muted)}
+.book.soon{cursor:default;opacity:.85}
+.parents-list{text-align:left;margin:8px 0;padding-left:20px;font-weight:500}
+
 /* Drawing board */
 .board{grid-area:board;position:relative;overflow:hidden;touch-action:none;display:grid;place-items:center;padding:10px}
 .stage{position:absolute;left:0;top:0;transform-origin:0 0;border-radius:6px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 8px 0 3px rgba(20,38,58,.18);isolation:isolate;touch-action:none}
@@ -154,7 +178,7 @@ button{font:inherit;color:inherit}
 <body>
 <div class="app">
   <header class="top">
-    <a class="brand" href="../" aria-label="Look &amp; See, Color Me! website">
+    <a class="brand" href="../" aria-label="Home">
       <img class="ico" src="../assets/img/icon.webp" alt="">
       <img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
     </a>
@@ -191,6 +215,38 @@ button{font:inherit;color:inherit}
 
   <div class="colors" id="colors" role="toolbar" aria-label="Colors"></div>
   <footer class="foot"><a href="https://www.lookandseecolorme.com" target="_blank" rel="noopener">www.lookandseecolorme.com</a></footer>
+</div>
+
+
+<!-- Home / welcome -->
+<section class="home" id="home" aria-label="Welcome">
+  <div class="home-in">
+    <img class="home-logo" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
+    <div class="hello"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Hi, I'm Mia!<br>Let's color and find sea friends!</div></div>
+    <button class="btn coral huge" id="homeGo">Let's color!</button>
+    <h3 class="sec">My books</h3>
+    <div class="shelf">
+      <button class="book" id="homeOcean"><img src="books/ocean/cover.jpg" alt=""><span class="bt">Ocean Animals</span><span class="badge" id="oceanBadge">3 free pictures</span></button>
+      <div class="book soon" aria-label="More books coming soon"><div class="soon-cover">?</div><span class="bt">More books</span><span class="badge gray">Coming soon</span></div>
+    </div>
+    <p class="note">No ads &middot; No sign-up &middot; Works offline<br><button class="linkbtn" id="homeParents">For grown-ups</button></p>
+  </div>
+</section>
+
+<!-- For grown-ups -->
+<div class="scrim" id="sheetParents" role="dialog" aria-modal="true" aria-labelledby="parentsTitle">
+  <div class="sheet">
+    <h2 id="parentsTitle">For grown-ups</h2>
+    <ul class="parents-list">
+      <li>3 pictures are free. Each book unlocks with one purchase, no subscription.</li>
+      <li>No ads, no sign-up, no data collected. Drawings stay on this device.</li>
+      <li>Every picture has a "Can You Find Me?" game: tap the friends you find.</li>
+      <li>Privacy policy: lookandseecolorme.com/privacy</li>
+    </ul>
+    <div class="big"><button class="btn" id="parentsRestore">Restore purchases</button></div>
+    <p class="note" id="parentsMsg"></p>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Done</button></p>
+  </div>
 </div>
 
 <!-- Pick a picture -->
@@ -673,6 +729,28 @@ async function unlockBook(restore) {
 $('#doBuy').addEventListener('click', () => unlockBook(false));
 $('#doRestore').addEventListener('click', () => unlockBook(true));
 
+
+/* ---------- Home ---------- */
+const home = $('#home');
+function showHome() {
+  closeSheets();
+  const own = owned().includes('ocean');
+  const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
+  home.classList.add('on');
+}
+function hideHome() { home.classList.remove('on'); }
+$('#homeGo').addEventListener('click', () => { hideHome(); if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
+$('#homeOcean').addEventListener('click', () => { hideHome(); renderPicks(); openSheet('#sheetPics'); });
+$('#homeParents').addEventListener('click', async () => { if (await parentalGate()) { gateCancel = null; $('#parentsMsg').textContent = ''; openSheet('#sheetParents'); } });
+$('#parentsRestore').addEventListener('click', async () => {
+  const msg = $('#parentsMsg');
+  if (!Store.available) { msg.textContent = 'Purchases are available in the app from the App Store or Google Play.'; return; }
+  let ids = []; try { ids = await Store.restore(); } catch (_) {}
+  if (ids.includes(BOOKS[0].product)) { addOwned('ocean'); msg.textContent = 'Ocean Animals is unlocked!'; showHome(); }
+  else msg.textContent = 'No earlier purchase found on this account.';
+});
+document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); showHome(); });
+
 /* ---------- Can You Find Me? ---------- */
 const tray = $('#tray'), figsEl = $('#figs');
 function foundMap() { try { return JSON.parse(localStorage.getItem('colorme-found')) || {}; } catch (_) { return {}; } }
@@ -789,7 +867,7 @@ if (Number.isInteger(prefs.sizeIdx)) sizeIdx = Math.min(3, Math.max(0, prefs.siz
 toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === tool));
 colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === color));
 drawToolIcons(); buildSizes();
-loadBooks().then(() => openPicture(PICTURES.find(p => p.id === prefs.pic) || PICTURES[0])).then(() => { if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
+loadBooks().then(() => openPicture(PICTURES.find(p => p.id === prefs.pic) || PICTURES[0])).then(() => showHome());
 
 /* ---------- Works offline after the first visit ---------- */
 if ('serviceWorker' in navigator && location.protocol === 'https:') {
