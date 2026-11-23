@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Color Me! Paint · Look & See, Color Me!</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="description" content="Paint freely with crayons, markers and colored pencils. Free, no ads, no sign-up. Your drawings stay on your device.">
+<meta name="theme-color" content="#1FA6B1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Color Me!">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../assets/img/icon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<style>
+@font-face{font-family:Fredoka;src:url(../assets/fonts/fredoka-latin-600-normal.ttf) format("truetype");font-weight:600;font-display:swap}
+@font-face{font-family:Fredoka;src:url(../assets/fonts/fredoka-latin-700-normal.ttf) format("truetype");font-weight:700;font-display:swap}
+:root{
+  --teal:#1FA6B1;--sun:#FEC621;--coral:#FF6245;--berry:#CE2967;--ink:#14263A;
+  --paper:#FFFDF8;--desk:#E9F6F7;--muted:#5B6B7A;
+  --tap:52px;
+  color-scheme:light;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--desk);color:var(--ink);font:600 16px/1.3 Fredoka,ui-rounded,system-ui,sans-serif;overflow:hidden;
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+button{font:inherit;color:inherit}
+.app{position:fixed;inset:0;display:grid;
+  grid-template-rows:auto minmax(0,1fr) auto auto auto;
+  grid-template-areas:"top" "board" "tools" "colors" "foot";
+  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+/* Top bar */
+.top{grid-area:top;display:flex;align-items:center;gap:8px;padding:8px 10px;background:var(--paper);border-bottom:3px solid var(--ink)}
+.brand{display:flex;align-items:center;gap:6px;min-width:0;flex:1;text-decoration:none}
+.brand .ico{width:40px;height:40px;flex:none}
+.brand .word{height:36px;width:auto;min-width:0;object-fit:contain;object-position:left center}
+.actions{display:flex;gap:6px;flex:none}
+.ibtn{width:var(--tap);height:var(--tap);display:grid;place-items:center;border:3px solid var(--ink);border-radius:16px;background:#fff;cursor:pointer;box-shadow:0 3px 0 var(--ink);padding:0;transition:transform .08s,box-shadow .08s}
+.ibtn:active{transform:translateY(3px);box-shadow:0 0 0 var(--ink)}
+.ibtn svg{width:28px;height:28px}
+.ibtn[disabled]{opacity:.35;pointer-events:none}
+.ibtn.pics{background:var(--sun)}
+.ibtn.save{background:var(--coral);color:#fff}
+.ibtn.find{background:var(--teal);color:#fff}
+@media (max-width:420px){.top{gap:4px;padding:8px 6px}.actions{gap:4px}.ibtn{width:46px;height:48px;border-radius:14px}.ibtn svg{width:25px;height:25px}.brand .word{display:none}}
+
+
+
+/* Intro (animated logo when the app opens) */
+.intro{position:fixed;inset:0;z-index:30;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .45s ease;cursor:pointer}
+.intro.out{opacity:0;pointer-events:none}
+.intro .ring{position:relative;width:min(88vw,400px);aspect-ratio:1;margin-bottom:-6%}
+.intro video,.intro .still{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+.intro .word{width:min(70vw,330px);height:auto;opacity:0;transform:translateY(24px) scale(.6)}
+.intro.pop .word{animation:pop .7s cubic-bezier(.2,1.6,.4,1) forwards}
+.intro .spark{position:absolute;width:16px;height:16px;border-radius:50%;opacity:0}
+.intro.pop .spark{animation:spark .9s ease-out forwards}
+@keyframes pop{to{opacity:1;transform:none}}
+@keyframes spark{0%{opacity:1;transform:translate(0,0) scale(.4)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(1.1)}}
+@media (prefers-reduced-motion:reduce){.intro{display:none}}
+
+/* Home (welcome) */
+.home{position:fixed;inset:0;z-index:15;display:none;overflow:auto;background:radial-gradient(circle at 20% 10%,#fff 0,var(--paper) 40%,#FFF1DC 100%);
+  padding:calc(14px + env(safe-area-inset-top)) 16px calc(20px + env(safe-area-inset-bottom))}
+.home.on{display:block}
+.home-in{max-width:620px;margin:0 auto;text-align:center}
+.home-logo{width:min(320px,78%);height:auto;margin:4px auto 2px;display:block}
+.hello{display:flex;align-items:flex-end;justify-content:center;gap:4px;margin:6px 0 10px}
+.hello .mia{width:min(170px,40vw);height:auto;flex:none}
+.bubble{position:relative;background:#fff;border:3px solid var(--ink);border-radius:22px;padding:12px 14px;font:700 19px/1.25 Fredoka,system-ui,sans-serif;text-align:left;margin-bottom:60px;box-shadow:0 3px 0 var(--ink);max-width:250px}
+.bubble:after{content:"";position:absolute;left:-14px;bottom:18px;width:20px;height:20px;background:#fff;border-left:3px solid var(--ink);border-bottom:3px solid var(--ink);transform:rotate(45deg)}
+.btn.huge{min-height:68px;font-size:26px;padding:0 40px;margin:2px 0 6px}
+.shelf{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:10px 0 6px}
+@media (min-width:560px){.shelf{grid-template-columns:repeat(3,1fr)}}
+.book{display:flex;flex-direction:column;align-items:center;gap:6px;border:3px solid var(--ink);border-radius:18px;background:#fff;padding:10px 8px 12px;box-shadow:0 3px 0 var(--ink);cursor:pointer;font:inherit}
+.book img,.soon-cover{width:100%;aspect-ratio:8.5/11;object-fit:cover;border-radius:10px;border:2px solid var(--ink);background:#fff}
+.soon-cover{display:grid;place-items:center;font:700 54px/1 Fredoka,system-ui,sans-serif;color:var(--muted);background:repeating-linear-gradient(45deg,#F3F6F7 0 12px,#E9EEF0 12px 24px)}
+.book .bt{font:700 17px/1.15 Fredoka,system-ui,sans-serif}
+.badge{font:700 13px/1 Fredoka,system-ui,sans-serif;background:var(--sun);border:2px solid var(--ink);border-radius:999px;padding:5px 10px}
+.badge.ok{background:var(--teal);color:#fff}
+.badge.gray{background:#E9EEF0;color:var(--muted)}
+.book.soon{cursor:default;opacity:.85}
+.parents-list{text-align:left;margin:8px 0;padding-left:20px;font-weight:500}
+
+/* Drawing board */
+.board{grid-area:board;position:relative;overflow:hidden;touch-action:none;display:grid;place-items:center;padding:10px}
+.stage{position:absolute;left:0;top:0;transform-origin:0 0;border-radius:6px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 8px 0 3px rgba(20,38,58,.18);isolation:isolate;touch-action:none}
+.stage canvas,.stage img{position:absolute;inset:0;width:100%;height:100%;display:block}
+#live{pointer-events:none}
+#lines{pointer-events:none;z-index:3}
+.zoomout{position:absolute;right:14px;bottom:14px;z-index:5;display:none}
+.zoomout.on{display:grid}
+
+/* Can You Find Me? tray */
+.tray{position:absolute;left:10px;right:10px;bottom:10px;z-index:6;background:var(--paper);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 10px 10px;touch-action:pan-x}
+.tray[hidden]{display:none}
+.tray-head{display:flex;align-items:center;justify-content:space-between;gap:8px;font:700 18px/1.1 Fredoka,system-ui,sans-serif;padding:0 2px 6px}
+.tray-head .x{border:0;background:none;font:700 30px/1 Fredoka,system-ui,sans-serif;width:40px;height:36px;cursor:pointer;color:var(--ink)}
+.tray-head.done b{color:var(--berry)}
+.figs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;justify-content:safe center}
+.figs::-webkit-scrollbar{display:none}
+.fig{flex:none;width:92px;border:3px solid var(--ink);border-radius:16px;background:#fff;padding:6px 4px 4px;display:grid;justify-items:center;gap:2px;cursor:pointer;position:relative}
+.fig img{width:62px;height:62px;object-fit:contain}
+.fig span{font:600 14px/1.1 Fredoka,system-ui,sans-serif}
+.fig[aria-pressed="true"]{background:#E3F6E8;border-color:#2E9E4F}
+.fig[aria-pressed="true"]::after{content:"";position:absolute;top:-9px;right:-9px;width:28px;height:28px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/18px no-repeat;border:2px solid var(--ink)}
+
+
+/* Two steps: paint, then "I'm done!" -> find the friends in the picture */
+.done-btn{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.done-btn svg{width:28px;height:28px}
+.done-btn:active{transform:translate(-50%,3px);box-shadow:none}
+.findbar{position:absolute;left:10px;right:10px;top:10px;z-index:6;display:none;align-items:center;gap:10px;background:var(--sun);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 8px 8px 12px}
+.findbar .lupa{width:40px;height:40px;flex:none}
+.findbar b{flex:1;font:700 19px/1.15 Fredoka,system-ui,sans-serif}
+.findbar b small{display:block;font:600 15px/1.2 Fredoka,system-ui,sans-serif;color:var(--ink);opacity:.8}
+.findbar .count{flex:none;font:700 20px/1 Fredoka,system-ui,sans-serif;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 12px}
+.findbar .x{flex:none;border:0;background:none;font:700 32px/1 Fredoka,system-ui,sans-serif;width:40px;height:40px;cursor:pointer;color:var(--ink)}
+.app.finding .findbar{display:flex}
+.app.finding .tools,.app.finding .colors,.app.finding .done-btn{display:none}
+.marks{position:absolute;inset:0;z-index:4;pointer-events:none;display:none}
+.app.finding .marks{display:block}
+.mark{position:absolute;border:5px solid #2E9E4F;border-radius:50%;box-shadow:0 0 0 3px #fff,inset 0 0 0 3px #fff;animation:markin .5s cubic-bezier(.2,1.6,.4,1)}
+.mark i{position:absolute;top:-14px;right:-14px;width:34px;height:34px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/22px no-repeat;border:3px solid var(--ink)}
+.mark span{position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:4px 10px;font:700 16px/1 Fredoka,system-ui,sans-serif;white-space:nowrap;color:var(--ink)}
+.miss{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-50%);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 12px;font:700 17px/1 Fredoka,system-ui,sans-serif;animation:missout 1.1s ease-out forwards;white-space:nowrap}
+@keyframes markin{0%{transform:scale(.3);opacity:0}100%{transform:none;opacity:1}}
+@keyframes missout{0%{opacity:0;margin-top:0}15%{opacity:1}100%{opacity:0;margin-top:-40px}}
+.fig.hint{animation:wiggle .5s}
+@keyframes wiggle{25%{transform:rotate(-6deg)}75%{transform:rotate(6deg)}}
+.app.finding .tray{display:block}
+.fig.manual::before{content:"Tap me!";position:absolute;left:50%;top:-12px;transform:translateX(-50%);background:var(--sun);border:2px solid var(--ink);border-radius:999px;font:700 11px/1 Fredoka,system-ui,sans-serif;padding:3px 6px;white-space:nowrap}
+.fig.manual[aria-pressed="true"]::before{display:none}
+/* Mia cheers */
+.cheer{display:flex;align-items:flex-end;justify-content:center;gap:2px;margin:0 0 12px}
+.cheer .mia{width:min(140px,34vw);height:auto;flex:none}
+.cheer .bubble{margin-bottom:40px;max-width:300px}
+.parade-pic{width:min(240px,62vw);height:min(240px,62vw);object-fit:contain;display:block;margin:4px auto 6px;animation:markin .5s cubic-bezier(.2,1.6,.4,1)}
+.parade-name{font:700 clamp(40px,11vw,60px)/1.05 Fredoka,system-ui,sans-serif;color:var(--berry);margin:0 0 4px}
+.parade-step{font:600 15px/1 Fredoka,system-ui,sans-serif;color:var(--muted);margin-bottom:10px}
+.btn.green{background:#2E9E4F;color:#fff}
+
+/* Name of the crayon you just picked */
+.color-name{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
+.color-name.on{opacity:1;transform:translateX(-50%) scale(1)}
+/* Watch Mia */
+.watch{grid-template-columns:repeat(2,1fr)!important}
+.vthumb{position:relative;display:block;width:100%;aspect-ratio:16/10;border:2px solid var(--ink);border-radius:10px;overflow:hidden;background:#fff}
+.vthumb img{width:100%;height:100%;object-fit:cover;aspect-ratio:auto;border:0;border-radius:0}
+.vthumb i{position:absolute;left:50%;top:50%;width:54px;height:40px;transform:translate(-50%,-50%);background:#FF0033 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/26px no-repeat;border-radius:12px;box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.wframe{position:relative;width:min(100%,46vh,340px);aspect-ratio:9/16;margin:0 auto 12px;border:3px solid var(--ink);border-radius:18px;overflow:hidden;background:#FFF8EE}
+.wframe video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.vframe{position:relative;width:100%;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000;margin-bottom:12px}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Child profile */
+.kid{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--ink);border-radius:999px;background:#fff;padding:4px 14px 4px 4px;font:700 18px/1 Fredoka,system-ui,sans-serif;box-shadow:0 3px 0 var(--ink);cursor:pointer;margin:2px auto 0}
+.kid[hidden]{display:none}
+.kid img{width:40px;height:40px;object-fit:contain;border-radius:50%;background:var(--desk)}
+.name-in{width:min(320px,100%);font:700 24px/1 Fredoka,system-ui,sans-serif;text-align:center;border:3px solid var(--ink);border-radius:16px;padding:12px;background:#fff;color:var(--ink);-webkit-user-select:text;user-select:text}
+.avatars{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;max-width:400px;margin:8px auto 0}
+.avatars button{aspect-ratio:1;border:3px solid var(--ink);border-radius:18px;background:#fff;padding:6px;cursor:pointer}
+.avatars button img{width:100%;height:100%;object-fit:contain}
+.avatars button[aria-pressed="true"]{background:var(--sun);box-shadow:0 0 0 3px var(--sun)}
+.bday{display:flex;gap:8px;justify-content:center;margin-top:8px}
+.bday select{font:700 18px/1 Fredoka,system-ui,sans-serif;border:3px solid var(--ink);border-radius:14px;padding:10px;background:#fff;color:var(--ink)}
+.cake{font-size:64px;line-height:1;margin-bottom:4px}
+/* My art */
+.book.art img{object-fit:contain}
+.book.more .soon-cover{background:var(--sun);color:var(--ink);font-size:20px;line-height:1.2;padding:10px;text-align:center}
+.book.empty .soon-cover{font-size:16px;line-height:1.3;padding:12px;text-align:center;color:var(--muted)}
+.cheer[hidden]{display:none}
+.btn.sun{background:var(--sun);color:var(--ink)}
+.gallery .pick img{aspect-ratio:auto;height:auto;border:2px solid var(--ink);border-radius:8px}
+.gallery .pick time{font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted)}
+/* Tools */
+.tools{grid-area:tools;display:flex;align-items:center;justify-content:center;gap:2px;padding:6px 6px 2px;flex-wrap:nowrap}
+.tool{width:min(58px,12.4vw);height:64px;flex:none;border:0;background:none;padding:0;cursor:pointer;position:relative;border-radius:16px;display:grid;place-items:end center}
+.tool svg{width:100%;height:auto;aspect-ratio:1;transition:transform .15s}
+.tool[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}
+.tool[aria-pressed="true"] svg{transform:translateY(-6px)}
+.sep{width:3px;height:40px;background:rgba(20,38,58,.15);border-radius:2px;margin:0 3px;flex:none}
+.sizes{display:flex;gap:2px;align-items:center}
+.size{width:min(44px,9.3vw);height:52px;flex:none;border:0;background:none;border-radius:14px;display:grid;place-items:center;cursor:pointer;padding:0}
+.size i{display:block;border-radius:50%;background:var(--ink)}
+.size[aria-pressed="true"]{background:#fff;box-shadow:inset 0 0 0 3px var(--ink)}
+
+/* Colors */
+.colors{grid-area:colors;display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;padding:4px 10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-snap-type:x proximity}
+.colors::-webkit-scrollbar{display:none}
+.sw{flex:none;width:40px;height:70px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
+.sw svg{width:34px;height:66px;transform:translateY(16px);transition:transform .15s}
+.sw[aria-pressed="true"] svg{transform:translateY(0)}
+.foot{grid-area:foot;text-align:center;font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted);padding:4px 0 6px;letter-spacing:.02em}
+.foot a{color:inherit;text-decoration:none}
+
+/* Wide / landscape screens (tablets) */
+@media (min-aspect-ratio:1/1) and (min-width:700px){
+  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;
+    grid-template-areas:"top top top" "tools board colors" "foot foot foot"}
+  .tools{flex-direction:column;justify-content:center;padding:8px}
+  .tools .sep{width:40px;height:3px;margin:4px 0}
+  .sizes{flex-direction:column}
+  .tool{width:64px}.size{width:52px;height:46px}
+  .colors{display:grid;grid-template-columns:repeat(2,76px);grid-auto-rows:min(50px,calc((100dvh - 150px)/9));gap:2px 6px;align-content:center;overflow:hidden;padding:10px 26px 10px 4px;touch-action:none}
+  .sw{width:76px;height:100%;place-items:center;overflow:visible}
+  .sw svg{width:auto;height:150%;aspect-ratio:34/66;transform:translateX(10px) rotate(-90deg)}
+  .sw[aria-pressed="true"] svg{transform:translateX(-8px) rotate(-90deg)}
+}
+
+/* Sheets */
+.scrim{position:fixed;inset:0;background:rgba(20,38,58,.45);display:none;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
+.scrim.on{display:flex}
+@media (min-width:700px){.scrim{align-items:center}}
+.sheet{background:var(--paper);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));text-align:center}
+.sheet h2{margin:0 0 4px;font:700 24px/1.15 Fredoka,system-ui,sans-serif}
+.sheet p{margin:0 0 14px;color:var(--muted);font-size:15px}
+.picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 8px}
+@media (min-width:520px){.picks{grid-template-columns:repeat(4,1fr)}}
+.sheet{width:min(720px,100%)}
+.pick{border:3px solid var(--ink);border-radius:18px;background:#fff;padding:8px;cursor:pointer;display:grid;gap:6px;justify-items:center;box-shadow:0 3px 0 var(--ink)}
+.pick img,.pick .blank{width:100%;aspect-ratio:2/3;object-fit:contain;border-radius:8px;background:#fff}
+.pick .blank{display:grid;place-items:center;border:2px dashed #b8c4cc;color:var(--muted);font-size:13px}
+.pick span{font-size:15px}
+.pick{position:relative}
+.pick.locked img{opacity:.55}
+.pick .lock{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:var(--sun);border:2px solid var(--ink);display:grid;place-items:center}
+.pick .lock svg{width:18px;height:18px}
+.sec{margin:14px 0 0;font:700 18px/1.2 Fredoka,system-ui,sans-serif;text-align:left}
+.sec small{font-size:14px;color:var(--muted);font-weight:600}
+.sec-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+.sec-row .sec{margin:0}
+.btn.small{min-height:42px;font-size:16px;padding:0 16px;white-space:nowrap;flex:none}
+.btn[hidden]{display:none}
+.linkbtn{border:0;background:none;font:600 14px/1.4 Fredoka,system-ui,sans-serif;color:var(--teal);text-decoration:underline;cursor:pointer;padding:4px}
+.shop-cover{width:150px;border:3px solid var(--ink);border-radius:12px;margin:0 auto 14px;display:block;background:#fff}
+.gate{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:320px;margin:0 auto}
+.gate button{min-height:60px;border:3px solid var(--ink);border-radius:16px;background:#fff;font:700 24px/1 Fredoka,system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+.pick[aria-current="true"]{background:var(--sun)}
+.big{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.btn{min-height:56px;padding:0 22px;border:3px solid var(--ink);border-radius:999px;background:#fff;font:700 19px/1 Fredoka,system-ui,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink);display:inline-flex;align-items:center;gap:10px}
+.btn svg{width:26px;height:26px}
+.btn.coral{background:var(--coral);color:#fff}
+.btn.teal{background:var(--teal);color:#fff}
+.btn.berry{background:var(--berry);color:#fff}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.note{margin-top:14px;font-size:13px;color:var(--muted)}
+.note b{color:var(--ink)}
+#printImg{display:none}
+@media print{
+  @page{margin:10mm}
+  body{background:#fff;overflow:visible}
+  .app,.scrim{display:none!important}
+  #printImg{display:block;width:100%;height:auto;max-height:100vh;object-fit:contain}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <a class="brand" href="../" aria-label="Home">
+      <img class="ico" src="../assets/img/icon.webp" alt="">
+      <img class="word" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
+    </a>
+    <div class="actions">
+      <button class="ibtn pics" id="btnPics" aria-label="Pick a picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></button>
+      <button class="ibtn" id="btnUndo" aria-label="Undo" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+      <button class="ibtn" id="btnClear" aria-label="Start over"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 13h10l1-13"/><path d="M9 7V4h6v3"/></svg></button>
+      <button class="ibtn save" id="btnSave" aria-label="Save or print"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
+    </div>
+  </header>
+
+  <main class="board" id="board">
+    <div class="stage" id="stage">
+      <canvas id="paint"></canvas>
+      <canvas id="live"></canvas>
+      <img id="lines" alt="" draggable="false">
+      <div class="marks" id="marks"></div>
+    </div>
+    <div class="findbar" id="findBar" role="status">
+      <svg class="lupa" viewBox="0 0 24 24" fill="none" stroke="#14263A" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5" fill="#fff"/><path d="m15.5 15.5 5 5"/><circle cx="8.6" cy="10" r="1.1" fill="#14263A" stroke="none"/><circle cx="12.4" cy="10" r="1.1" fill="#14263A" stroke="none"/></svg>
+      <b>Can You Find Me?<small>Tap each friend in your picture!</small></b>
+      <span class="count" id="findCount">0/3</span>
+      <button class="x" id="findExit" aria-label="Back to painting">&times;</button>
+    </div>
+    <div class="color-name" id="colorName" aria-live="polite"></div>
+    <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
+    <div class="tray" id="tray" hidden>
+      <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
+      <div class="figs" id="figs"></div>
+    </div>
+    <button class="ibtn zoomout" id="btnFit" aria-label="Show the whole picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
+  </main>
+
+  <nav class="tools" id="tools" aria-label="Tools">
+    <button class="tool" data-tool="crayon" aria-label="Crayon" aria-pressed="true"></button>
+    <button class="tool" data-tool="marker" aria-label="Marker" aria-pressed="false"></button>
+    <button class="tool" data-tool="pencil" aria-label="Colored pencil" aria-pressed="false"></button>
+    <button class="tool" data-tool="eraser" aria-label="Eraser" aria-pressed="false"></button>
+    <span class="sep"></span>
+    <div class="sizes" id="sizes"></div>
+  </nav>
+
+  <div class="colors" id="colors" role="toolbar" aria-label="Colors"></div>
+  <footer class="foot"><a href="https://www.lookandseecolorme.com" target="_blank" rel="noopener">www.lookandseecolorme.com</a></footer>
+</div>
+
+
+
+<!-- Intro: animated logo -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="ring">
+    <img class="still" src="../assets/img/icon.webp" alt="">
+    <video id="introVid" muted playsinline autoplay preload="auto"><source src="img/intro.webm" type="video/webm"><source src="img/intro.mp4" type="video/mp4"></video>
+    <i class="spark" style="left:50%;top:50%;background:#FF6245;--dx:-150px;--dy:-120px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#FEC621;--dx:150px;--dy:-130px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#1FA6B1;--dx:-170px;--dy:60px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#CE2967;--dx:170px;--dy:70px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#9BD14B;--dx:0px;--dy:-180px"></i>
+    <i class="spark" style="left:50%;top:50%;background:#7E57C2;--dx:-60px;--dy:170px"></i>
+  </div>
+  <img class="word" src="../assets/img/logo.webp" alt="">
+</div>
+
+<!-- Home / welcome -->
+<section class="home" id="home" aria-label="Welcome">
+  <div class="home-in">
+    <img class="home-logo" src="../assets/img/logo.webp" alt="Look &amp; See, Color Me!">
+    <button class="kid" id="kidChip" hidden><img id="kidAvatar" alt=""><span id="kidChipName"></span></button>
+    <div class="hello"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="helloBubble">Hi, I'm Mia!<br>Let's color and find sea friends!</div></div>
+    <button class="btn coral huge" id="homeGo">Let's color!</button>
+    <h3 class="sec">My books</h3>
+    <div class="shelf">
+      <button class="book" id="homeOcean"><img src="books/ocean/cover.jpg" alt=""><span class="bt">Ocean Animals</span><span class="badge" id="oceanBadge">3 free pictures</span></button>
+      <div class="book soon" aria-label="More books coming soon"><div class="soon-cover">?</div><span class="bt">More books</span><span class="badge gray">Coming soon</span></div>
+    </div>
+    <h3 class="sec">My art</h3>
+    <div class="shelf" id="homeArtShelf"></div>
+    <h3 class="sec">Watch Mia</h3>
+    <div class="shelf watch">
+      <button class="book vid" id="homeWelcome"><span class="vthumb"><img src="img/welcome.webp" alt="" style="object-position:50% 25%"><i></i></span><span class="bt">Meet Mia</span></button>
+      <button class="book vid" data-list="UULFpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-color.webp" alt=""><i></i></span><span class="bt">Color with Mia</span></button>
+      <button class="book vid" data-list="UUSHpAjJBGCqhsbTDvwiAO4wLg"><span class="vthumb"><img src="img/watch-stories.webp" alt=""><i></i></span><span class="bt">Mia's stories</span></button>
+    </div>
+    <p class="note">No ads &middot; No sign-up &middot; Works offline<br><button class="linkbtn" id="homeParents">For grown-ups</button></p>
+  </div>
+</section>
+
+<!-- For grown-ups -->
+<div class="scrim" id="sheetParents" role="dialog" aria-modal="true" aria-labelledby="parentsTitle">
+  <div class="sheet">
+    <h2 id="parentsTitle">For grown-ups</h2>
+    <ul class="parents-list">
+      <li>3 pictures are free. Each book unlocks with one purchase, no subscription.</li>
+      <li>No ads, no sign-up, no data collected. Drawings, your child's name and birthday stay on this device.</li>
+      <li>When a picture is done, kids tap "I'm done!" and play "Can You Find Me?": they find each friend on the drawing and repeat its name.</li>
+      <li>Privacy policy: lookandseecolorme.com/privacy</li>
+    </ul>
+    <div class="big"><button class="btn" id="parentsRestore">Restore purchases</button></div>
+    <p class="note" id="parentsMsg"></p>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Done</button></p>
+  </div>
+</div>
+
+<!-- Pick a picture -->
+<div class="scrim" id="sheetPics" role="dialog" aria-modal="true" aria-labelledby="picsTitle">
+  <div class="sheet">
+    <h2 id="picsTitle">Pick a picture!</h2>
+    <p><button class="btn sun small" id="picsArt">See my art</button></p>
+    <p>Paint anywhere you like, even outside the lines.</p>
+    <h3 class="sec">Free pictures</h3>
+    <div class="picks" id="picksFree"></div>
+    <div class="sec-row"><h3 class="sec">Ocean Animals book <small id="oceanCount"></small></h3><button class="btn coral small" id="btnShopOcean">Unlock all</button></div>
+    <div class="picks" id="picksBook"></div>
+    <p class="note">Free. No ads. No sign-up. <b>Your drawings stay on this device.</b><br>More friends from the Look &amp; See, Color Me! books at www.lookandseecolorme.com</p>
+  </div>
+</div>
+
+<!-- Start over -->
+<div class="scrim" id="sheetClear" role="dialog" aria-modal="true" aria-labelledby="clearTitle">
+  <div class="sheet">
+    <h2 id="clearTitle">Start over?</h2>
+    <p>All the colors on this picture will go away.</p>
+    <div class="big">
+      <button class="btn" data-close>Keep it</button>
+      <button class="btn coral" id="doClear">Yes, start over</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save -->
+<div class="scrim" id="sheetSave" role="dialog" aria-modal="true" aria-labelledby="saveTitle">
+  <div class="sheet">
+    <h2 id="saveTitle">Great job!</h2>
+    <p>Save your picture, or ask a grown-up to share it with Mia!</p>
+    <p class="note" id="shareMsg"></p>
+    <div class="big">
+      <button class="btn teal" id="doSave"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>Save picture</button>
+      <button class="btn berry" id="doShare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4"/><path d="m15.4 6.5-6.8 4"/></svg>Share your art</button>
+      <button class="btn" id="doPrint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="2"/><path d="M6 14h12v7H6z"/></svg>Print</button>
+    </div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Keep painting</button></p>
+  </div>
+</div>
+
+<!-- Shop (grown-ups) -->
+<div class="scrim" id="sheetShop" role="dialog" aria-modal="true" aria-labelledby="shopTitle">
+  <div class="sheet">
+    <h2 id="shopTitle">Ocean Animals</h2>
+    <p>The full Look &amp; See, Color Me! book: 45 ocean scenes to paint, each with its own "Can You Find Me?" game.</p>
+    <img class="shop-cover" src="books/ocean/cover.jpg" alt="Ocean Animals book cover">
+    <div class="big"><button class="btn coral" id="doBuy">Unlock the book &middot; <span id="price">US$5.99</span></button></div>
+    <p class="note" id="shopMsg"></p>
+    <p class="note">One-time purchase. No ads, no subscription.<br><button class="linkbtn" id="doRestore">Restore purchases</button> &middot; <button class="linkbtn" data-close>Not now</button></p>
+  </div>
+</div>
+
+
+<!-- Mia cheers when the painting is done -->
+<div class="scrim" id="sheetCheer" role="dialog" aria-modal="true" aria-labelledby="cheerTitle">
+  <div class="sheet">
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="cheerTitle">Good job!<br>You made a wonderful work of art!</div></div>
+    <p id="cheerText">Now, can you find my friends in your picture?</p>
+    <div class="big" id="cheerBtns"></div>
+  </div>
+</div>
+
+<!-- Repeat with me: each friend, one by one -->
+<div class="scrim" id="sheetParade" role="dialog" aria-modal="true" aria-labelledby="paradeName">
+  <div class="sheet">
+    <div class="cheer" style="margin:0"><img class="mia" src="img/mia-hi.webp" alt="Mia" style="width:min(90px,24vw)"><div class="bubble" style="margin-bottom:24px">Repeat with me!</div></div>
+    <img class="parade-pic" id="paradePic" alt="">
+    <div class="parade-name" id="paradeName"></div>
+    <div class="parade-step" id="paradeStep"></div>
+    <div class="big">
+      <button class="btn" id="paradeSay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>Again</button>
+      <button class="btn coral" id="paradeNext">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- Picture finished -->
+<div class="scrim" id="sheetWin" role="dialog" aria-modal="true" aria-labelledby="winTitle">
+  <div class="sheet">
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="winTitle">You found them all!<br>Shall we do the next one?</div></div>
+    <div class="big" id="winBtns"></div>
+  </div>
+</div>
+
+
+<!-- My art: every picture already painted -->
+<div class="scrim" id="sheetArt" role="dialog" aria-modal="true" aria-labelledby="artTitle">
+  <div class="sheet">
+    <h2 id="artTitle">My art</h2>
+    <p>Everything you painted. Tap one to keep painting it.</p>
+    <div class="picks gallery" id="artGrid"></div>
+    <div class="cheer" id="artEmpty" hidden><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble">Nothing here yet!<br>Paint a picture and it will show up here.</div></div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
+  </div>
+</div>
+
+<!-- Mia's videos (website version: YouTube's privacy-enhanced player) -->
+<div class="scrim" id="sheetVideo" role="dialog" aria-modal="true" aria-labelledby="videoTitle">
+  <div class="sheet">
+    <h2 id="videoTitle">Watch Mia</h2>
+    <div class="vframe" id="videoBox"></div>
+    <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
+  </div>
+</div>
+
+<!-- Mia's welcome video (plays inside the app, from the app's own files) -->
+<div class="scrim" id="sheetWelcome" role="dialog" aria-modal="true" aria-label="Mia says hi">
+  <div class="sheet">
+    <div class="wframe"><video id="welcomeVid" src="img/welcome.mp4" poster="img/welcome.webp" playsinline controls preload="metadata"></video></div>
+    <div class="big"><button class="btn coral" id="welcomeGo">Let's color!</button></div>
+  </div>
+</div>
+
+<!-- The child's profile: name, favorite friend, birthday. Kept only on this device. -->
+<div class="scrim" id="sheetProfile" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+  <div class="sheet">
+    <div class="cheer" style="margin-bottom:6px"><img class="mia" src="img/mia-hi.webp" alt="Mia" style="width:min(110px,28vw)"><div class="bubble" id="profTitle" style="margin-bottom:26px">Hi! I'm Mia.<br>What's your name?</div></div>
+    <input class="name-in" id="profName" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Your name" aria-label="Your name">
+    <h3 class="sec" style="text-align:center">Pick your friend</h3>
+    <div class="avatars" id="profAvatars"></div>
+    <h3 class="sec" style="text-align:center">When is your birthday? <small>(Mia has a gift!)</small></h3>
+    <div class="bday"><select id="profMonth" aria-label="Month"></select><select id="profDay" aria-label="Day"></select></div>
+    <div class="big" style="margin-top:14px"><button class="btn coral" id="profSave">Let's go!</button></div>
+    <p class="note">Your name and birthday stay only on this device.<br><button class="linkbtn" id="profSkip">Not now</button></p>
+  </div>
+</div>
+
+<!-- Happy birthday -->
+<div class="scrim" id="sheetBday" role="dialog" aria-modal="true" aria-labelledby="bdayTitle">
+  <div class="sheet">
+    <div class="cake" aria-hidden="true">&#127874;</div>
+    <div class="cheer"><img class="mia" src="img/mia-hi.webp" alt="Mia"><div class="bubble" id="bdayTitle"></div></div>
+    <img class="parade-pic" id="bdayGift" alt="" hidden>
+    <div class="big" id="bdayBtns"></div>
+  </div>
+</div>
+
+<!-- Parental gate -->
+<div class="scrim" id="sheetGate" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+  <div class="sheet">
+    <h2 id="gateTitle">Grown-ups only</h2>
+    <p>Please answer to continue: <b id="gateQ"></b></p>
+    <div class="gate" id="gateOpts"></div>
+    <p class="note"><button class="linkbtn" data-close>Cancel</button></p>
+  </div>
+</div>
+
+<img id="printImg" alt="">
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- Content ---------- */
+// Pictures come from each book's book.json. The first three Ocean pictures are free; the rest unlock with the book.
+const BOOKS = [{ id: 'ocean', dir: 'books/ocean/', product: 'ocean_animals_book', price: 'US$5.99' }];
+const FREE = new Set(['ocean01', 'ocean02', 'ocean03']);
+const BLANK = { id: 'blank', name: 'Blank page', src: null, figs: [] };
+let PICTURES = [BLANK];
+const DEMO_PURCHASES = false;   // preview builds set this to true: purchases are simulated, nothing is charged
+// The App Store / Google Play wrapper provides window.ColorMeStore = { available, buy(productId), restore() }.
+// Optional: priceOf(productId) returns the store's localized price string (or '' while unknown).
+const Store = window.ColorMeStore || { available: false, async buy() { return false; }, async restore() { return []; } };
+
+async function loadBooks() {
+  for (const b of BOOKS) {
+    try {
+      const data = await (await fetch(b.dir + 'book.json')).json();
+      data.pictures.forEach(p => PICTURES.push({
+        id: p.id, name: p.title, book: b.id, src: b.dir + 'art/' + p.id + '.webp', thumb: b.dir + 'art/' + p.id + '_thumb.jpg',
+        figs: (p.figs || []).map(f => ({ img: b.dir + f.img, name: f.name, box: f.box || null, boxes: f.box ? [f.box, ...(f.more || [])] : [], voice: f.voice ? b.dir + f.voice : null }))
+      }));
+    } catch (_) {}
+  }
+  // free pictures first, blank page after them
+  PICTURES.sort((a, b) => (rank(a) - rank(b)));
+}
+function rank(p) { return FREE.has(p.id) ? 0 : p.id === 'blank' ? 1 : 2; }
+function owned() { try { return JSON.parse(localStorage.getItem('colorme-owned')) || []; } catch (_) { return []; } }
+function addOwned(id) { const o = owned(); if (!o.includes(id)) o.push(id); try { localStorage.setItem('colorme-owned', JSON.stringify(o)); } catch (_) {} }
+function gifts() { try { return JSON.parse(localStorage.getItem('colorme-gifts')) || []; } catch (_) { return []; } }
+function unlocked(p) { return !p.book || FREE.has(p.id) || owned().includes(p.book) || gifts().includes(p.id); }
+const LOGO_SRC = 'icons/logo-small.png';
+const SITE = 'www.lookandseecolorme.com';
+
+const COLORS = [
+  ['Red','#E5322D'],['Coral','#FF6245'],['Orange','#FF8F1F'],['Yellow','#FEC621'],['Lemon','#FFE66B'],
+  ['Lime','#9BD14B'],['Green','#2E9E4F'],['Teal','#1FA6B1'],['Sky blue','#5CC4F0'],['Blue','#2F73AF'],
+  ['Purple','#7E57C2'],['Berry','#CE2967'],['Pink','#F79BC0'],['Peach','#FFCFA3'],['Brown','#8D5A3B'],
+  ['Gray','#9AA3AB'],['Black','#24262B'],['White','#FFFFFF']
+];
+
+/* size presets in canvas pixels (canvas is 1200 px wide) */
+const SIZES = {
+  crayon: [14, 28, 48, 80],
+  marker: [10, 22, 40, 66],
+  pencil: [4, 8, 14, 24],
+  eraser: [18, 36, 64, 110]
+};
+const DOT = [8, 13, 19, 26];
+
+/* ---------- Elements ---------- */
+const $ = s => document.querySelector(s);
+const board = $('#board'), stage = $('#stage'), app = document.querySelector('.app');
+const paint = $('#paint'), live = $('#live'), lines = $('#lines');
+const pctx = paint.getContext('2d');
+const lctx = live.getContext('2d');
+const mask = document.createElement('canvas');
+const mctx = mask.getContext('2d');
+
+let W = 1200, H = 1740;
+let tool = 'crayon', color = COLORS[3][1], sizeIdx = 1;
+let current = PICTURES[0];
+let undoStack = [];
+const UNDO_MAX = 10;
+
+/* ---------- Paper grain textures (generated, no downloads) ---------- */
+function makeGrain(size, cells, wFine, lo, hi, opacity) {
+  // tileable value noise, several octaves + fine white noise, mapped to alpha
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d'); const img = g.createImageData(size, size); const d = img.data;
+  const oct = cells.map(n => { const a = new Float32Array(n * n); for (let i = 0; i < a.length; i++) a[i] = Math.random(); return { n, a }; });
+  const sm = t => t * t * (3 - 2 * t);
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    let v = 0, wsum = 0;
+    oct.forEach((o, k) => {
+      const fx = x / size * o.n, fy = y / size * o.n;
+      const x0 = Math.floor(fx), y0 = Math.floor(fy), tx = sm(fx - x0), ty = sm(fy - y0);
+      const x1 = (x0 + 1) % o.n, y1 = (y0 + 1) % o.n, A = o.a;
+      const a = A[y0 * o.n + x0], b = A[y0 * o.n + x1], cc = A[y1 * o.n + x0], dd = A[y1 * o.n + x1];
+      const w = 1 / (k + 1);
+      v += ((a * (1 - tx) + b * tx) * (1 - ty) + (cc * (1 - tx) + dd * tx) * ty) * w; wsum += w;
+    });
+    v = v / wsum * (1 - wFine) + Math.random() * wFine;
+    let t = Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+    t = sm(t);
+    const i = (y * size + x) * 4;
+    d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = Math.round(t * opacity * 255);
+  }
+  g.putImageData(img, 0, 0);
+  return c;
+}
+const grains = {
+  crayon: makeGrain(512, [64, 160, 256], 0.35, 0.28, 0.62, 0.96),
+  pencil: makeGrain(256, [128, 256], 0.5, 0.3, 0.6, 0.9)
+};
+const patterns = {};
+function pattern(kind) {
+  if (!patterns[kind]) patterns[kind] = lctx.createPattern(grains[kind], 'repeat');
+  return patterns[kind];
+}
+
+/* ---------- Tool & color UI ---------- */
+const TOOL_SVG = {
+  crayon: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M23 22 30 6l7 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="21" y="21" width="18" height="40" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="29" width="18" height="18" fill="#fff" opacity=".85" stroke="#14263A" stroke-width="2"/><path d="M24 35h12M24 40h9" stroke="${c}" stroke-width="2.5" stroke-linecap="round"/></g></svg>`,
+  marker: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M26 16 28 5h4l2 11z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="23" y="15" width="14" height="9" rx="2" fill="#E9EEF2" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="23" width="18" height="38" rx="6" fill="#fff" stroke="#14263A" stroke-width="2.5"/><rect x="21" y="23" width="18" height="10" fill="${c}" stroke="#14263A" stroke-width="2.5"/></g></svg>`,
+  pencil: c => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><path d="M24 18 30 3l6 15z" fill="#F6D7A7" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><path d="M28 8 30 3l2 5z" fill="${c}" stroke="#14263A" stroke-width="1.5" stroke-linejoin="round"/><rect x="24" y="17" width="12" height="44" fill="${c}" stroke="#14263A" stroke-width="2.5"/><path d="M28 17v44M32 17v44" stroke="#14263A" stroke-width="1" opacity=".35"/></g></svg>`,
+  eraser: () => `<svg viewBox="0 0 60 60"><g transform="rotate(-38 30 30)"><rect x="19" y="10" width="22" height="42" rx="6" fill="#F7A6B9" stroke="#14263A" stroke-width="2.5"/><path d="M19 32h22v14a6 6 0 0 1-6 6H25a6 6 0 0 1-6-6z" fill="#5CC4F0" stroke="#14263A" stroke-width="2.5"/></g></svg>`
+};
+function crayonSwatch(c, name) {
+  const light = c.toUpperCase() === '#FFFFFF';
+  // the name is printed on the paper wrapper, like a real crayon
+  const fit = name.length > 5 ? ` textLength="${Math.min(27, name.length * 5)}" lengthAdjust="spacingAndGlyphs"` : '';
+  return `<svg viewBox="0 0 34 66"><g><path d="M7 18 17 2l10 16z" fill="${c}" stroke="#14263A" stroke-width="2.5" stroke-linejoin="round"/><rect x="5" y="17" width="24" height="52" rx="3" fill="${c}" stroke="#14263A" stroke-width="2.5"/><rect x="5" y="20" width="24" height="30" fill="${light ? '#E9EEF2' : '#fff'}" stroke="#14263A" stroke-width="2"/><text x="17" y="35" transform="rotate(90 17 35)" text-anchor="middle" dominant-baseline="central" font-family="Fredoka, system-ui, sans-serif" font-weight="700" font-size="9" fill="#14263A"${fit}>${name}</text></g></svg>`;
+}
+const toolBtns = [...document.querySelectorAll('.tool')];
+function drawToolIcons() { toolBtns.forEach(b => b.innerHTML = TOOL_SVG[b.dataset.tool](color)); }
+toolBtns.forEach(b => b.addEventListener('click', () => {
+  tool = b.dataset.tool;
+  toolBtns.forEach(x => x.setAttribute('aria-pressed', x === b));
+  buildSizes(); remember();
+}));
+
+const sizesEl = $('#sizes');
+function buildSizes() {
+  sizesEl.innerHTML = '';
+  DOT.forEach((d, i) => {
+    const b = document.createElement('button');
+    b.className = 'size'; b.setAttribute('aria-label', ['Small', 'Medium', 'Big', 'Huge'][i]);
+    b.setAttribute('aria-pressed', i === sizeIdx);
+    const dot = document.createElement('i');
+    const s = tool === 'pencil' ? Math.max(4, d * 0.6) : d;
+    dot.style.width = dot.style.height = s + 'px';
+    dot.style.background = tool === 'eraser' ? '#fff' : color;
+    dot.style.boxShadow = '0 0 0 2px #14263A';
+    b.appendChild(dot);
+    b.addEventListener('click', () => { sizeIdx = i; buildSizes(); remember(); });
+    sizesEl.appendChild(b);
+  });
+}
+
+const colorsEl = $('#colors');
+// tapping a crayon shows its name big and says it
+let nameTimer = 0;
+// Mia's recorded voice (voice/*.mp3): one clip at a time; "then" plays after it
+let voiceAudio = null;
+function play(src, then) {
+  try {
+    if (voiceAudio) { voiceAudio.onended = null; voiceAudio.pause(); }
+    try { window.speechSynthesis && speechSynthesis.cancel(); } catch (_) {}
+    const a = voiceAudio = new Audio(src);
+    a.onended = () => { if (then && voiceAudio === a) then(); };
+    a.play().catch(() => {});
+  } catch (_) {}
+}
+function mia(line, then) { play('voice/say-' + line + '.mp3', then); }
+function slug(n) { return n.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+function showColorName(name) {
+  const el = $('#colorName'); el.textContent = name; el.classList.remove('on'); void el.offsetWidth; el.classList.add('on');
+  clearTimeout(nameTimer); nameTimer = setTimeout(() => el.classList.remove('on'), 1400);
+  play('voice/color-' + slug(name) + '.mp3');
+}
+function sayWord(w) {
+  try {
+    const sp = window.speechSynthesis; if (!sp) return;
+    sp.cancel();
+    const u = new SpeechSynthesisUtterance(w); u.lang = 'en-US'; u.rate = 0.85; u.pitch = 1.25;
+    const v = sp.getVoices().find(v => /^en(-|_)US/i.test(v.lang)); if (v) u.voice = v;
+    sp.speak(u);
+  } catch (_) {}
+}
+COLORS.forEach(([name, c]) => {
+  const b = document.createElement('button');
+  b.className = 'sw'; b.setAttribute('aria-label', name); b.dataset.c = c;
+  b.setAttribute('aria-pressed', c === color);
+  b.innerHTML = crayonSwatch(c, name);
+  b.addEventListener('click', () => {
+    color = c; showColorName(name);
+    colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x === b));
+    if (tool === 'eraser') { tool = 'crayon'; toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === 'crayon')); }
+    drawToolIcons(); buildSizes(); remember();
+  });
+  colorsEl.appendChild(b);
+});
+
+/* ---------- Layout: fit the page in the board, plus pinch zoom ---------- */
+let fit = { x: 0, y: 0, s: 1, cssW: 0, cssH: 0 };
+let view = { z: 1, tx: 0, ty: 0 };
+function layout() {
+  const r = board.getBoundingClientRect(); const pad = 14;
+  const finding = app.classList.contains('finding');
+  const top = finding ? $('#findBar').offsetHeight + 20 : pad;
+  const bot = finding ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad + 72;   // room for "I'm done!" / the friends
+  const aw = r.width - pad * 2, ah = r.height - top - bot;
+  const cssW = Math.max(50, Math.min(aw, ah * W / H)); const cssH = cssW * H / W;
+  fit = { x: (r.width - cssW) / 2, y: top + (ah - cssH) / 2, cssW, cssH };
+  stage.style.width = cssW + 'px'; stage.style.height = cssH + 'px';
+  applyView();
+}
+function applyView() {
+  if (view.z <= 1.01) { view = { z: 1, tx: 0, ty: 0 }; }
+  stage.style.transform = `translate(${fit.x + view.tx}px, ${fit.y + view.ty}px) scale(${view.z})`;
+  $('#btnFit').classList.toggle('on', view.z > 1.01);
+}
+window.addEventListener('resize', layout);
+$('#btnFit').addEventListener('click', () => { view = { z: 1, tx: 0, ty: 0 }; applyView(); });
+
+/* ---------- Drawing ---------- */
+const pointers = new Map();
+let stroke = null;      // active stroke
+let gesture = null;     // active pinch
+let dirty = null, raf = 0;
+let tap = null;         // a tap while finding friends
+
+function toCanvas(e) {
+  const r = paint.getBoundingClientRect();
+  return { x: (e.clientX - r.left) * W / r.width, y: (e.clientY - r.top) * H / r.height };
+}
+function widthFor(e) {
+  const base = SIZES[tool][sizeIdx];
+  if (e.pointerType === 'pen' && e.pressure > 0) return base * (0.45 + e.pressure * 1.1);
+  return base;
+}
+function grow(x, y, w) {
+  const m = w / 2 + 4;
+  if (!dirty) dirty = { x0: x - m, y0: y - m, x1: x + m, y1: y + m };
+  else { dirty.x0 = Math.min(dirty.x0, x - m); dirty.y0 = Math.min(dirty.y0, y - m); dirty.x1 = Math.max(dirty.x1, x + m); dirty.y1 = Math.max(dirty.y1, y + m); }
+}
+function setupLiveLook() {
+  // marker = transparent ink that gets darker where strokes overlap
+  if (tool === 'marker') { live.style.opacity = '0.62'; live.style.mixBlendMode = 'multiply'; }
+  else { live.style.opacity = '1'; live.style.mixBlendMode = 'normal'; }
+}
+function strokeCtx() {
+  if (tool === 'eraser') return pctx;
+  if (tool === 'marker') return lctx;
+  return mctx; // crayon / pencil draw a solid shape first, the grain is applied on top
+}
+function seg(ctx, a, c, b, w) {
+  ctx.lineWidth = w;
+  ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.quadraticCurveTo(c.x, c.y, b.x, b.y); ctx.stroke();
+}
+function beginStroke(e) {
+  pushUndo();
+  const p = toCanvas(e), w = widthFor(e);
+  setupLiveLook();
+  const ctx = strokeCtx();
+  ctx.save();
+  ctx.lineCap = ctx.lineJoin = 'round';
+  if (tool === 'eraser') { ctx.globalCompositeOperation = 'destination-out'; ctx.strokeStyle = '#000'; }
+  else ctx.strokeStyle = color;
+  // each stroke shifts the paper grain a little, so going over an area fills it in, like pressing a real crayon
+  const off = new DOMMatrix().translate(Math.random() * 512, Math.random() * 512);
+  ['crayon', 'pencil'].forEach(k => { try { pattern(k).setTransform(off); } catch (_) {} });
+  stroke = { id: e.pointerId, ctx, last: p, mid: p, w, moved: false };
+  // a dot for a single tap
+  seg(ctx, p, p, { x: p.x + 0.1, y: p.y + 0.1 }, w); grow(p.x, p.y, w); schedule();
+}
+function moveStroke(e) {
+  const evs = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+  for (const ev of (evs.length ? evs : [e])) {
+    const p = toCanvas(ev), w = widthFor(ev);
+    const s = stroke, mid = { x: (s.last.x + p.x) / 2, y: (s.last.y + p.y) / 2 };
+    seg(s.ctx, s.mid, s.last, mid, (s.w + w) / 2);
+    grow(s.last.x, s.last.y, Math.max(s.w, w)); grow(mid.x, mid.y, Math.max(s.w, w));
+    s.mid = mid; s.last = p; s.w = w; s.moved = true;
+  }
+  schedule();
+}
+function schedule() { if (!raf) raf = requestAnimationFrame(flush); }
+function flush() {
+  raf = 0;
+  if (!dirty || !stroke) { dirty = null; return; }
+  if (tool === 'crayon' || tool === 'pencil') {
+    const x = Math.max(0, Math.floor(dirty.x0)), y = Math.max(0, Math.floor(dirty.y0));
+    const w = Math.min(W, Math.ceil(dirty.x1)) - x, h = Math.min(H, Math.ceil(dirty.y1)) - y;
+    if (w > 0 && h > 0) {
+      lctx.save();
+      // clip first: 'destination-in' would otherwise wipe the whole canvas outside the rectangle
+      lctx.beginPath(); lctx.rect(x, y, w, h); lctx.clip();
+      lctx.clearRect(x, y, w, h);
+      lctx.drawImage(mask, x, y, w, h, x, y, w, h);
+      lctx.globalCompositeOperation = 'destination-in';
+      lctx.fillStyle = pattern(tool);
+      lctx.fillRect(x, y, w, h);
+      lctx.restore();
+    }
+  }
+  dirty = null;
+}
+function endStroke(commit) {
+  if (!stroke) return;
+  if (raf) { cancelAnimationFrame(raf); raf = 0; flush(); }
+  stroke.ctx.restore();
+  if (commit) {
+    if (tool === 'marker') {
+      pctx.save(); pctx.globalAlpha = 0.62; pctx.globalCompositeOperation = 'multiply';
+      pctx.drawImage(live, 0, 0); pctx.restore();
+    } else if (tool !== 'eraser') {
+      pctx.drawImage(live, 0, 0);
+    }
+  } else {
+    undo(true); // throw the stroke away (a second finger arrived: it was a pinch)
+  }
+  lctx.clearRect(0, 0, W, H); mctx.clearRect(0, 0, W, H);
+  stroke = null;
+  if (commit) autosave();
+}
+
+board.addEventListener('pointerdown', e => {
+  if (e.button > 0) return;
+  if (e.target.closest('.ibtn') || e.target.closest('.tray')) return;
+  if (e.target.closest('.findbar') || e.target.closest('.done-btn')) return;
+  board.setPointerCapture?.(e.pointerId);
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pointers.size === 1) {
+    if (finding()) tap = { id: e.pointerId, x: e.clientX, y: e.clientY };   // finding friends: a tap, no paint
+    else beginStroke(e);
+  }
+  else if (pointers.size === 2) {
+    tap = null;
+    if (stroke) endStroke(false);
+    startGesture();
+  }
+  e.preventDefault();
+});
+board.addEventListener('pointermove', e => {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (tap && tap.id === e.pointerId && Math.hypot(e.clientX - tap.x, e.clientY - tap.y) > 14) tap = null;
+  if (gesture) moveGesture();
+  else if (stroke && stroke.id === e.pointerId) moveStroke(e);
+  e.preventDefault();
+});
+function lift(e) {
+  if (!pointers.has(e.pointerId)) return;
+  pointers.delete(e.pointerId);
+  if (tap && tap.id === e.pointerId) { const t = tap; tap = null; if (e.type !== 'pointercancel' && !gesture) tapFind(e); }
+  if (stroke && stroke.id === e.pointerId) endStroke(e.type !== 'pointercancel');
+  if (gesture && pointers.size < 2) gesture = null;
+}
+board.addEventListener('pointerup', lift);
+board.addEventListener('pointercancel', lift);
+board.addEventListener('contextmenu', e => e.preventDefault());
+
+function two() { const [a, b] = [...pointers.values()]; return { cx: (a.x + b.x) / 2, cy: (a.y + b.y) / 2, d: Math.hypot(a.x - b.x, a.y - b.y) || 1 }; }
+function startGesture() { const t = two(); gesture = { ...t, z: view.z, tx: view.tx, ty: view.ty }; }
+function moveGesture() {
+  const t = two(), g = gesture, br = board.getBoundingClientRect();
+  const z = Math.min(5, Math.max(1, g.z * t.d / g.d));
+  // keep the point under the fingers in place
+  const ox = br.left + fit.x, oy = br.top + fit.y;
+  const px = (g.cx - ox - g.tx) / g.z, py = (g.cy - oy - g.ty) / g.z;
+  view.z = z; view.tx = t.cx - ox - px * z; view.ty = t.cy - oy - py * z;
+  applyView();
+}
+board.addEventListener('wheel', e => {   // mouse / trackpad zoom on computers
+  e.preventDefault();
+  const br = board.getBoundingClientRect(), ox = br.left + fit.x, oy = br.top + fit.y;
+  const z = Math.min(5, Math.max(1, view.z * Math.exp(-e.deltaY * 0.0015)));
+  const px = (e.clientX - ox - view.tx) / view.z, py = (e.clientY - oy - view.ty) / view.z;
+  view.z = z; view.tx = e.clientX - ox - px * z; view.ty = e.clientY - oy - py * z; applyView();
+}, { passive: false });
+
+/* ---------- Undo ---------- */
+function pushUndo() {
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  c.getContext('2d').drawImage(paint, 0, 0);
+  undoStack.push(c); if (undoStack.length > UNDO_MAX) undoStack.shift();
+  $('#btnUndo').disabled = false;
+}
+function undo(silent) {
+  const c = undoStack.pop(); if (!c) return;
+  pctx.save(); pctx.globalCompositeOperation = 'copy'; pctx.drawImage(c, 0, 0); pctx.restore();
+  $('#btnUndo').disabled = undoStack.length === 0;
+  if (!silent) autosave();
+}
+$('#btnUndo').addEventListener('click', () => undo());
+
+/* ---------- Sheets ---------- */
+function openSheet(id) { $(id).classList.add('on'); }
+function closeSheets() { const wv = document.getElementById('welcomeVid'); if (wv) wv.pause(); document.querySelectorAll('.scrim').forEach(s => s.classList.remove('on')); if (gateCancel) { const g = gateCancel; gateCancel = null; g(); } }
+document.querySelectorAll('.scrim').forEach(s => s.addEventListener('click', e => { if (e.target === s || e.target.closest('[data-close]')) closeSheets(); }));
+$('#btnClear').addEventListener('click', () => openSheet('#sheetClear'));
+$('#doClear').addEventListener('click', () => { pushUndo(); pctx.clearRect(0, 0, W, H); autosave(); closeSheets(); });
+$('#btnSave').addEventListener('click', () => { $('#shareMsg').textContent = ''; openSheet('#sheetSave'); });
+$('#btnPics').addEventListener('click', () => { renderPicks(); openSheet('#sheetPics'); });
+
+const LOCK = '<span class="lock"><svg viewBox="0 0 24 24" fill="none" stroke="#14263A" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>';
+function pickButton(p) {
+  const b = document.createElement('button');
+  const open = unlocked(p);
+  b.className = 'pick' + (open ? '' : ' locked'); b.setAttribute('aria-current', p.id === current.id);
+  b.setAttribute('aria-label', p.name + (open ? '' : ' (locked)'));
+  b.innerHTML = (p.thumb ? `<img src="${p.thumb}" alt="" loading="lazy">` : `<div class="blank">Draw anything!</div>`) + `<span>${p.name}</span>` + (open ? '' : LOCK);
+  b.addEventListener('click', async () => {
+    if (!open) { openShop(p); return; }
+    closeSheets(); await openPicture(p);
+  });
+  return b;
+}
+function renderPicks() {
+  const free = $('#picksFree'), book = $('#picksBook');
+  free.innerHTML = ''; book.innerHTML = '';
+  PICTURES.forEach(p => (FREE.has(p.id) || !p.book ? free : book).appendChild(pickButton(p)));
+  const has = owned().includes('ocean');
+  $('#btnShopOcean').hidden = has;
+  $('#oceanCount').textContent = '45 scenes';
+}
+$('#btnShopOcean').addEventListener('click', () => openShop(null));
+
+/* ---------- Unlocking a book (grown-ups only) ---------- */
+let shopFor = null;
+function openShop(p) {
+  shopFor = p; closeSheets();
+  $('#price').textContent = (Store.priceOf && Store.priceOf(BOOKS[0].product)) || BOOKS[0].price;
+  $('#shopMsg').textContent = '';
+  openSheet('#sheetShop');
+}
+function parentalGate() {
+  return new Promise(resolve => {
+    const a = 3 + Math.floor(Math.random() * 7), b = 4 + Math.floor(Math.random() * 6), ans = a * b;
+    const opts = new Set([ans]);
+    while (opts.size < 4) opts.add(Math.max(2, ans + (Math.floor(Math.random() * 9) - 4) * (Math.random() < .5 ? 1 : a)));
+    $('#gateQ').textContent = `${a} \u00d7 ${b} = ?`;
+    const box = $('#gateOpts'); box.innerHTML = '';
+    [...opts].sort(() => Math.random() - .5).forEach(v => {
+      const btn = document.createElement('button'); btn.textContent = v;
+      btn.addEventListener('click', () => { gateCancel = null; closeSheets(); resolve(v === ans); });
+      box.appendChild(btn);
+    });
+    closeSheets();
+    gateCancel = () => resolve(false);
+    openSheet('#sheetGate');
+  });
+}
+let gateCancel = null;
+async function unlockBook(restore) {
+  const ok = await parentalGate(); gateCancel = null;
+  if (!ok) return;
+  openSheet('#sheetShop');
+  const msg = $('#shopMsg');
+  let got = false;
+  if (Store.available) {
+    try { got = restore ? (await Store.restore()).includes(BOOKS[0].product) : await Store.buy(BOOKS[0].product); } catch (_) { got = false; }
+    if (!got) msg.textContent = restore ? 'No earlier purchase found on this account.' : 'The purchase did not go through. Nothing was charged.';
+  } else if (DEMO_PURCHASES) {
+    got = true;
+  } else {
+    msg.textContent = 'The full book is coming soon to the App Store and Google Play. Enjoy the free pictures for now!';
+  }
+  if (got) {
+    addOwned('ocean');
+    closeSheets();
+    if (shopFor) await openPicture(shopFor); else { renderPicks(); openSheet('#sheetPics'); }
+  }
+}
+$('#doBuy').addEventListener('click', () => unlockBook(false));
+$('#doRestore').addEventListener('click', () => unlockBook(true));
+
+
+
+/* ---------- Intro ---------- */
+let introDone; const introOver = new Promise(r => { introDone = r; });
+(function intro() {
+  const el = $('#intro'), v = $('#introVid');
+  if (!el) { introDone(); return; }
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { el.remove(); introDone(); return; }
+  let done = false;
+  const finish = () => { if (done) return; done = true; el.classList.add('out'); setTimeout(() => { el.remove(); introDone(); }, 500); };
+  setTimeout(() => el.classList.add('pop'), 1900);
+  setTimeout(finish, 3300);
+  el.addEventListener('click', finish);
+  v.addEventListener('error', () => el.classList.add('pop'));
+  const p = v.play && v.play(); if (p && p.catch) p.catch(() => {});
+})();
+
+/* ---------- Home ---------- */
+const home = $('#home');
+function showHome() {
+  closeSheets();
+  const own = owned().includes('ocean');
+  const b = $('#oceanBadge'); b.textContent = own ? 'All 45 unlocked' : '3 free pictures'; b.classList.toggle('ok', own);
+  home.classList.add('on');
+  renderHomeArt(); renderKid();
+  if (!kid().welcomed) { introOver.then(() => setTimeout(() => openWelcome(true), 300)); return; }
+  mia('hi');
+  if (!kid().asked) setTimeout(openProfile, 400); else checkBirthday();
+}
+// Mia's welcome video: first time on its own, any time from "Meet Mia"
+let welcomeFirst = false;
+function openWelcome(first) {
+  welcomeFirst = !!first;
+  if (voiceAudio) voiceAudio.pause();
+  const v = $('#welcomeVid'); try { v.currentTime = 0; } catch (_) {}
+  openSheet('#sheetWelcome');
+  const p = v.play(); if (p && p.catch) p.catch(() => {});
+}
+function closeWelcome() {
+  closeSheets();
+  if (welcomeFirst) { welcomeFirst = false; setKid({ ...kid(), welcomed: true }); if (!kid().asked) setTimeout(openProfile, 300); else checkBirthday(); }
+}
+$('#welcomeGo').addEventListener('click', closeWelcome);
+$('#sheetWelcome').addEventListener('click', e => { if (e.target.id === 'sheetWelcome') closeWelcome(); });
+$('#homeWelcome').addEventListener('click', () => openWelcome(false));
+function hideHome() { home.classList.remove('on'); }
+$('#homeGo').addEventListener('click', () => { hideHome(); if (!prefs.pic) { renderPicks(); openSheet('#sheetPics'); } });
+$('#homeOcean').addEventListener('click', () => { hideHome(); renderPicks(); openSheet('#sheetPics'); });
+$('#homeParents').addEventListener('click', async () => { if (await parentalGate()) { gateCancel = null; $('#parentsMsg').textContent = ''; openSheet('#sheetParents'); } });
+$('#parentsRestore').addEventListener('click', async () => {
+  const msg = $('#parentsMsg');
+  if (!Store.available) { msg.textContent = 'Purchases are available in the app from the App Store or Google Play.'; return; }
+  let ids = []; try { ids = await Store.restore(); } catch (_) {}
+  if (ids.includes(BOOKS[0].product)) { addOwned('ocean'); msg.textContent = 'Ocean Animals is unlocked!'; showHome(); }
+  else msg.textContent = 'No earlier purchase found on this account.';
+});
+document.querySelector('.brand').addEventListener('click', e => { e.preventDefault(); showHome(); });
+
+/* ---------- Two steps: paint, "I'm done!", then Can You Find Me? on the picture ---------- */
+const tray = $('#tray'), figsEl = $('#figs'), marks = $('#marks');
+function finding() { return app.classList.contains('finding'); }
+function foundMap() { try { return JSON.parse(localStorage.getItem('colorme-found')) || {}; } catch (_) { return {}; } }
+function foundList() { return foundMap()[current.id] || []; }
+function setFound(list) { const m = foundMap(); m[current.id] = list; try { localStorage.setItem('colorme-found', JSON.stringify(m)); } catch (_) {} }
+function renderFind() {
+  const figs = current.figs || [];
+  const found = foundList();
+  figsEl.innerHTML = '';
+  figs.forEach((f, i) => {
+    const b = document.createElement('button');
+    b.className = 'fig' + (f.box ? '' : ' manual'); b.setAttribute('aria-pressed', found.includes(i));
+    b.innerHTML = `<img src="${f.img}" alt=""><span>${f.name}</span>`;
+    b.addEventListener('click', () => {
+      if (f.box) { b.classList.remove('hint'); void b.offsetWidth; b.classList.add('hint'); missAt(null, 'Find me in your picture!'); mia('find-me'); return; }
+      if (!foundList().includes(i)) foundIt(i);   // friends we cannot point to on the drawing: tap the card
+    });
+    figsEl.appendChild(b);
+  });
+  $('#trayTitle').textContent = 'Find these friends:';
+  $('#findCount').textContent = `${found.length}/${figs.length}`;
+  marks.innerHTML = '';
+  found.forEach(i => { const f = figs[i]; if (f) f.boxes.forEach(b => addMark(f, b)); });
+}
+function addMark(f, box) {
+  const [x, y, w, h] = box, pad = 0.012;
+  const m = document.createElement('div'); m.className = 'mark';
+  m.style.left = (x - pad) * 100 + '%'; m.style.top = (y - pad) * 100 + '%';
+  m.style.width = (w + pad * 2) * 100 + '%'; m.style.height = (h + pad * 2) * 100 + '%';
+  m.innerHTML = `<i></i><span>${f.name}</span>`;
+  marks.appendChild(m);
+}
+function missAt(e, text) {
+  const d = document.createElement('div'); d.className = 'miss'; d.textContent = text;
+  const br = board.getBoundingClientRect();
+  d.style.left = (e ? e.clientX - br.left : br.width / 2) + 'px';
+  d.style.top = (e ? e.clientY - br.top : br.height / 2) + 'px';
+  board.appendChild(d); setTimeout(() => d.remove(), 1200);
+}
+function tapFind(e) {
+  const p = toCanvas(e), fx = p.x / W, fy = p.y / H, figs = current.figs || [];
+  const slack = 0.025;   // little fingers: a bit of room around each friend
+  let hit = -1, area = Infinity;
+  figs.forEach((f, i) => {
+    f.boxes.forEach(([x, y, w, h]) => {
+      if (fx >= x - slack && fx <= x + w + slack && fy >= y - slack && fy <= y + h + slack && w * h < area) { hit = i; area = w * h; }
+    });
+  });
+  if (hit < 0) { missAt(e, 'Try again!'); mia('try-again'); return; }
+  if (foundList().includes(hit)) { missAt(e, figs[hit].name + '!'); return; }
+  foundIt(hit);
+}
+function foundIt(i) {
+  const list = foundList(); list.push(i); setFound(list);
+  say(current.figs[i]);
+  renderFind();
+  if (list.length >= current.figs.length) setTimeout(startParade, 1100);
+}
+function enterFind() {
+  closeSheets();
+  if (foundList().length >= (current.figs || []).length) setFound([]);   // play again
+  app.classList.add('finding'); tray.hidden = false; renderFind(); mia('find-friends');
+  view = { z: 1, tx: 0, ty: 0 }; layout();
+}
+function exitFind() { app.classList.remove('finding'); tray.hidden = true; view = { z: 1, tx: 0, ty: 0 }; layout(); }
+$('#findExit').addEventListener('click', exitFind);
+$('#trayClose').addEventListener('click', exitFind);
+tray.addEventListener('pointerdown', e => e.stopPropagation());
+$('#findBar').addEventListener('pointerdown', e => e.stopPropagation());
+
+// Say a friend's name: Mia's recorded voice when the book has it, otherwise the device voice
+function say(f, then) {
+  if (f.voice) { play(f.voice, then); return; }
+  sayWord(f.name + '!');
+}
+
+// "I'm done!"
+function bigBtn(label, cls, fn) { const b = document.createElement('button'); b.className = 'btn ' + cls; b.textContent = label; b.addEventListener('click', fn); return b; }
+function nextPicture() {
+  const list = PICTURES.filter(p => p.id !== 'blank');
+  const i = list.findIndex(p => p.id === current.id);
+  return list[(i + 1) % list.length] || list[0];
+}
+function goNext() {
+  const n = nextPicture(); closeSheets(); exitFind();
+  if (!unlocked(n)) { openShop(n); return; }
+  openPicture(n);
+}
+function goAll() { closeSheets(); exitFind(); renderPicks(); openSheet('#sheetPics'); }
+function goSave() { closeSheets(); $('#shareMsg').textContent = ''; openSheet('#sheetSave'); }
+function finishButtons(box) {
+  box.innerHTML = '';
+  box.append(bigBtn('Next picture', 'coral', goNext), bigBtn('All pictures', '', goAll), bigBtn('My art', 'sun', openArt), bigBtn('Save / Share', 'teal', goSave));
+}
+$('#btnDone').addEventListener('click', () => {
+  $('#cheerTitle').innerHTML = ''; $('#cheerTitle').append(`Good job${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'You made a wonderful work of art!');
+  const box = $('#cheerBtns');
+  const hasFriends = (current.figs || []).length > 0;
+  $('#cheerText').textContent = hasFriends ? 'Now, can you find my friends in your picture?' : 'Shall we do the next one?';
+  if (hasFriends) { box.innerHTML = ''; box.append(bigBtn('Find my friends!', 'green', enterFind), bigBtn('Keep painting', '', closeSheets)); }
+  else finishButtons(box);
+  openSheet('#sheetCheer'); mia('good-job');
+});
+
+// Repeat with me: every friend, one by one, then the next picture
+let parade = 0;
+function showParade(first) {
+  const figs = current.figs, f = figs[parade];
+  const img = $('#paradePic'); img.style.animation = 'none'; void img.offsetWidth; img.style.animation = '';
+  img.src = f.img; img.alt = f.name;
+  $('#paradeName').textContent = f.name;
+  $('#paradeStep').textContent = `${parade + 1} of ${figs.length}`;
+  $('#paradeNext').textContent = parade + 1 < figs.length ? 'Next' : 'Done!';
+  if (first) mia('repeat', () => say(f)); else say(f);
+}
+function startParade() { if (!finding()) return; parade = 0; closeSheets(); openSheet('#sheetParade'); showParade(true); }
+$('#paradeSay').addEventListener('click', () => say(current.figs[parade]));
+$('#paradeNext').addEventListener('click', () => {
+  if (++parade < current.figs.length) { showParade(); return; }
+  $('#winTitle').innerHTML = ''; $('#winTitle').append(`You found them all${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'Shall we do the next one?');
+  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin'); mia('found-all');
+});
+
+/* ---------- Save & print (picture + website, made on the device) ---------- */
+const logoImg = new Image(); logoImg.src = LOGO_SRC;
+async function composeImage() {
+  try { await document.fonts.load('600 40px Fredoka'); } catch (_) {}
+  const band = 120;
+  const c = document.createElement('canvas'); c.width = W; c.height = H + band;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+  g.drawImage(paint, 0, 0);
+  if (current.src && lines.complete) g.drawImage(lines, 0, 0, W, H);
+  g.fillStyle = '#E9F6F7'; g.fillRect(0, H, W, band);
+  g.fillStyle = '#14263A'; g.fillRect(0, H, W, 4);
+  let x = 30;
+  if (logoImg.complete && logoImg.naturalWidth) { const lh = 88, lw = lh * logoImg.naturalWidth / logoImg.naturalHeight; g.drawImage(logoImg, x, H + 18, lw, lh); x += lw + 20; }
+  g.fillStyle = '#14263A'; g.font = '600 40px Fredoka, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'right';
+  g.fillText(SITE, W - 30, H + band / 2 + 2);
+  return c;
+}
+const NATIVE = window.ColorMeNative || null;   // provided by the App Store / Google Play app
+const SHARE_TEXT = 'Colored with Look & See, Color Me! @lookandseecolorme #LookAndSeeColorMe';
+if (NATIVE) $('#doPrint').hidden = true;
+$('#doShare').addEventListener('click', async () => {
+  const ok = await parentalGate(); gateCancel = null;
+  openSheet('#sheetSave');
+  if (!ok) return;
+  const c = await composeImage();
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const name = `my-${current.id}-color-me.png`;
+  const msg = $('#shareMsg');
+  try {
+    if (NATIVE) { await NATIVE.share(blob, name, SHARE_TEXT); msg.textContent = 'Thank you! Tag @lookandseecolorme so Mia can see it.'; return; }
+    const file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) { await navigator.share({ files: [file], text: SHARE_TEXT }); return; }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  msg.textContent = 'Saved! Post it and tag @lookandseecolorme so Mia can see it.';
+});
+$('#doSave').addEventListener('click', async () => {
+  const c = await composeImage();
+  const blob = await new Promise(r => c.toBlob(r, 'image/png'));
+  const name = `my-${current.id}-color-me.png`;
+  if (NATIVE) { try { await NATIVE.save(blob, name); } catch (_) {} return; }
+  try {
+    const file = new File([blob], name, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
+      await navigator.share({ files: [file], title: 'My Color Me! picture' });
+      return;
+    }
+  } catch (err) { if (err && err.name === 'AbortError') return; }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+});
+$('#doPrint').addEventListener('click', async () => {
+  const c = await composeImage();
+  const img = $('#printImg'); img.src = c.toDataURL('image/png');
+  closeSheets();
+  await img.decode().catch(() => {});
+  window.print();
+});
+
+/* ---------- Keep each picture on this device (IndexedDB, nothing is sent anywhere) ---------- */
+let dbp = null;
+function db() {
+  if (!dbp) dbp = new Promise((res, rej) => {
+    try { const r = indexedDB.open('colorme-paint', 1); r.onupgradeneeded = () => r.result.createObjectStore('art'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }
+    catch (e) { rej(e); }
+  });
+  return dbp;
+}
+async function idb(mode, fn) { const d = await db(); return new Promise((res, rej) => { const t = d.transaction('art', mode); const q = fn(t.objectStore('art')); t.oncomplete = () => res(q && q.result); t.onerror = () => rej(t.error); }); }
+let saveTimer = 0;
+function autosave() {
+  clearTimeout(saveTimer);
+  const id = current.id;
+  saveTimer = setTimeout(() => paint.toBlob(b => { idb('readwrite', s => s.put(b, id)).catch(() => {}); }, 'image/png'), 600);
+  const t = artTimes(); t[id] = Date.now(); try { localStorage.setItem('colorme-art-time', JSON.stringify(t)); } catch (_) {}
+}
+function remember() { try { localStorage.setItem('colorme-prefs', JSON.stringify({ tool, color, sizeIdx, pic: current.id })); } catch (_) {} }
+function recall() { try { return JSON.parse(localStorage.getItem('colorme-prefs')) || {}; } catch (_) { return {}; } }
+
+
+/* ---------- The child's profile (name, favorite friend, birthday): stored only on this device ---------- */
+const AVATARS = ['d01_dolphin', 'd19_octopus', 'd17_turtle', 'd02_seahorse', 'd03_pufferfish', 'd07_starfish', 'd03_crab', 'd05_penguin'];
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+function kid() { try { return JSON.parse(localStorage.getItem('colorme-kid')) || {}; } catch (_) { return {}; } }
+function setKid(k) { try { localStorage.setItem('colorme-kid', JSON.stringify(k)); } catch (_) {} }
+function kidName() { return (kid().name || '').trim(); }
+function avatarSrc(a) { return 'books/ocean/figs/' + (AVATARS.includes(a) ? a : AVATARS[0]) + '.webp'; }
+function renderKid() {
+  const k = kid(), name = kidName();
+  const hello = $('#helloBubble'); hello.innerHTML = '';
+  hello.append(name ? `Hi, ${name}! I'm Mia.` : "Hi, I'm Mia!", document.createElement('br'), "Let's color and find sea friends!");
+  const chip = $('#kidChip'); chip.hidden = !name && !k.avatar;
+  $('#kidAvatar').src = avatarSrc(k.avatar); $('#kidChipName').textContent = name || 'Me';
+}
+let profAvatar = null;
+function openProfile() {
+  const k = kid(); profAvatar = k.avatar || null;
+  $('#profName').value = k.name || '';
+  const box = $('#profAvatars'); box.innerHTML = '';
+  AVATARS.forEach(a => {
+    const b = document.createElement('button'); b.setAttribute('aria-pressed', a === profAvatar); b.setAttribute('aria-label', a.split('_')[1]);
+    b.innerHTML = `<img src="${avatarSrc(a)}" alt="">`;
+    b.addEventListener('click', () => { profAvatar = a; box.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x === b)); });
+    box.appendChild(b);
+  });
+  const [m, d] = (k.bday || '').split('-').map(Number);
+  $('#profMonth').innerHTML = '<option value="">Month</option>' + MONTHS.map((n, i) => `<option value="${i + 1}"${m === i + 1 ? ' selected' : ''}>${n}</option>`).join('');
+  $('#profDay').innerHTML = '<option value="">Day</option>' + Array.from({ length: 31 }, (_, i) => `<option${d === i + 1 ? ' selected' : ''}>${i + 1}</option>`).join('');
+  openSheet('#sheetProfile');
+}
+$('#profSave').addEventListener('click', () => {
+  const name = $('#profName').value.replace(/[<>]/g, '').trim().slice(0, 20);
+  const m = +$('#profMonth').value, d = +$('#profDay').value;
+  const old = kid();
+  setKid({ ...old, asked: true, name, avatar: profAvatar || old.avatar || null, bday: m && d ? `${m}-${d}` : '' });
+  closeSheets(); renderKid(); checkBirthday();
+});
+$('#profSkip').addEventListener('click', () => { setKid({ ...kid(), asked: true }); closeSheets(); });
+$('#kidChip').addEventListener('click', openProfile);
+
+// Birthday: Mia says happy birthday and gives a picture from the book
+function checkBirthday() {
+  const k = kid(); if (!k.bday) return;
+  const now = new Date(), today = `${now.getMonth() + 1}-${now.getDate()}`;
+  if (k.bday !== today || k.celebrated === now.getFullYear()) return;
+  setKid({ ...k, celebrated: now.getFullYear() });
+  const name = kidName();
+  const gift = PICTURES.find(p => p.book && !unlocked(p));
+  const t = $('#bdayTitle'); t.innerHTML = '';
+  t.append(`Happy birthday${name ? ', ' + name : ''}!`, document.createElement('br'), gift ? 'I have a gift for you: a new picture!' : 'Let’s paint something special today!');
+  const img = $('#bdayGift'), btns = $('#bdayBtns'); btns.innerHTML = '';
+  if (gift) {
+    const g = gifts(); g.push(gift.id); try { localStorage.setItem('colorme-gifts', JSON.stringify(g)); } catch (_) {}
+    img.src = gift.thumb; img.hidden = false;
+    btns.append(bigBtn('Open my gift', 'coral', () => { closeSheets(); hideHome(); openPicture(gift); }));
+  } else { img.hidden = true; btns.append(bigBtn("Let's color!", 'coral', () => { closeSheets(); $('#homeGo').click(); })); }
+  openSheet('#sheetBday'); mia('birthday');
+  // the name is shown, not spoken: a device voice saying it sounds robotic (Mia's recorded voice says the greetings)
+}
+
+/* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
+document.querySelectorAll('.book.vid[data-list]').forEach(b => b.addEventListener('click', () => {
+  const list = b.dataset.list;
+  // The video plays inside the app, so the child never leaves it. Plays still count as views on the channel.
+  // In the store app the player is framed through our website, because YouTube's player needs a web address to run.
+  const src = window.ColorMeNative
+    ? 'https://www.lookandseecolorme.com/paint/watch.html?list=' + list
+    : 'https://www.youtube-nocookie.com/embed/videoseries?list=' + list + '&rel=0&playsinline=1';
+  $('#videoTitle').textContent = b.querySelector('.bt').textContent;
+  $('#videoBox').innerHTML = `<iframe src="${src}" title="Mia on YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  openSheet('#sheetVideo');
+}));
+$('#sheetVideo').addEventListener('click', e => { if (!$('#sheetVideo').classList.contains('on')) $('#videoBox').innerHTML = ''; });
+
+/* ---------- My art: a gallery of every picture already painted (all on this device) ---------- */
+function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
+async function artThumb(p) {
+  let blob = null; try { blob = await idb('readonly', s => s.get(p.id)); } catch (_) {}
+  if (!blob) return null;
+  const bmp = await createImageBitmap(blob).catch(() => null); if (!bmp) return null;
+  const tw = 300, th = Math.round(tw * bmp.height / bmp.width);
+  const c = document.createElement('canvas'); c.width = tw; c.height = th; const g = c.getContext('2d');
+  g.drawImage(bmp, 0, 0, tw, th);
+  const d = g.getImageData(0, 0, tw, th).data; let ink = 0;
+  for (let i = 3; i < d.length; i += 16) if (d[i] > 20) { ink++; if (ink > 30) break; }
+  if (ink <= 30) return null;          // nothing painted yet
+  g.globalCompositeOperation = 'destination-over'; g.fillStyle = '#fff'; g.fillRect(0, 0, tw, th);
+  g.globalCompositeOperation = 'source-over';
+  if (p.src) { const l = await loadImg(p.src); if (l) g.drawImage(l, 0, 0, tw, th); }
+  return c.toDataURL('image/jpeg', 0.85);
+}
+function artTimes() { try { return JSON.parse(localStorage.getItem('colorme-art-time')) || {}; } catch (_) { return {}; } }
+async function flushSave() {
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = 0; await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); }
+}
+const thumbCache = new Map();   // picture id -> { t, url }
+async function myArt() {        // every painted picture, newest first
+  await flushSave();
+  const times = artTimes(), out = [];
+  const list = PICTURES.filter(unlocked).sort((a, b) => (times[b.id] || 0) - (times[a.id] || 0));
+  for (const p of list) {
+    const t = times[p.id] || 0, c = thumbCache.get(p.id);
+    let url = c && c.t === t ? c.url : undefined;
+    if (url === undefined) { url = await artThumb(p); thumbCache.set(p.id, { t, url }); }
+    if (url) out.push({ p, url });
+  }
+  return out;
+}
+function openArtPiece(p) { return async () => { closeSheets(); hideHome(); exitFind(); await openPicture(p); }; }
+async function renderHomeArt() {
+  const shelf = $('#homeArtShelf'), art = await myArt();
+  shelf.innerHTML = '';
+  if (!art.length) {
+    const e = document.createElement('button'); e.className = 'book empty';
+    e.innerHTML = '<div class="soon-cover">Your paintings will show up here!</div><span class="bt">Start painting</span>';
+    e.addEventListener('click', () => $('#homeGo').click());
+    shelf.appendChild(e); return;
+  }
+  const fit = matchMedia('(min-width:560px)').matches ? 6 : 4;   // two rows of the shelf
+  const show = art.length > fit ? art.slice(0, fit - 1) : art;
+  show.forEach(({ p, url }) => {
+    const b = document.createElement('button'); b.className = 'book art';
+    b.innerHTML = `<img src="${url}" alt=""><span class="bt">${p.name}</span>`;
+    b.addEventListener('click', openArtPiece(p));
+    shelf.appendChild(b);
+  });
+  if (art.length > fit) {
+    const m = document.createElement('button'); m.className = 'book more';
+    m.innerHTML = `<div class="soon-cover">+${art.length - show.length}<br>more</div><span class="bt">See more</span>`;
+    m.addEventListener('click', openArt);
+    shelf.appendChild(m);
+  }
+}
+async function openArt() {
+  closeSheets();
+  const grid = $('#artGrid'); grid.innerHTML = ''; $('#artEmpty').hidden = true;
+  openSheet('#sheetArt');
+  const art = await myArt();
+  art.forEach(({ p, url }) => {
+    const b = document.createElement('button'); b.className = 'pick';
+    b.innerHTML = `<img src="${url}" alt=""><span>${p.name}</span>`;
+    b.addEventListener('click', openArtPiece(p));
+    grid.appendChild(b);
+  });
+  $('#artEmpty').hidden = art.length > 0;
+}
+$('#picsArt').addEventListener('click', openArt);
+
+/* ---------- Open a picture ---------- */
+async function openPicture(p) {
+  if (saveTimer) { clearTimeout(saveTimer); await new Promise(r => paint.toBlob(b => idb('readwrite', s => s.put(b, current.id)).then(r, r), 'image/png')); saveTimer = 0; }
+  if (!unlocked(p)) p = PICTURES.find(unlocked) || BLANK;
+  current = p; remember(); app.classList.remove('finding'); tray.hidden = true; renderFind();
+  if (p.src) {
+    lines.style.display = '';
+    lines.src = p.src;
+    await lines.decode().catch(() => new Promise(r => lines.onload = r));
+    W = lines.naturalWidth; H = lines.naturalHeight;
+  } else { lines.style.display = 'none'; lines.removeAttribute('src'); W = 1200; H = 1700; }
+  [paint, live, mask].forEach(c => { c.width = W; c.height = H; });
+  undoStack = []; $('#btnUndo').disabled = true;
+  view = { z: 1, tx: 0, ty: 0 }; layout();
+  try {
+    const blob = await idb('readonly', s => s.get(p.id));
+    if (blob) { const bmp = await createImageBitmap(blob); pctx.drawImage(bmp, 0, 0); }
+  } catch (_) {}
+}
+
+/* ---------- Start ---------- */
+const prefs = recall();
+if (prefs.tool && SIZES[prefs.tool]) tool = prefs.tool;
+if (prefs.color && COLORS.some(c => c[1] === prefs.color)) color = prefs.color;
+if (Number.isInteger(prefs.sizeIdx)) sizeIdx = Math.min(3, Math.max(0, prefs.sizeIdx));
+toolBtns.forEach(x => x.setAttribute('aria-pressed', x.dataset.tool === tool));
+colorsEl.querySelectorAll('.sw').forEach(x => x.setAttribute('aria-pressed', x.dataset.c === color));
+drawToolIcons(); buildSizes();
+loadBooks().then(() => openPicture(PICTURES.find(p => p.id === prefs.pic) || PICTURES[0])).then(() => showHome());
+
+/* ---------- Works offline after the first visit ---------- */
+if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
+})();
+</script>
+</body>
+</html>
