@@ -69,6 +69,12 @@ main{max-width:640px;margin:0 auto;padding:22px 16px 40px}
 .hint{font:700 14px/1 var(--display);letter-spacing:.06em;text-transform:uppercase;color:var(--deep);margin:0 0 10px}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .tiles.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pickgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.pk{appearance:none;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 4px 8px;border:3px solid var(--ink);border-radius:18px;background:#fff;color:var(--ink);font:600 16px/1.15 var(--display);text-align:center;cursor:pointer;box-shadow:0 4px 0 var(--ink);transition:transform .12s,box-shadow .12s;-webkit-tap-highlight-color:transparent}
+.pk img{width:100%;height:auto;aspect-ratio:1/1;object-fit:contain;border-radius:12px;background:#fff}
+.pk:active,.pk[aria-pressed=true]{transform:translateY(3px);box-shadow:0 1px 0 var(--ink);background:#FFF4D6}
+.pickh{font:700 26px/1.15 var(--display);text-align:center;margin:4px 0 4px}
+.picks{font:700 15px/1.3 var(--body);color:var(--muted);text-align:center;margin:0 0 14px}
 @media (max-width:360px){.tiles.three{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .tile{appearance:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-height:104px;padding:12px 8px;border:3px solid var(--ink);border-radius:20px;background:#fff;color:var(--ink);font:600 16px/1.2 var(--display);text-align:center;cursor:pointer;box-shadow:0 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background .15s;position:relative;-webkit-tap-highlight-color:transparent}
 .tile .e{font-size:36px;line-height:1}
@@ -197,10 +203,22 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     <a class="introbuy" href="https://www.amazon.com/s?k=Look+and+See+Color+Me+Ocean+Animals&amp;i=stripbooks" target="_blank" rel="noopener" data-goatcounter-click="quiz-amazon-intro"><img src="../assets/img/cover_ocean.jpg" alt="" loading="lazy"><span><b>Our book is on Amazon!</b>Ocean Animals: 45 seek-and-find scenes</span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.6 12.4a1 1 0 0 0 1 .8h9.7a1 1 0 0 0 1-.8L21 7H6"/></svg>Buy</span></a>
   </section>
 
+  <!-- 8 · Pick your free page (first screen for ad visitors, 2026-11-23) -->
+  <section class="step" data-step="8" hidden>
+    <div class="hook"><b>Free coloring page</b> for your little artist</div>
+    <h1 class="pickh">Pick your free page!</h1>
+    <p class="picks">Tap the one your child will love. Print it at home.</p>
+    <div class="pickgrid">
+      <button class="pk" type="button" data-page="twinkle" aria-pressed="false"><img src="img/pick_twinkle.webp" alt="Twinkle the Sea Star coloring page" width="300" height="300">Twinkle</button>
+      <button class="pk" type="button" data-page="finn" aria-pressed="false"><img src="img/pick_finn.webp" alt="Finn the Clownfish coloring page" width="300" height="300">Finn</button>
+      <button class="pk" type="button" data-page="shelly" aria-pressed="false"><img src="img/pick_shelly.webp" alt="Shelly the Sea Turtle coloring page" width="300" height="300">Shelly</button>
+    </div>
+  </section>
+
   <!-- 1 · Themes -->
   <section class="step" data-step="1" hidden>
-    <div class="hook"><b>Free coloring page</b> for your little artist · just 3 taps</div>
-    <div class="mia"><img src="img/mia_magnifier.webp" alt="" width="341" height="400"><div class="bubble">What does your little artist love most?<small>Tap one, and Mia picks a free page to match!</small></div></div>
+    <div class="hook" id="hook1"><b>Free coloring page</b> for your little artist · just 3 taps</div>
+    <div class="mia"><img src="img/mia_magnifier.webp" alt="" width="341" height="400"><div class="bubble" id="q1-bubble">What does your little artist love most?<small>Tap one, and Mia picks a free page to match!</small></div></div>
     <div class="tiles three" data-q="themes">
       <button class="tile" type="button" data-v="ocean"><span class="e">🐠</span>Ocean animals</button>
       <button class="tile" type="button" data-v="dinosaurs"><span class="e">🦖</span>Dinosaurs</button>
@@ -419,7 +437,10 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   var PAGES = {
     twinkle:{t:'Twinkle the Sea Star',f:'twinkle',pdf:'twinkle-sea-star-coloring-page.pdf'},
     finn:{t:'Finn the Clownfish',f:'finn',pdf:'finn-clownfish-coloring-page.pdf'},
-    shelly:{t:'Shelly the Sea Turtle',f:'shelly',pdf:'shelly-sea-turtle-coloring-page.pdf'}
+    shelly:{t:'Shelly the Sea Turtle',f:'shelly',pdf:'shelly-sea-turtle-coloring-page.pdf'},
+    ollie:{t:'Ollie the Octopus',f:'ollie',pdf:'ollie-octopus-coloring-page.pdf'},
+    wally:{t:'Wally the Whale',f:'wally',pdf:'wally-whale-coloring-page.pdf'},
+    sunny:{t:'Sunny the Seahorse',f:'sunny',pdf:'sunny-seahorse-coloring-page.pdf'}
   };
   var BOOKS = {
     ocean:{t:'Ocean Animals',c:'cover_ocean.jpg',live:true,txt:'45 seek-and-find scenes to color, with every hidden friend\'s name in English.'},
@@ -438,7 +459,11 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   var params = new URLSearchParams(location.search);
   var source = ['utm_source','utm_medium','utm_campaign','utm_content'].map(function(k){return params.get(k)||''}).filter(Boolean).join(' / ') || (document.referrer ? 'ref: '+document.referrer.split('/')[2] : 'direct');
 
-  var SEQ = [1,2,4,5];   // 3 taps (theme, where, coloring vs seek-and-find), then email. Materials step retired 2026-11-20.
+  // Ad visitors first pick their free page (step 8), then 3 taps (theme, where, coloring vs seek-and-find), then email.
+  // Visitors who already chose a page on the home page (?page=) skip the picker. Materials step retired 2026-11-20.
+  var chosen = '';
+  var SEQ = params.get('page') ? [1,2,4,5] : [8,1,2,4,5];
+  prog.innerHTML = SEQ.map(function(){ return '<span></span>' }).join('');
   function after(n){ return SEQ[SEQ.indexOf(n)+1] || 5 }
   function before(n){ return SEQ[Math.max(0,SEQ.indexOf(n)-1)] }
   function gc(path){ var tries = 0; (function go(){ try{ if(window.goatcounter && window.goatcounter.count){ window.goatcounter.count({path:path, title:path, event:true}); return; } }catch(e){} if(tries++ < 20) setTimeout(go, 500); })(); }
@@ -449,7 +474,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     prog.hidden = (n === 0 || n >= 6);
     prog.querySelectorAll('span').forEach(function(b,i){ b.classList.toggle('on', i <= SEQ.indexOf(n)) });
     nav.hidden = !(n >= 1 && n <= 4);
-    prev.style.visibility = n <= 1 ? 'hidden' : 'visible';
+    prev.style.visibility = SEQ.indexOf(n) <= 0 ? 'hidden' : 'visible';
     // single-choice step advances on tap, so it has no Next button
     next.style.display = 'none';   // every question advances on tap
     updateNext();
@@ -463,7 +488,19 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
 
   document.querySelector('[data-start]').addEventListener('click', function(){ show(1) });
   next.addEventListener('click', function(){ if(step < LAST_Q) show(after(step)) });
-  prev.addEventListener('click', function(){ if(step > 1) show(before(step)) });
+  prev.addEventListener('click', function(){ if(SEQ.indexOf(step) > 0) show(before(step)) });
+  if(SEQ[0] === 8){
+    document.getElementById('hook1').hidden = true;
+    document.getElementById('q1-bubble').innerHTML = 'Great pick! What else does your little artist love?<small>Mia is choosing what to draw in our next books.</small>';
+  }
+  document.querySelectorAll('.pk').forEach(function(b){
+    b.addEventListener('click', function(){
+      chosen = b.dataset.page;
+      document.querySelectorAll('.pk').forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false') });
+      gc('quiz-pick-'+chosen);
+      setTimeout(function(){ show(after(8)) }, 260);
+    });
+  });
   document.getElementById('other-next').addEventListener('click', function(){ show(after(1)) });
 
   document.querySelectorAll('[data-q]').forEach(function(group){
@@ -501,6 +538,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     if(wp && /^[a-z0-9]+$/.test(wp) && wf && /^[a-z0-9-]+-coloring-page\.pdf$/.test(wf)){
       return {fav:fav, bookKey:bookKey, page:PAGES[wp] || {t:(wt||'Your free page').slice(0,60), f:wp, pdf:wf}};
     }
+    if(chosen && PAGES[chosen]) return {fav:fav, bookKey:bookKey, page:PAGES[chosen]};
     return {fav:fav, bookKey:bookKey, page:PAGES[pageKey]};
   }
   function fillResult(name){
@@ -515,10 +553,10 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
     var digital = answers.where.indexOf('tablet') > -1 || answers.where.indexOf('phone') > -1;
     $('r-paint').hidden = !digital;
 
-    var themeMsg = '';
-    if(BOOKS[r.fav] && r.fav !== 'ocean' && !BOOKS[r.fav].live) themeMsg = 'We\'re drawing '+BOOKS[r.fav].t.toLowerCase()+' right now! Until then, here\'s a sea friend to color.';
-    else if(THEME_NAMES[r.fav]) themeMsg = 'Thanks for voting for '+THEME_NAMES[r.fav]+'! Mia is taking notes for our next books. Meanwhile, here\'s a sea friend to color.';
-    else if(r.fav === 'other') themeMsg = 'Thanks for telling us! Mia is taking notes for our next books. Meanwhile, here\'s a sea friend to color.';
+    var themeMsg = '', SEA = chosen ? 'Here\'s the page you picked!' : 'Meanwhile, here\'s a sea friend to color.';
+    if(BOOKS[r.fav] && r.fav !== 'ocean' && !BOOKS[r.fav].live) themeMsg = 'We\'re drawing '+BOOKS[r.fav].t.toLowerCase()+' right now! '+SEA;
+    else if(THEME_NAMES[r.fav]) themeMsg = 'Thanks for voting for '+THEME_NAMES[r.fav]+'! Mia is taking notes for our next books. '+SEA;
+    else if(r.fav === 'other') themeMsg = 'Thanks for telling us! Mia is taking notes for our next books. '+SEA;
     else themeMsg = 'Print it at home, then color along with Mia on YouTube!';
     $('r-page-text').textContent = themeMsg;
 
@@ -604,7 +642,7 @@ footer .site{font:700 17px/1 var(--display);color:var(--ink);text-decoration:non
   var KEY = 'lsq_done_v1';
   function remember(page){ try{ localStorage.setItem(KEY, JSON.stringify({page:page, at:Date.now()})) }catch(e){} }
   function showAlready(){ remember(''); show(7); }
-  try{ if(localStorage.getItem(KEY) && !params.has('again')) { show(7); } else { show(1); } }catch(e){ show(1); }
+  try{ if(localStorage.getItem(KEY) && !params.has('again')) { show(7); } else { show(SEQ[0]); } }catch(e){ show(SEQ[0]); }
 
   document.getElementById('r-share').addEventListener('click', function(){
     var data = {title:'Free coloring page quiz', text:'3 quick taps and Mia picks a free coloring page for your little artist!', url:'https://www.lookandseecolorme.com/quiz/'};
