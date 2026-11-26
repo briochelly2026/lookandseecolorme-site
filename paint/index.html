@@ -28,8 +28,8 @@ body{background:var(--desk);color:var(--ink);font:600 16px/1.3 Fredoka,ui-rounde
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
 button{font:inherit;color:inherit}
 .app{position:fixed;inset:0;display:grid;
-  grid-template-rows:auto minmax(0,1fr) auto auto auto;
-  grid-template-areas:"top" "board" "tools" "colors" "foot";
+  grid-template-rows:auto minmax(0,1fr) auto auto auto auto;
+  grid-template-areas:"top" "board" "done" "tools" "colors" "foot";
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 
 /* Top bar */
@@ -106,13 +106,15 @@ button{font:inherit;color:inherit}
 .fig img{width:62px;height:62px;object-fit:contain}
 .fig span{font:600 14px/1.1 Fredoka,system-ui,sans-serif}
 .fig[aria-pressed="true"]{background:#E3F6E8;border-color:#2E9E4F}
+.confetti{position:fixed;top:-20px;width:10px;height:16px;border-radius:3px;z-index:9999;pointer-events:none;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{top:105vh;opacity:.8}}
 .fig[aria-pressed="true"]::after{content:"";position:absolute;top:-9px;right:-9px;width:28px;height:28px;border-radius:50%;background:#2E9E4F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/18px no-repeat;border:2px solid var(--ink)}
 
 
 /* Two steps: paint, then "I'm done!" -> find the friends in the picture */
-.done-btn{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.done-btn{grid-area:done;justify-self:center;margin:6px 0 2px;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
 .done-btn svg{width:28px;height:28px}
-.done-btn:active{transform:translate(-50%,3px);box-shadow:none}
+.done-btn:active{transform:translateY(3px);box-shadow:none}
 .findbar{position:absolute;left:10px;right:10px;top:10px;z-index:6;display:none;align-items:center;gap:10px;background:var(--sun);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 8px 8px 12px}
 .findbar .lupa{width:40px;height:40px;flex:none}
 .findbar b{flex:1;font:700 19px/1.15 Fredoka,system-ui,sans-serif}
@@ -144,7 +146,7 @@ button{font:inherit;color:inherit}
 .btn.green{background:#2E9E4F;color:#fff}
 
 /* Name of the crayon you just picked */
-.color-name{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
+.color-name{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
 .color-name.on{opacity:1;transform:translateX(-50%) scale(1)}
 /* Watch Mia */
 .watch{grid-template-columns:repeat(2,1fr)!important}
@@ -155,6 +157,12 @@ button{font:inherit;color:inherit}
 .wframe video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .vframe{position:relative;width:100%;aspect-ratio:16/9;border:3px solid var(--ink);border-radius:14px;overflow:hidden;background:#000;margin-bottom:12px}
 .vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vframe video{position:absolute;inset:0;width:100%;height:100%;background:#000}
+.vframe.tall{aspect-ratio:9/16;width:min(100%,52vh,360px);margin:0 auto 12px}
+.vlist{display:flex;gap:10px;overflow-x:auto;padding:2px 2px 8px;margin-bottom:6px;touch-action:pan-x}
+.vlist button{flex:none;width:112px;border:3px solid var(--ink);border-radius:10px;overflow:hidden;background:#fff;padding:0;cursor:pointer}
+.vlist button[aria-pressed="true"]{border-color:#FF6245;box-shadow:0 0 0 3px #FF6245}
+.vlist img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
 /* Child profile */
 .kid{display:inline-flex;align-items:center;gap:8px;border:3px solid var(--ink);border-radius:999px;background:#fff;padding:4px 14px 4px 4px;font:700 18px/1 Fredoka,system-ui,sans-serif;box-shadow:0 3px 0 var(--ink);cursor:pointer;margin:2px auto 0}
 .kid[hidden]{display:none}
@@ -190,16 +198,16 @@ button{font:inherit;color:inherit}
 /* Colors */
 .colors{grid-area:colors;display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;padding:4px 10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-snap-type:x proximity}
 .colors::-webkit-scrollbar{display:none}
-.sw{flex:none;width:40px;height:70px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
-.sw svg{width:34px;height:66px;transform:translateY(16px);transition:transform .15s}
+.sw{flex:none;width:52px;height:88px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
+.sw svg{width:45px;height:87px;transform:translateY(20px);transition:transform .15s}
 .sw[aria-pressed="true"] svg{transform:translateY(0)}
 .foot{grid-area:foot;text-align:center;font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted);padding:4px 0 6px;letter-spacing:.02em}
 .foot a{color:inherit;text-decoration:none}
 
 /* Wide / landscape screens (tablets) */
 @media (min-aspect-ratio:1/1) and (min-width:700px){
-  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;
-    grid-template-areas:"top top top" "tools board colors" "foot foot foot"}
+  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto auto;
+    grid-template-areas:"top top top" "tools board colors" "tools done colors" "foot foot foot"}
   .tools{flex-direction:column;justify-content:center;padding:8px}
   .tools .sep{width:40px;height:3px;margin:4px 0}
   .sizes{flex-direction:column}
@@ -210,11 +218,28 @@ button{font:inherit;color:inherit}
   .sw[aria-pressed="true"] svg{transform:translateX(-8px) rotate(-90deg)}
 }
 
+/* Phones turned sideways (short landscape): compact tools; while finding, friends go in a column on the right */
+@media (orientation:landscape) and (max-height:520px){
+  .top{padding:4px 8px}.ibtn{width:44px;height:44px}.ibtn svg{width:24px;height:24px}
+  .tools{justify-content:flex-start;overflow-y:auto;gap:2px;padding:4px 6px}
+  .tool{width:46px}.size{width:40px;height:34px}.tools .sep{margin:2px 0}
+  .done-btn{min-height:46px;font-size:19px;margin:2px 0}
+  .foot{display:none}
+  .findbar{left:auto;right:10px;top:8px;width:210px;padding:6px 6px 6px 10px;gap:6px}
+  .findbar .lupa{width:30px;height:30px}.findbar b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.findbar b small{display:none}
+  .findbar .count{font-size:17px;padding:6px 9px}
+  .tray{left:auto;right:10px;top:72px;bottom:8px;width:210px;overflow-y:auto;touch-action:pan-y}
+  .tray-head{font-size:15px}
+  .figs{flex-wrap:wrap;overflow:visible;justify-content:center}
+  .fig{width:86px}.fig img{width:50px;height:50px}
+}
 /* Sheets */
 .scrim{position:fixed;inset:0;background:rgba(20,38,58,.45);display:none;align-items:flex-end;justify-content:center;z-index:20;padding:12px}
 .scrim.on{display:flex}
 @media (min-width:700px){.scrim{align-items:center}}
 .sheet{background:var(--paper);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));text-align:center}
+.sheet{position:relative}
+.sheet-x{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:48px;height:48px;border:3px solid var(--ink);border-radius:50%;background:#fff;font:700 30px/1 Fredoka,system-ui,sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 var(--ink);z-index:2}
 .sheet h2{margin:0 0 4px;font:700 24px/1.15 Fredoka,system-ui,sans-serif}
 .sheet p{margin:0 0 14px;color:var(--muted);font-size:15px}
 .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 8px}
@@ -288,13 +313,13 @@ button{font:inherit;color:inherit}
       <button class="x" id="findExit" aria-label="Back to painting">&times;</button>
     </div>
     <div class="color-name" id="colorName" aria-live="polite"></div>
-    <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
     <div class="tray" id="tray" hidden>
       <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
       <div class="figs" id="figs"></div>
     </div>
     <button class="ibtn zoomout" id="btnFit" aria-label="Show the whole picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
   </main>
+  <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
 
   <nav class="tools" id="tools" aria-label="Tools">
     <button class="tool" data-tool="crayon" aria-label="Crayon" aria-pressed="true"></button>
@@ -369,6 +394,7 @@ button{font:inherit;color:inherit}
 <!-- Pick a picture -->
 <div class="scrim" id="sheetPics" role="dialog" aria-modal="true" aria-labelledby="picsTitle">
   <div class="sheet">
+    <button class="sheet-x" data-close aria-label="Close">&times;</button>
     <h2 id="picsTitle">Pick a picture!</h2>
     <p><button class="btn sun small" id="picsArt">See my art</button></p>
     <p>Paint anywhere you like, even outside the lines.</p>
@@ -468,6 +494,7 @@ button{font:inherit;color:inherit}
   <div class="sheet">
     <h2 id="videoTitle">Watch Mia</h2>
     <div class="vframe" id="videoBox"></div>
+    <div class="vlist" id="videoList" hidden></div>
     <p class="note"><button class="btn" data-close style="min-height:44px;font-size:16px">Close</button></p>
   </div>
 </div>
@@ -708,11 +735,12 @@ let view = { z: 1, tx: 0, ty: 0 };
 function layout() {
   const r = board.getBoundingClientRect(); const pad = 14;
   const finding = app.classList.contains('finding');
-  const top = finding ? $('#findBar').offsetHeight + 20 : pad;
-  const bot = finding ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad + 72;   // room for "I'm done!" / the friends
-  const aw = r.width - pad * 2, ah = r.height - top - bot;
+  const side = finding && innerWidth > innerHeight && innerHeight <= 520 ? 230 : 0;   // phone sideways: friends column on the right
+  const top = finding && !side ? $('#findBar').offsetHeight + 20 : pad;
+  const bot = finding && !side ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad;   // room for the friends tray
+  const aw = r.width - pad * 2 - side, ah = r.height - top - bot;
   const cssW = Math.max(50, Math.min(aw, ah * W / H)); const cssH = cssW * H / W;
-  fit = { x: (r.width - cssW) / 2, y: top + (ah - cssH) / 2, cssW, cssH };
+  fit = { x: (r.width - side - cssW) / 2, y: top + (ah - cssH) / 2, cssW, cssH };
   stage.style.width = cssW + 'px'; stage.style.height = cssH + 'px';
   applyView();
 }
@@ -1092,7 +1120,7 @@ function foundIt(i) {
   const list = foundList(); list.push(i); setFound(list);
   say(current.figs[i]);
   renderFind();
-  if (list.length >= current.figs.length) setTimeout(startParade, 1100);
+  if (list.length >= current.figs.length) setTimeout(celebrate, 1000);   // all found: Mia cheers on her own, no button to press
 }
 function enterFind() {
   closeSheets();
@@ -1153,10 +1181,23 @@ function showParade(first) {
 }
 function startParade() { if (!finding()) return; parade = 0; closeSheets(); openSheet('#sheetParade'); showParade(true); }
 $('#paradeSay').addEventListener('click', () => say(current.figs[parade]));
+function celebrate() {
+  if (!finding()) return;
+  $('#winTitle').innerHTML = ''; $('#winTitle').append(`You found them all${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'Shall we do the next one?');
+  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin'); mia('found-all'); confetti();
+}
+function confetti() {
+  const cols = ['#E5322D', '#FF8F1F', '#FEC621', '#2E9E4F', '#1FA6B1', '#2F73AF', '#7E57C2', '#F79BC0'];
+  for (let i = 0; i < 60; i++) {
+    const c = document.createElement('i'); c.className = 'confetti';
+    c.style.left = Math.random() * 100 + 'vw'; c.style.background = cols[i % cols.length];
+    c.style.animationDelay = Math.random() * 0.6 + 's'; c.style.transform = `rotate(${Math.random() * 360}deg)`;
+    document.body.appendChild(c); setTimeout(() => c.remove(), 3200);
+  }
+}
 $('#paradeNext').addEventListener('click', () => {
   if (++parade < current.figs.length) { showParade(); return; }
-  $('#winTitle').innerHTML = ''; $('#winTitle').append(`You found them all${kidName() ? ', ' + kidName() : ''}!`, document.createElement('br'), 'Shall we do the next one?');
-  closeSheets(); finishButtons($('#winBtns')); openSheet('#sheetWin'); mia('found-all');
+  celebrate();
 });
 
 /* ---------- Save & print (picture + website, made on the device) ---------- */
@@ -1304,16 +1345,38 @@ function checkBirthday() {
 /* ---------- Watch Mia: her YouTube videos, played inside the app ---------- */
 document.querySelectorAll('.book.vid[data-list]').forEach(b => b.addEventListener('click', () => {
   const list = b.dataset.list;
-  // The video plays inside the app, so the child never leaves it. Plays still count as views on the channel.
-  // In the store app the player is framed through our website, because YouTube's player needs a web address to run.
-  const src = window.ColorMeNative
-    ? 'https://www.lookandseecolorme.com/paint/watch.html?list=' + list
-    : 'https://www.youtube-nocookie.com/embed/videoseries?list=' + list + '&rel=0&playsinline=1';
   $('#videoTitle').textContent = b.querySelector('.bt').textContent;
+  $('#videoList').hidden = true;
+  if (window.ColorMeNative) { openAppVideos(list); return; }
+  // Website: YouTube's privacy-enhanced player, inside the page. Plays count as views on the channel.
+  const src = 'https://www.youtube-nocookie.com/embed/videoseries?list=' + list + '&rel=0&playsinline=1';
+  $('#videoBox').className = 'vframe';
   $('#videoBox').innerHTML = `<iframe src="${src}" title="Mia on YouTube" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
   openSheet('#sheetVideo');
 }));
 $('#sheetVideo').addEventListener('click', e => { if (!$('#sheetVideo').classList.contains('on')) $('#videoBox').innerHTML = ''; });
+// Store app: Mia's own video files (no YouTube player, no links out of the app). Streamed from our website, so the app stays small.
+const APP_VIDEOS = {
+  UUSHpAjJBGCqhsbTDvwiAO4wLg: { tall: true, ids: ['story-00', 'story-01', 'story-02', 'story-03', 'story-04', 'story-05'] },
+  UULFpAjJBGCqhsbTDvwiAO4wLg: { tall: false, ids: ['color-twinkle', 'color-finn', 'color-shelly', 'color-ollie', 'color-dotty'] }
+};
+const VIDEO_BASE = 'https://www.lookandseecolorme.com/paint/videos/';
+function openAppVideos(list) {
+  const set = APP_VIDEOS[list]; if (!set) return;
+  const box = $('#videoBox'), strip = $('#videoList');
+  box.className = 'vframe' + (set.tall ? ' tall' : '');
+  const playId = id => {
+    box.innerHTML = `<video src="${VIDEO_BASE + id}.mp4" poster="${VIDEO_BASE + id}.webp" playsinline controls autoplay preload="auto" controlslist="nodownload"></video>`;
+    strip.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', x.dataset.id === id));
+    const v = box.querySelector('video'); const i = set.ids.indexOf(id);
+    v.onended = () => { if (i + 1 < set.ids.length) playId(set.ids[i + 1]); };
+  };
+  strip.innerHTML = set.ids.map(id => `<button data-id="${id}" aria-label="Play video"><img src="${VIDEO_BASE + id}.webp" alt="" loading="lazy"></button>`).join('');
+  strip.querySelectorAll('button').forEach(x => x.addEventListener('click', () => playId(x.dataset.id)));
+  strip.hidden = false;
+  playId(set.ids[0]);
+  openSheet('#sheetVideo');
+}
 
 /* ---------- My art: a gallery of every picture already painted (all on this device) ---------- */
 function loadImg(src) { return new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = src; }); }
