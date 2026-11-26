@@ -28,8 +28,8 @@ body{background:var(--desk);color:var(--ink);font:600 16px/1.3 Fredoka,ui-rounde
   -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
 button{font:inherit;color:inherit}
 .app{position:fixed;inset:0;display:grid;
-  grid-template-rows:auto minmax(0,1fr) auto auto auto;
-  grid-template-areas:"top" "board" "tools" "colors" "foot";
+  grid-template-rows:auto minmax(0,1fr) auto auto auto auto;
+  grid-template-areas:"top" "board" "done" "tools" "colors" "foot";
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 
 /* Top bar */
@@ -110,9 +110,9 @@ button{font:inherit;color:inherit}
 
 
 /* Two steps: paint, then "I'm done!" -> find the friends in the picture */
-.done-btn{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:5;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
+.done-btn{grid-area:done;justify-self:center;margin:6px 0 2px;min-height:58px;padding:0 26px 0 18px;border:3px solid var(--ink);border-radius:999px;background:#2E9E4F;color:#fff;font:700 22px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer;white-space:nowrap}
 .done-btn svg{width:28px;height:28px}
-.done-btn:active{transform:translate(-50%,3px);box-shadow:none}
+.done-btn:active{transform:translateY(3px);box-shadow:none}
 .findbar{position:absolute;left:10px;right:10px;top:10px;z-index:6;display:none;align-items:center;gap:10px;background:var(--sun);border:3px solid var(--ink);border-radius:20px;box-shadow:0 4px 0 var(--ink);padding:8px 8px 8px 12px}
 .findbar .lupa{width:40px;height:40px;flex:none}
 .findbar b{flex:1;font:700 19px/1.15 Fredoka,system-ui,sans-serif}
@@ -144,7 +144,7 @@ button{font:inherit;color:inherit}
 .btn.green{background:#2E9E4F;color:#fff}
 
 /* Name of the crayon you just picked */
-.color-name{position:absolute;left:50%;bottom:84px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
+.color-name{position:absolute;left:50%;bottom:14px;transform:translateX(-50%) scale(.6);z-index:7;background:#fff;border:3px solid var(--ink);border-radius:999px;padding:8px 20px;font:700 26px/1 Fredoka,system-ui,sans-serif;box-shadow:0 4px 0 var(--ink);opacity:0;pointer-events:none;transition:opacity .2s,transform .25s cubic-bezier(.2,1.6,.4,1);white-space:nowrap}
 .color-name.on{opacity:1;transform:translateX(-50%) scale(1)}
 /* Watch Mia */
 .watch{grid-template-columns:repeat(2,1fr)!important}
@@ -190,16 +190,16 @@ button{font:inherit;color:inherit}
 /* Colors */
 .colors{grid-area:colors;display:flex;gap:2px;overflow-x:auto;overflow-y:hidden;padding:4px 10px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x;scroll-snap-type:x proximity}
 .colors::-webkit-scrollbar{display:none}
-.sw{flex:none;width:40px;height:70px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
-.sw svg{width:34px;height:66px;transform:translateY(16px);transition:transform .15s}
+.sw{flex:none;width:52px;height:88px;border:0;background:none;padding:0;cursor:pointer;display:grid;place-items:end center;scroll-snap-align:start}
+.sw svg{width:45px;height:87px;transform:translateY(20px);transition:transform .15s}
 .sw[aria-pressed="true"] svg{transform:translateY(0)}
 .foot{grid-area:foot;text-align:center;font:600 12px/1 Fredoka,system-ui,sans-serif;color:var(--muted);padding:4px 0 6px;letter-spacing:.02em}
 .foot a{color:inherit;text-decoration:none}
 
 /* Wide / landscape screens (tablets) */
 @media (min-aspect-ratio:1/1) and (min-width:700px){
-  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto;
-    grid-template-areas:"top top top" "tools board colors" "foot foot foot"}
+  .app{grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto minmax(0,1fr) auto auto;
+    grid-template-areas:"top top top" "tools board colors" "tools done colors" "foot foot foot"}
   .tools{flex-direction:column;justify-content:center;padding:8px}
   .tools .sep{width:40px;height:3px;margin:4px 0}
   .sizes{flex-direction:column}
@@ -215,6 +215,8 @@ button{font:inherit;color:inherit}
 .scrim.on{display:flex}
 @media (min-width:700px){.scrim{align-items:center}}
 .sheet{background:var(--paper);border:3px solid var(--ink);border-radius:24px;box-shadow:0 6px 0 var(--ink);width:min(560px,100%);max-height:calc(100% - 20px);overflow:auto;padding:18px 18px calc(18px + env(safe-area-inset-bottom));text-align:center}
+.sheet{position:relative}
+.sheet-x{position:sticky;top:0;float:right;margin:-6px -6px 0 0;width:48px;height:48px;border:3px solid var(--ink);border-radius:50%;background:#fff;font:700 30px/1 Fredoka,system-ui,sans-serif;color:var(--ink);cursor:pointer;box-shadow:0 3px 0 var(--ink);z-index:2}
 .sheet h2{margin:0 0 4px;font:700 24px/1.15 Fredoka,system-ui,sans-serif}
 .sheet p{margin:0 0 14px;color:var(--muted);font-size:15px}
 .picks{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0 8px}
@@ -288,13 +290,13 @@ button{font:inherit;color:inherit}
       <button class="x" id="findExit" aria-label="Back to painting">&times;</button>
     </div>
     <div class="color-name" id="colorName" aria-live="polite"></div>
-    <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
     <div class="tray" id="tray" hidden>
       <div class="tray-head"><b id="trayTitle">Can You Find Me?</b><button class="x" id="trayClose" aria-label="Close">&times;</button></div>
       <div class="figs" id="figs"></div>
     </div>
     <button class="ibtn zoomout" id="btnFit" aria-label="Show the whole picture"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M20 20l-4-4"/></svg></button>
   </main>
+  <button class="done-btn" id="btnDone"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>I'm done!</button>
 
   <nav class="tools" id="tools" aria-label="Tools">
     <button class="tool" data-tool="crayon" aria-label="Crayon" aria-pressed="true"></button>
@@ -369,6 +371,7 @@ button{font:inherit;color:inherit}
 <!-- Pick a picture -->
 <div class="scrim" id="sheetPics" role="dialog" aria-modal="true" aria-labelledby="picsTitle">
   <div class="sheet">
+    <button class="sheet-x" data-close aria-label="Close">&times;</button>
     <h2 id="picsTitle">Pick a picture!</h2>
     <p><button class="btn sun small" id="picsArt">See my art</button></p>
     <p>Paint anywhere you like, even outside the lines.</p>
@@ -709,7 +712,7 @@ function layout() {
   const r = board.getBoundingClientRect(); const pad = 14;
   const finding = app.classList.contains('finding');
   const top = finding ? $('#findBar').offsetHeight + 20 : pad;
-  const bot = finding ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad + 72;   // room for "I'm done!" / the friends
+  const bot = finding ? (tray.hidden ? pad : tray.offsetHeight + 20) : pad;   // room for the friends tray
   const aw = r.width - pad * 2, ah = r.height - top - bot;
   const cssW = Math.max(50, Math.min(aw, ah * W / H)); const cssH = cssW * H / W;
   fit = { x: (r.width - cssW) / 2, y: top + (ah - cssH) / 2, cssW, cssH };
