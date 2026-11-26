@@ -9,7 +9,8 @@ const here = dirname(fileURLToPath(import.meta.url));
 const app = join(here, '..'), site = join(app, '..'), www = join(app, 'www');
 rmSync(www, { recursive: true, force: true });
 mkdirSync(join(www, 'assets', 'img'), { recursive: true });
-cpSync(join(site, 'paint'), join(www, 'paint'), { recursive: true });
+// paint/videos/ stays on the website: the app streams Mia's videos from there, so the download stays small
+cpSync(join(site, 'paint'), join(www, 'paint'), { recursive: true, filter: src => !src.includes(join('paint', 'videos')) });
 cpSync(join(site, 'assets', 'fonts'), join(www, 'assets', 'fonts'), { recursive: true });
 for (const f of ['icon.webp', 'logo.webp', 'icon-32.png']) {
   const src = join(site, 'assets', 'img', f);
